@@ -1,0 +1,16 @@
+{
+  "_id": "rollSideInitiative",
+  "name": "Roll Side Initiative",
+  "type": "script",
+  "author": "system",
+  "img": "icons/svg/dice-target.svg",
+  "scope": "global",
+  "command": "if (!game.combat) {\n  ui.notifications.warn(\"No active combat encounter!\");\n  return;\n}\n\nif (!game.settings.get(\"witch-iron\", \"useSideInitiative\")) {\n  ui.notifications.warn(\"Side initiative is not enabled in system settings!\");\n  return;\n}\n\ngame.witchIron.rollSideInitiative(game.combat).then(message => {\n  ChatMessage.create({\n    content: message,\n    type: CONST.CHAT_MESSAGE_TYPES.OTHER,\n    speaker: ChatMessage.getSpeaker({alias: game.i18n.localize(\"WITCHIRON.Combat.RollForInitiative\")})\n  });\n});",
+  "folder": null,
+  "sort": 0,
+  "permission": {
+    "default": 0,
+    "W9fQE7tWgpYVtCBa": 3
+  },
+  "flags": {}
+} 

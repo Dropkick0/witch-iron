@@ -1,0 +1,99 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+
+  <!-- Sheet Header -->
+  <header class="sheet-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'Name'}}"/>
+      </h1>
+      <div class="flexrow">
+        <div class="resource">
+          <label>{{localize 'WITCHIRON.Challenge'}}</label>
+          <input type="text" name="system.challenge" value="{{system.challenge}}" data-dtype="Number"/>
+        </div>
+        <div class="resource">
+          <label>{{localize 'WITCHIRON.XPValue'}}</label>
+          <input type="text" name="system.xpValue" value="{{system.xpValue}}" data-dtype="Number"/>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sheet Navigation -->
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="attributes">{{localize "WITCHIRON.TabAttributes"}}</a>
+    <a class="item" data-tab="abilities">{{localize "WITCHIRON.TabAbilities"}}</a>
+    <a class="item" data-tab="description">{{localize "WITCHIRON.Description"}}</a>
+  </nav>
+
+  <!-- Sheet Body -->
+  <section class="sheet-body">
+
+    <!-- Attributes Tab -->
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <div class="resource-content flexrow flex-group-center">
+        <!-- Health -->
+        <div class="resource flex-group-center">
+          <label for="system.attributes.health.value" class="resource-label">{{localize "WITCHIRON.AttributeHealth"}}</label>
+          <div class="resource-value multiple">
+            <input type="text" name="system.attributes.health.value" value="{{system.attributes.health.value}}" data-dtype="Number"/>
+            <span> / </span>
+            <input type="text" name="system.attributes.health.max" value="{{system.attributes.health.max}}" data-dtype="Number"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Abilities Tab -->
+    <div class="tab abilities" data-group="primary" data-tab="abilities">
+      <section class="abilities-section">
+        <div class="abilities-header flexrow">
+          <span class="ability-key">{{localize "Ability"}}</span>
+          <span class="ability-score">{{localize "Score"}}</span>
+          <span class="ability-mod">{{localize "Modifier"}}</span>
+        </div>
+        <ol class="ability-scores">
+          <!-- Strength -->
+          <li class="ability flexrow" data-ability="strength">
+            <h4 class="ability-key">{{localize "WITCHIRON.AbilityStr"}}</h4>
+            <input class="ability-score" name="system.abilities.strength" type="text" value="{{system.abilities.strength}}" data-dtype="Number"/>
+            <span class="ability-mod">{{numberFormat system.abilities.strength.mod decimals=0 sign=true}}</span>
+          </li>
+          
+          <!-- Dexterity -->
+          <li class="ability flexrow" data-ability="dexterity">
+            <h4 class="ability-key">{{localize "WITCHIRON.AbilityDex"}}</h4>
+            <input class="ability-score" name="system.abilities.dexterity" type="text" value="{{system.abilities.dexterity}}" data-dtype="Number"/>
+            <span class="ability-mod">{{numberFormat system.abilities.dexterity.mod decimals=0 sign=true}}</span>
+          </li>
+          
+          <!-- Constitution -->
+          <li class="ability flexrow" data-ability="constitution">
+            <h4 class="ability-key">{{localize "WITCHIRON.AbilityCon"}}</h4>
+            <input class="ability-score" name="system.abilities.constitution" type="text" value="{{system.abilities.constitution}}" data-dtype="Number"/>
+            <span class="ability-mod">{{numberFormat system.abilities.constitution.mod decimals=0 sign=true}}</span>
+          </li>
+          
+          <!-- Intelligence -->
+          <li class="ability flexrow" data-ability="intelligence">
+            <h4 class="ability-key">{{localize "WITCHIRON.AbilityInt"}}</h4>
+            <input class="ability-score" name="system.abilities.intelligence" type="text" value="{{system.abilities.intelligence}}" data-dtype="Number"/>
+            <span class="ability-mod">{{numberFormat system.abilities.intelligence.mod decimals=0 sign=true}}</span>
+          </li>
+        </ol>
+      </section>
+    </div>
+    
+    <!-- Description Tab -->
+    <div class="tab biography" data-group="primary" data-tab="description">
+      <div class="description">
+        <label>{{localize "WITCHIRON.Description"}}</label>
+        <div class="editor">
+          {{editor system.description target="system.description" button=true editable=editable}}
+        </div>
+      </div>
+    </div>
+
+  </section>
+</form> 

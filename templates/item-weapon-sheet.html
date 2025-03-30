@@ -1,0 +1,64 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="Name"/>
+      </h1>
+      <div class="item-subtitle">Weapon</div>
+    </div>
+  </header>
+
+  <!-- Sheet Tabs -->
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize "WITCHIRON.Description"}}</a>
+    <a class="item" data-tab="attributes">{{localize "Attributes"}}</a>
+  </nav>
+
+  <!-- Sheet Body -->
+  <section class="sheet-body">
+    <!-- Description Tab -->
+    <div class="tab" data-group="primary" data-tab="description">
+      <div class="editor">
+        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+      </div>
+    </div>
+
+    <!-- Attributes Tab -->
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <table>
+        <tr>
+          <td>{{localize "WITCHIRON.WeaponDamage"}}</td>
+          <td><input type="text" name="system.damage" value="{{system.damage}}" data-dtype="String"/></td>
+        </tr>
+        <tr>
+          <td>{{localize "WITCHIRON.DamageType"}}</td>
+          <td>
+            <select name="system.damageType">
+              {{#select system.damageType}}
+              <option value="physical">Physical</option>
+              <option value="fire">Fire</option>
+              <option value="cold">Cold</option>
+              <option value="lightning">Lightning</option>
+              <option value="arcane">Arcane</option>
+              <option value="necrotic">Necrotic</option>
+              {{/select}}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>{{localize "WITCHIRON.WeaponWeight"}}</td>
+          <td><input type="text" name="system.weight" value="{{system.weight}}" data-dtype="Number"/></td>
+        </tr>
+        <tr>
+          <td>{{localize "WITCHIRON.WeaponCost"}}</td>
+          <td><input type="text" name="system.cost" value="{{system.cost}}" data-dtype="Number"/></td>
+        </tr>
+        <tr>
+          <td>{{localize "Equipped"}}</td>
+          <td><input type="checkbox" name="system.equipped" {{checked system.equipped}}/></td>
+        </tr>
+      </table>
+    </div>
+  </section>
+</form> 

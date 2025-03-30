@@ -1,0 +1,303 @@
+{
+  "WITCHIRON": {
+    "SystemName": "Witch Iron",
+    
+    "ActorTypes": {
+      "Character": "Character",
+      "Enemy": "Enemy"
+    },
+    
+    "ItemTypes": {
+      "Weapon": "Weapon",
+      "Spell": "Spell",
+      "Artifact": "Artifact",
+      "Alchemical": "Alchemical"
+    },
+    
+    "Ability": {
+      "muscle": "Muscle",
+      "robustness": "Robustness",
+      "agility": "Agility",
+      "quickness": "Quickness",
+      "finesse": "Finesse",
+      "intelligence": "Intelligence",
+      "willpower": "Willpower",
+      "personality": "Personality",
+      "luck": "Luck"
+    },
+    
+    "Secondary": {
+      "maxEncumbrance": "Max Encumbrance",
+      "currentEncumbrance": "Current Encumbrance",
+      "speed": "Speed",
+      "attacks": "Attacks",
+      "magick": "Magick",
+      "faith": "Faith",
+      "lifespan": "Lifespan"
+    },
+    
+    "Skill": {
+      "athletics": "Athletics",
+      "intimidate": "Intimidate",
+      "melee": "Melee",
+      "hardship": "Hardship",
+      "labor": "Labor",
+      "imbibe": "Imbibe",
+      "lightFoot": "Light-Foot",
+      "ride": "Ride",
+      "skulk": "Skulk",
+      "cunning": "Cunning",
+      "perception": "Perception",
+      "ranged": "Ranged",
+      "art": "Art",
+      "operate": "Operate",
+      "trade": "Trade",
+      "heal": "Heal",
+      "research": "Research",
+      "navigation": "Navigation",
+      "steel": "Steel",
+      "survival": "Survival",
+      "husbandry": "Husbandry",
+      "leadership": "Leadership",
+      "carouse": "Carouse",
+      "coerce": "Coerce"
+    },
+    
+    "Classifications": {
+      "yeoman": "Yeoman",
+      "dockside": "Dockside",
+      "common": "Common",
+      "aristocratic": "Aristocratic",
+      "battlefield": "Battlefield",
+      "tournament": "Tournament",
+      "frontier": "Frontier",
+      "urban": "Urban",
+      "prototype": "Prototype"
+    },
+    
+    "WeaponTypes": {
+      "melee": "Melee",
+      "ranged": "Ranged",
+      "thrown": "Thrown"
+    },
+    
+    "DamageTypes": {
+      "physical": "Physical",
+      "fire": "Fire",
+      "cold": "Cold",
+      "lightning": "Lightning",
+      "arcane": "Arcane",
+      "necrotic": "Necrotic"
+    },
+    
+    "SpellTypes": {
+      "arcane": "Arcane",
+      "miracle": "Miracle",
+      "rune": "Rune"
+    },
+    
+    "AlchemicalTypes": {
+      "potion": "Potion",
+      "poison": "Poison",
+      "reagent": "Reagent",
+      "explosive": "Explosive"
+    },
+    
+    "BodyLocations": {
+      "head": "Head",
+      "torso": "Torso",
+      "rightArm": "Right Arm",
+      "leftArm": "Left Arm",
+      "rightLeg": "Right Leg",
+      "leftLeg": "Left Leg"
+    },
+    
+    "Lineages": {
+      "academic": "Academic",
+      "alchemist": "Alchemist",
+      "blackThumb": "Black-Thumb",
+      "pitBorn": "Pit-Born",
+      "ordained": "Ordained",
+      "shadow": "Shadow",
+      "witch": "Witch",
+      "workhorse": "Workhorse",
+      "anchorite": "Anchorite",
+      "arcanist": "Arcanist",
+      "beast": "Beast",
+      "berserker": "Berserker",
+      "blood": "Blood",
+      "crusader": "Crusader",
+      "curseling": "Curseling",
+      "demon": "Demon",
+      "dreadnaught": "Dreadnaught",
+      "druid": "Druid",
+      "fleshSculptor": "Flesh Sculptor",
+      "inquisitor": "Inquisitor",
+      "musician": "Musician",
+      "noble": "Noble",
+      "occultist": "Occultist",
+      "redHand": "Red-Hand",
+      "revenant": "Revenant",
+      "runeCarver": "Rune-Carver",
+      "veteran": "Veteran",
+      "warden": "Warden",
+      "windForged": "Wind-Forged"
+    },
+    
+    "GeneticTraits": {
+      "brawny": "Brawny",
+      "puny": "Puny",
+      "bountiful": "Bountiful",
+      "infertile": "Infertile",
+      "brainy": "Brainy",
+      "dimwitted": "Dimwitted",
+      "naturalLeader": "Natural-Leader",
+      "beta": "Beta",
+      "hearty": "Hearty",
+      "sickly": "Sickly",
+      "lightTouch": "Light-Touch",
+      "fatFingered": "Fat-Fingered",
+      "longevity": "Longevity",
+      "heartDisease": "Heart Disease",
+      "nimble": "Nimble",
+      "clumsy": "Clumsy",
+      "quick": "Quick",
+      "slow": "Slow",
+      "fateMarked": "Fate-Marked",
+      "illOmened": "Ill-Omened",
+      "strongWilled": "Strong-Willed",
+      "impressionable": "Impressionable",
+      "sprinter": "Sprinter",
+      "asthmatic": "Asthmatic",
+      "warpBlood": "Warp-Blood",
+      "null": "Null"
+    },
+    
+    "Tabs": {
+      "abilities": "Abilities",
+      "skills": "Skills",
+      "injuries": "Injuries",
+      "lineage": "Lineage",
+      "inventory": "Inventory",
+      "description": "Description",
+      "details": "Details",
+      "powers": "Powers",
+      "ingredients": "Ingredients"
+    },
+    
+    "Headers": {
+      "activeInjuries": "Active Injuries",
+      "treatedInjuries": "Treated Injuries",
+      "permanentInjuries": "Permanent Injuries",
+      "weapons": "Weapons",
+      "spells": "Spells",
+      "artifacts": "Artifacts",
+      "alchemicals": "Alchemicals",
+      "equipment": "Equipment",
+      "geneticTraits": "Genetic Traits",
+      "contacts": "Contacts",
+      "followers": "Followers"
+    },
+    
+    "Buttons": {
+      "addInjury": "Add Injury",
+      "treatInjury": "Treat",
+      "permanentInjury": "Make Permanent",
+      "deleteInjury": "Delete",
+      "spendLuck": "Spend Luck",
+      "gainLuck": "Gain Luck",
+      "addItem": "Add Item",
+      "toggleInstantAccess": "Instant Access",
+      "roll": "Roll",
+      "changeLocation": "Change Location"
+    },
+    
+    "Placeholders": {
+      "name": "Name",
+      "description": "Description",
+      "lineage": "Select Lineage...",
+      "geneticTrait": "Select Trait...",
+      "location": "Select Location..."
+    },
+    
+    "Labels": {
+      "injury": "Injury",
+      "severity": "Severity",
+      "location": "Location",
+      "treated": "Treated",
+      "permanent": "Permanent",
+      "name": "Name",
+      "encumbrance": "Enc",
+      "damage": "Damage",
+      "damageType": "Type",
+      "range": "Range",
+      "cost": "Cost",
+      "actions": "Actions"
+    },
+    
+    "Messages": {
+      "rollSuccess": "Success",
+      "rollFailure": "Failure",
+      "criticalSuccess": "Critical Success!",
+      "rollFumble": "Fumble!",
+      "successWithHits": "Success with +{0} Hits",
+      "failureWithHits": "Failure with {0} Hits",
+      "criticalHitBonus": "Boosted to +6 Hits",
+      "fumblePenalty": "Reduced to -6 Hits",
+      "fumbleProne": "Character falls prone",
+      "notEnoughLuck": "Not enough luck points",
+      "encumbranceWarning": "You are overloaded!",
+      "instantAccessLimitReached": "You've reached your instant access limit",
+      "opposedActive": "{0}'s {1}",
+      "opposedPassive": "{0}'s {1}",
+      "opposedSuccess": "{0} succeeds with {1} net hits",
+      "opposedFailure": "{0} fails against {1}",
+      "opposedTie": "The contest ends in a tie",
+      "prone": "falls prone",
+      "injuryApplied": "Applied {0} injury to {1}'s {2}",
+      "injuryTreated": "{0}'s injury has been treated",
+      "injuryPermanent": "{0}'s injury has become permanent",
+      "injuryDeleted": "Removed injury from {0}",
+      "locationChanged": "Hit location changed to {0}",
+      "hitsSpent": "{0} spent {1} Hits to change hit location"
+    },
+    
+    "Settings": {
+      "UseSideInitiative": "Use Side-Based Initiative",
+      "UseSideInitiativeHint": "Use the Witch Iron side-based initiative system instead of individual initiative rolls.",
+      "SideInitiativePlayerValue": "Player Initiative Value",
+      "SideInitiativePlayerValueHint": "The initiative value assigned to player characters when they win initiative.",
+      "SideInitiativeNPCValue": "NPC Initiative Value",
+      "SideInitiativeNPCValueHint": "The initiative value assigned to NPCs when they win initiative."
+    },
+    
+    "TabAttributes": "Attributes",
+    "TabAbilities": "Abilities",
+    "TabSkills": "Skills",
+    "TabInjuries": "Injuries",
+    "TabInventory": "Inventory",
+    "TabSpells": "Spells",
+    "TabBiography": "Biography",
+    
+    "Attack": "Attack",
+    "MeleeAttack": "Melee Attack",
+    "RangedAttack": "Ranged Attack",
+    "RollSkill": "Roll Skill Check",
+    
+    "SkillsCombat": "Combat Skills",
+    "SkillsGeneral": "General Skills",
+    
+    "Combat": {
+      "RollForInitiative": "Roll for Initiative",
+      "PlayersWinInitiative": "The party wins initiative this round! Your side acts first.",
+      "NPCsWinInitiative": "Opponents win initiative this round! They act first.",
+      "AttackTarget": "Attack Target",
+      "ChooseDefense": "Choose Defense",
+      "MeleeDefend": "Melee (Parry/Block)",
+      "DodgeDefend": "Light-Foot (Dodge)",
+      "AttackSuccess": "Attack succeeds with {0} Net Hits!",
+      "AttackFailure": "Attack failed - defender counters!",
+      "InjuryApplied": "Injury applied to {0}"
+    }
+  }
+} 

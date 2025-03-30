@@ -1,0 +1,1373 @@
+/* Witch Iron System Stylesheet */
+
+.witch-iron {
+  --primary-color: #433d3a;
+  --secondary-color: #8a3033;
+  --tertiary-color: #c17c23;
+  --background-color: #1e1c1b;
+  --light-text: #e0d6cc;
+  --dark-text: #2c2724;
+  --input-background: #312e2c;
+  --border-color: #56504c;
+  --success-color: #4a6c2f;
+  --failure-color: #8c362f;
+  --critical-color: #c17c23;
+}
+
+.witch-iron .window-content {
+  background: url("../assets/background.webp");
+  background-size: cover;
+  background-color: var(--background-color);
+  color: var(--light-text);
+  font-family: "Alegreya", "Times New Roman", serif;
+}
+
+/* Sheet Structure */
+.witch-iron .sheet-header {
+  flex: 0 0 100px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.witch-iron .sheet-header .profile-img {
+  flex: 0 0 100px;
+  height: 100px;
+  margin-right: 10px;
+}
+
+.witch-iron .sheet-header .header-fields {
+  flex: 1;
+}
+
+.witch-iron .sheet-header h1.charname {
+  height: 50px;
+  padding: 0px;
+  margin: 5px 0;
+  border-bottom: 1px solid #AAA;
+}
+
+.witch-iron .sheet-header h1.charname input {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.witch-iron .sheet-tabs {
+  flex: 0 0 40px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.witch-iron .sheet-body,
+.witch-iron .sheet-body .tab,
+.witch-iron .sheet-body .tab .editor {
+  height: 100%;
+}
+
+.witch-iron .sheet-body .tab {
+  padding: 0 5px;
+  overflow: hidden auto;
+}
+
+/* Attributes and Abilities */
+.witch-iron .attributes-header {
+  padding: 5px;
+  margin: 5px 0;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid #AAA;
+  border-radius: 2px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.witch-iron .attribute-value {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.witch-iron .attribute-value > * {
+  flex: 1;
+  text-align: center;
+}
+
+.witch-iron .attribute-value.multiple input {
+  flex: 1;
+  text-align: center;
+}
+
+.witch-iron .ability-scores {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.witch-iron .ability {
+  height: 70px;
+  margin: 0 5px 5px 0;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid #AAA;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.witch-iron .ability h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.witch-iron .ability .ability-score {
+  height: 30px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.witch-iron .ability .ability-mod {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Items List */
+.witch-iron .items-header {
+  padding: 5px;
+  margin: 5px 0;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid #AAA;
+  border-radius: 2px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.witch-iron .items-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  color: #444;
+}
+
+.witch-iron .items-list .item-header {
+  font-weight: bold;
+}
+
+.witch-iron .items-list .item {
+  line-height: 30px;
+  padding: 3px 0;
+  border-bottom: 1px solid #BBB;
+}
+
+.witch-iron .items-list .item .item-name {
+  margin: 0;
+}
+
+.witch-iron .items-list .item .item-controls {
+  flex: 0 0 60px;
+  text-align: right;
+}
+
+/* Specialized Item Sheet */
+.witch-iron.sheet.item .sheet-header img {
+  flex: 0 0 100px;
+  height: 100px;
+  margin-right: 10px;
+}
+
+.witch-iron.sheet.item .sheet-header .item-subtitle {
+  flex: 0 0 100%;
+  height: 20px;
+  margin: 0;
+  padding: 5px 0;
+  font-size: 16px;
+  color: #666;
+  border-bottom: 1px solid #AAA;
+}
+
+/* Element Styles */
+.witch-iron button {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid #AAA;
+  padding: 5px;
+  margin: 2px 0;
+  font-size: 14px;
+  line-height: 16px;
+  border-radius: 3px;
+}
+
+.witch-iron button:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.witch-iron input[type="text"],
+.witch-iron input[type="number"] {
+  background: none;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #AAA;
+  margin: 0;
+  color: #191813;
+  font-size: 14px;
+}
+
+.witch-iron input[type="text"]:hover,
+.witch-iron input[type="number"]:hover,
+.witch-iron input[type="text"]:focus,
+.witch-iron input[type="number"]:focus {
+  border: 1px solid #111;
+}
+
+.witch-iron select {
+  height: 24px;
+  background: none;
+  border: 1px solid #AAA;
+  color: #191813;
+  font-size: 14px;
+}
+
+.witch-iron input[type="text"],
+.witch-iron input[type="number"],
+.witch-iron select,
+.witch-iron textarea {
+  background: var(--input-background);
+  color: var(--light-text);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 4px;
+}
+
+.witch-iron button {
+  background-color: var(--primary-color);
+  color: var(--light-text);
+  border: 1px solid var(--border-color);
+  margin-right: 4px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.witch-iron button:hover {
+  background-color: var(--secondary-color);
+}
+
+.witch-iron .rollable:hover {
+  text-shadow: 0 0 5px var(--tertiary-color);
+  cursor: pointer;
+}
+
+.witch-iron .tabs {
+  border-bottom: 1px solid var(--secondary-color);
+  margin-bottom: 10px;
+}
+
+.witch-iron .tabs .item {
+  padding: 5px 10px;
+  margin-right: 4px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  background: var(--primary-color);
+  color: var(--light-text);
+  cursor: pointer;
+}
+
+.witch-iron .tabs .item.active {
+  background: var(--secondary-color);
+  color: var(--light-text);
+}
+
+.witch-iron .sheet-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--secondary-color);
+  padding-bottom: 10px;
+}
+
+.witch-iron .profile-img {
+  flex: 0 0 100px;
+  height: 100px;
+  margin-right: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.witch-iron .header-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.witch-iron .header-field {
+  margin-bottom: 5px;
+}
+
+.witch-iron .abilities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.witch-iron .ability {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  text-align: center;
+  padding: 5px;
+  position: relative;
+}
+
+.witch-iron .ability .ability-name {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.witch-iron .ability .ability-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.witch-iron .ability .ability-value input {
+  width: 45px;
+  text-align: center;
+  margin-right: 5px;
+}
+
+.witch-iron .ability .ability-bonus {
+  background-color: var(--secondary-color);
+  color: var(--light-text);
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.witch-iron .ability .ability-roll {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 12px;
+  color: var(--tertiary-color);
+}
+
+.witch-iron .secondary-attributes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.witch-iron .secondary-attribute {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  text-align: center;
+  padding: 5px;
+}
+
+.witch-iron .secondary-attribute .attribute-name {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.witch-iron .secondary-attribute .attribute-value {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.witch-iron .luck-container {
+  background-color: var(--secondary-color);
+  border-radius: 3px;
+  padding: 8px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.witch-iron .luck-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.witch-iron .luck-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.witch-iron .luck-value input {
+  width: 40px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.witch-iron .luck-buttons {
+  display: flex;
+}
+
+.witch-iron .skills-list {
+  margin-bottom: 15px;
+}
+
+.witch-iron .skill-category {
+  margin-bottom: 10px;
+}
+
+.witch-iron .skill-category-header {
+  background-color: var(--secondary-color);
+  padding: 4px 8px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.witch-iron .skill {
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.witch-iron .skill-name {
+  flex: 3;
+  padding-left: 5px;
+}
+
+.witch-iron .skill-value {
+  flex: 1;
+  text-align: center;
+}
+
+.witch-iron .skill-roll {
+  flex: 0 0 20px;
+  text-align: center;
+  color: var(--tertiary-color);
+}
+
+.witch-iron .skill-specializations {
+  margin-left: 20px;
+  border-left: 1px solid var(--border-color);
+  padding-left: 5px;
+  font-size: 12px;
+}
+
+.witch-iron .injuries-container {
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.witch-iron .injuries-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.witch-iron .injuries-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.witch-iron .injuries-list {
+  margin-bottom: 10px;
+}
+
+.witch-iron .injury {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.witch-iron .injury-name {
+  flex: 3;
+}
+
+.witch-iron .injury-severity {
+  flex: 1;
+  text-align: center;
+}
+
+.witch-iron .injury-location {
+  flex: 2;
+  text-align: center;
+}
+
+.witch-iron .injury-actions {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.witch-iron .injury-treated {
+  color: var(--success-color);
+}
+
+.witch-iron .injury-permanent {
+  color: var(--failure-color);
+}
+
+.witch-iron .lineage-container {
+  margin-bottom: 15px;
+}
+
+.witch-iron .lineage-header {
+  background-color: var(--secondary-color);
+  padding: 4px 8px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.witch-iron .lineage-selection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.witch-iron .lineage-item {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 5px;
+}
+
+.witch-iron .lineage-label {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.witch-iron .genetic-traits {
+  margin-top: 10px;
+}
+
+.witch-iron .genetic-trait {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.witch-iron .genetic-trait-name {
+  flex: 2;
+}
+
+.witch-iron .genetic-trait-type {
+  flex: 1;
+  text-align: center;
+}
+
+.witch-iron .genetic-trait-duality {
+  color: var(--secondary-color);
+}
+
+.witch-iron .inventory-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.witch-iron .inventory-header {
+  font-weight: bold;
+  font-size: 14px;
+  padding: 5px;
+  background-color: var(--secondary-color);
+  border-radius: 3px;
+}
+
+.witch-iron .item {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.witch-iron .item-image {
+  flex: 0 0 30px;
+  margin-right: 5px;
+}
+
+.witch-iron .item-name {
+  flex: 3;
+}
+
+.witch-iron .item-encumbrance {
+  flex: 1;
+  text-align: center;
+}
+
+.witch-iron .item-actions {
+  flex: 1;
+  text-align: right;
+}
+
+.witch-iron .item-instant-access {
+  flex: 0 0 20px;
+  text-align: center;
+}
+
+.witch-iron .item-instant-access.enabled {
+  color: var(--tertiary-color);
+}
+
+.witch-iron .encumbrance-bar {
+  height: 10px;
+  background-color: var(--input-background);
+  border-radius: 5px;
+  margin-top: 10px;
+  position: relative;
+}
+
+.witch-iron .encumbrance-bar .current {
+  height: 100%;
+  border-radius: 5px;
+  background-color: var(--tertiary-color);
+}
+
+.witch-iron .encumbrance-bar.overloaded .current {
+  background-color: var(--failure-color);
+}
+
+.witch-iron .encumbrance-label {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.witch-iron.roll-result {
+  background-color: var(--background-color);
+  color: var(--light-text);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.witch-iron.roll-result .roll-header {
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+}
+
+.witch-iron.roll-result .roll-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.witch-iron.roll-result .roll-formula {
+  font-size: 12px;
+  color: var(--tertiary-color);
+}
+
+.witch-iron.roll-result .roll-outcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.witch-iron.roll-result .dice-roll {
+  margin-bottom: 5px;
+}
+
+.witch-iron.roll-result .dice-result {
+  text-align: center;
+}
+
+.witch-iron.roll-result .dice-formula {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.witch-iron.roll-result .dice-tooltip {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.witch-iron.roll-result .roll-status {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.witch-iron.roll-result .roll-hits {
+  font-size: 14px;
+  margin-top: 5px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background-color: var(--input-background);
+  display: inline-block;
+}
+
+.witch-iron.roll-result .success .roll-hits {
+  color: var(--success-color);
+  border-left: 3px solid var(--success-color);
+}
+
+.witch-iron.roll-result .failure .roll-hits {
+  color: var(--failure-color);
+  border-left: 3px solid var(--failure-color);
+}
+
+.witch-iron.roll-result .critical-success .roll-hits {
+  color: var(--critical-color);
+  border-left: 3px solid var(--critical-color);
+  font-weight: bold;
+}
+
+.witch-iron.roll-result .fumble .roll-hits {
+  color: var(--secondary-color);
+  border-left: 3px solid var(--secondary-color);
+  font-weight: bold;
+}
+
+.witch-iron.roll-result .hits-value {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.witch-iron.roll-result .opposed-roll {
+  margin-top: 10px;
+  padding: 5px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.witch-iron.roll-result .opposed-roll-header {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: var(--light-text);
+}
+
+.witch-iron.roll-result .opposed-result {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.witch-iron.roll-result .opposed-success {
+  color: var(--success-color);
+}
+
+.witch-iron.roll-result .opposed-failure {
+  color: var(--failure-color);
+}
+
+.witch-iron.roll-result .net-hits {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.witch-iron.roll-result .specialization-bonus {
+  font-style: italic;
+  font-size: 12px;
+  opacity: 0.8;
+  margin-left: 4px;
+}
+
+.witch-iron.roll-result .critical-bonus {
+  font-style: italic;
+  font-size: 12px;
+  color: var(--critical-color);
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.witch-iron.roll-result .fumble-penalty {
+  font-style: italic;
+  font-size: 12px;
+  color: var(--secondary-color);
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.witch-iron.roll-result .critical-success .roll-status {
+  color: var(--critical-color);
+  text-shadow: 0 0 4px rgba(193, 124, 35, 0.6);
+  font-size: 20px;
+}
+
+.witch-iron.roll-result .fumble .roll-status {
+  color: var(--secondary-color);
+  text-shadow: 0 0 4px rgba(138, 48, 51, 0.6);
+  font-size: 20px;
+}
+
+.witch-iron.roll-result .roll-outcome.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.witch-iron.roll-result .roll-outcome.clickable:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dialog .witch-iron .form-group {
+  margin-bottom: 10px;
+}
+
+.dialog .witch-iron label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.dialog .witch-iron select,
+.dialog .witch-iron input {
+  width: 100%;
+  padding: 5px;
+  background-color: var(--input-background);
+  color: var(--light-text);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+}
+
+/* Add styles for skills tab and combat buttons */
+.witch-iron .skills-section {
+  margin: 0.5rem 0;
+}
+
+.witch-iron .skills-header {
+  border-bottom: 1px solid var(--color-border-light-primary);
+  padding: 0.25rem 0;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron .skill-name {
+  flex: 2;
+}
+
+.witch-iron .skill-value,
+.witch-iron .skill-mod {
+  flex: 1;
+  text-align: center;
+}
+
+.witch-iron .skill-actions {
+  flex: 2;
+  text-align: right;
+}
+
+.witch-iron .skills-category {
+  margin-bottom: 1rem;
+}
+
+.witch-iron .category-label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-bottom: 1px solid var(--color-border-light-highlight);
+  margin: 0.5rem 0;
+  padding-bottom: 0.25rem;
+}
+
+.witch-iron .skill {
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+.witch-iron .skill:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.witch-iron .skill-action {
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background: var(--color-border-highlight);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.witch-iron .skill-action:hover {
+  background: var(--color-border-highlight-alt);
+}
+
+.witch-iron .skill-roll {
+  padding: 0.25rem 0.5rem;
+  background: var(--color-text-hyperlink);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.witch-iron .skill-roll:hover {
+  background: var(--color-text-hyperlink-hover);
+}
+
+.witch-iron .melee-attack {
+  background-color: #a33;
+}
+
+.witch-iron .melee-attack:hover {
+  background-color: #c55;
+}
+
+.witch-iron .ranged-attack {
+  background-color: #36a;
+}
+
+.witch-iron .ranged-attack:hover {
+  background-color: #58c;
+}
+
+/* Combat Quarrel styles */
+.witch-iron.quarrel-result {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-border-light-primary);
+  border-radius: 5px;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.witch-iron .quarrel-header h3 {
+  border-bottom: 1px solid var(--color-border-light-primary);
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+  font-size: 1.2rem;
+}
+
+.witch-iron .quarrel-rolls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron .attack-roll,
+.witch-iron .defense-roll {
+  padding: 0.25rem;
+  border-radius: 3px;
+}
+
+.witch-iron .roll-label {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.witch-iron .roll-result {
+  padding: 0.25rem;
+  border-radius: 3px;
+}
+
+.witch-iron .roll-result.success {
+  background-color: rgba(0, 150, 0, 0.1);
+  border: 1px solid rgba(0, 150, 0, 0.3);
+}
+
+.witch-iron .roll-result.failure {
+  background-color: rgba(150, 0, 0, 0.1);
+  border: 1px solid rgba(150, 0, 0, 0.3);
+}
+
+.witch-iron .roll-result.critical {
+  background-color: rgba(0, 150, 0, 0.2);
+  border: 1px solid rgba(0, 150, 0, 0.5);
+}
+
+.witch-iron .roll-result.fumble {
+  background-color: rgba(150, 0, 0, 0.2);
+  border: 1px solid rgba(150, 0, 0, 0.5);
+}
+
+.witch-iron .dice-value {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.witch-iron .critical-success-note {
+  color: #070;
+  font-style: italic;
+  margin: 0.25rem 0;
+}
+
+.witch-iron .fumble-note {
+  color: #700;
+  font-style: italic;
+  margin: 0.25rem 0;
+}
+
+.witch-iron .quarrel-outcome {
+  padding: 0.5rem;
+  border-radius: 3px;
+  margin: 0.5rem 0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.witch-iron .quarrel-outcome.success {
+  background-color: rgba(0, 150, 0, 0.1);
+  border: 1px solid rgba(0, 150, 0, 0.3);
+  color: #050;
+}
+
+.witch-iron .quarrel-outcome.failure {
+  background-color: rgba(150, 0, 0, 0.1);
+  border: 1px solid rgba(150, 0, 0, 0.3);
+  color: #500;
+}
+
+.witch-iron .quarrel-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.witch-iron .apply-injury {
+  padding: 0.25rem 0.5rem;
+  background: var(--color-border-highlight);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.witch-iron .apply-injury:hover {
+  background: var(--color-border-highlight-alt);
+}
+
+/* Injuries tab */
+.witch-iron .injuries-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.witch-iron .injuries-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  margin-bottom: 8px;
+  padding: 4px;
+  font-weight: bold;
+}
+
+.witch-iron .injuries-list {
+  margin-bottom: 12px;
+}
+
+.witch-iron .injury {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  margin: 2px 0;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.03);
+  align-items: center;
+}
+
+.witch-iron .injury:nth-child(odd) {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.witch-iron .injury-name {
+  font-weight: normal;
+}
+
+.witch-iron .injury-location,
+.witch-iron .injury-severity {
+  text-align: center;
+}
+
+.witch-iron .injury-status {
+  text-align: center;
+}
+
+.witch-iron .injury-status .treated {
+  color: #27ae60;
+}
+
+.witch-iron .injury-status .permanent {
+  color: #e74c3c;
+}
+
+.witch-iron .injury-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.witch-iron .injury-actions button {
+  width: 26px;
+  height: 26px;
+  padding: 2px;
+  font-size: 12px;
+}
+
+.witch-iron .treat-injury {
+  color: #27ae60;
+}
+
+.witch-iron .permanent-injury {
+  color: #e74c3c;
+}
+
+.witch-iron .injuries-footer {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.witch-iron .no-injuries {
+  padding: 12px;
+  text-align: center;
+  font-style: italic;
+  color: #666;
+}
+
+/* Body Location Map */
+.witch-iron .body-location-map {
+  margin-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 16px;
+}
+
+.witch-iron .location-map-header h3 {
+  text-align: center;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 4px;
+}
+
+.witch-iron .body-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.witch-iron .location-container {
+  padding: 8px;
+  margin: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.02);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.witch-iron .location-container:hover {
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+.witch-iron .head {
+  width: 25%;
+}
+
+.witch-iron .torso {
+  width: 35%;
+}
+
+.witch-iron .arms {
+  display: flex;
+  width: 75%;
+  justify-content: space-between;
+}
+
+.witch-iron .left-arm,
+.witch-iron .right-arm {
+  width: 48%;
+}
+
+.witch-iron .legs {
+  display: flex;
+  width: 75%;
+  justify-content: space-between;
+}
+
+.witch-iron .left-leg,
+.witch-iron .right-leg {
+  width: 48%;
+}
+
+.witch-iron .location-label {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.witch-iron .location-injuries {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.witch-iron .location-injury {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.witch-iron .injury-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.witch-iron .severity-1 {
+  background-color: #27ae60;
+}
+
+.witch-iron .severity-2 {
+  background-color: #2ecc71;
+}
+
+.witch-iron .severity-3 {
+  background-color: #f1c40f;
+}
+
+.witch-iron .severity-4 {
+  background-color: #f39c12;
+}
+
+.witch-iron .severity-5 {
+  background-color: #e67e22;
+}
+
+.witch-iron .severity-6 {
+  background-color: #d35400;
+}
+
+.witch-iron .severity-7 {
+  background-color: #e74c3c;
+}
+
+.witch-iron .severity-8 {
+  background-color: #c0392b;
+}
+
+.witch-iron .severity-9 {
+  background-color: #8e44ad;
+}
+
+.witch-iron .severity-10 {
+  background-color: #2c3e50;
+}
+
+/* Injury Dialog */
+.location-injuries-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.injury-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  margin: 4px 0;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 3px;
+}
+
+.injury-item.treated {
+  background: rgba(39, 174, 96, 0.1);
+}
+
+.injury-item.permanent {
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.injury-item .injury-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.injury-item .injury-actions button {
+  padding: 2px 4px;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.treat-injury-button {
+  color: #27ae60;
+}
+
+.permanent-injury-button {
+  color: #e74c3c;
+}
+
+.injury-message {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.injury-message h3 {
+  color: #c0392b;
+  margin-top: 0;
+  border-bottom: 1px solid rgba(231, 76, 60, 0.2);
+  padding-bottom: 5px;
+}
+
+.injury-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.injury-severity {
+  font-weight: bold;
+}
+
+/* Hit Location Display in Chat Messages */
+.witch-iron .hit-location {
+  margin: 8px 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.witch-iron .hit-location-label {
+  font-weight: bold;
+}
+
+.witch-iron .hit-location-digit {
+  font-size: 12px;
+  color: #666;
+  float: right;
+}
+
+.witch-iron .location-change-note {
+  margin: 8px 0;
+  padding: 6px;
+  background: rgba(39, 174, 96, 0.1);
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  border-radius: 5px;
+  font-style: italic;
+  color: #2c3e50;
+} 

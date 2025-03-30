@@ -1,0 +1,80 @@
+{
+  "id": "witch-iron",
+  "title": "Witch Iron",
+  "description": "A brutal, gritty RPG about building legacy through consequence and change. Features a d100 roll-under system, lineage-based character progression, injury-based (no HP) combat, and multiple subsystems for corruption, stress, magick, and crafting.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11",
+    "maximum": "11"
+  },
+  "authors": [
+    {
+      "name": "Ethan Rowe",
+      "email": "your.email@example.com",
+      "url": "https://example.com"
+    }
+  ],
+  "esmodules": [
+    "witch-iron.mjs"
+  ],
+  "styles": [
+    "styles/witch-iron.css"
+  ],
+  "scripts": [],
+  "packs": [
+    {
+      "name": "items",
+      "label": "Witch Iron Items",
+      "path": "packs/items",
+      "type": "Item",
+      "system": "witch-iron"
+    },
+    {
+      "name": "monsters",
+      "label": "Witch Iron Monsters",
+      "path": "packs/monsters",
+      "type": "Actor",
+      "system": "witch-iron"
+    },
+    {
+      "name": "lineages",
+      "label": "Witch Iron Lineages",
+      "path": "packs/lineages",
+      "type": "Item",
+      "system": "witch-iron"
+    },
+    {
+      "name": "artifacts",
+      "label": "Witch Iron Artifacts",
+      "path": "packs/artifacts",
+      "type": "Item",
+      "system": "witch-iron"
+    },
+    {
+      "name": "macros",
+      "label": "Witch Iron Macros",
+      "path": "packs/macros",
+      "type": "Macro",
+      "system": "witch-iron"
+    }
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "socket": false,
+  "initiative": "abilities.quickness.bonus + 1d10",
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "primaryTokenAttribute": "corruption.value",
+  "secondaryTokenAttribute": "stress.value",
+  "url": "https://github.com/ethanrowe/witch-iron",
+  "manifest": "https://github.com/ethanrowe/witch-iron/releases/latest/download/system.json",
+  "download": "https://github.com/ethanrowe/witch-iron/releases/latest/download/witch-iron.zip",
+  "license": "LICENSE.txt",
+  "changelog": "CHANGELOG.md"
+} 
