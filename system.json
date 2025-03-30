@@ -2,11 +2,11 @@
   "id": "witch-iron",
   "title": "Witch Iron",
   "description": "A brutal, gritty RPG about building legacy through consequence and change. Features a d100 roll-under system, lineage-based character progression, injury-based (no HP) combat, and multiple subsystems for corruption, stress, magick, and crafting.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "compatibility": {
-    "minimum": "12",
-    "verified": "12",
-    "maximum": "12"
+    "minimum": "11",
+    "verified": "12.331",
+    "maximum": "13"
   },
   "authors": [
     {
@@ -72,9 +72,9 @@
   "gridUnits": "ft",
   "primaryTokenAttribute": "corruption.value",
   "secondaryTokenAttribute": "stress.value",
-  "url": "https://github.com/ethanrowe/witch-iron",
-  "manifest": "https://github.com/ethanrowe/witch-iron/releases/latest/download/system.json",
-  "download": "https://github.com/ethanrowe/witch-iron/releases/latest/download/witch-iron.zip",
+  "url": "https://github.com/Dropkick0/witch-iron",
+  "manifest": "https://raw.githubusercontent.com/Dropkick0/witch-iron/master/system.json",
+  "download": "https://github.com/Dropkick0/witch-iron/archive/refs/heads/master.zip",
   "license": "LICENSE.txt",
   "changelog": "CHANGELOG.md"
 } 
