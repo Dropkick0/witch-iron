@@ -1,0 +1,277 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header">
+    <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Monster Name"/>
+      </h1>
+    </div>
+  </header>
+
+  <div class="monster-sheet">
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="item" data-tab="stats">Stats</a>
+      <a class="item" data-tab="notes">Notes</a>
+      <a class="item" data-tab="injuries">Injuries</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-content">
+      <!-- Attribute Circles Sidebar -->
+      <div class="attributes-sidebar">
+        <div class="attribute-circles">
+          <!-- Specialized -->
+          <div class="attribute-circle" data-attribute="specialized">
+            <div class="attribute-value">
+              {{#if (eq system.derived.abilityScore 0)}}
+                00
+              {{else if (lt system.derived.abilityScore 10)}}
+                0{{system.derived.abilityScore}}
+              {{else}}
+                {{system.derived.abilityScore}}
+              {{/if}}
+            </div>
+            <div class="attribute-label">Specialized</div>
+            <div class="attribute-bonus">+Hits {{system.derived.plusHits}}</div>
+          </div>
+
+          <!-- General -->
+          <div class="attribute-circle" data-attribute="general">
+            <div class="attribute-value">
+              {{#if (eq system.derived.abilityScore 0)}}
+                00
+              {{else if (lt system.derived.abilityScore 10)}}
+                0{{system.derived.abilityScore}}
+              {{else}}
+                {{system.derived.abilityScore}}
+              {{/if}}
+            </div>
+            <div class="attribute-label">General</div>
+            <div class="attribute-bonus">+Hits 0</div>
+          </div>
+
+          <!-- Inept -->
+          <div class="attribute-circle" data-attribute="inept">
+            <div class="attribute-value">
+              {{#if (eq system.derived.abilityScore 0)}}
+                00
+              {{else if (lt system.derived.abilityScore 10)}}
+                0{{system.derived.abilityScore}}
+              {{else}}
+                {{system.derived.abilityScore}}
+              {{/if}}
+            </div>
+            <div class="attribute-label">Inept</div>
+            <div class="attribute-bonus">+Hits 0</div>
+          </div>
+          
+          <!-- Custom Circle 1 -->
+          <div class="attribute-circle custom-circle" data-attribute="custom1">
+            <div class="attribute-value">
+              {{#if (eq system.customAttributes.custom1.value 0)}}
+                00
+              {{else if (lt system.customAttributes.custom1.value 10)}}
+                0{{system.customAttributes.custom1.value}}
+              {{else}}
+                {{system.customAttributes.custom1.value}}
+              {{/if}}
+            </div>
+            <div class="attribute-label">{{system.customAttributes.custom1.label}}</div>
+            <div class="attribute-bonus">+Hits {{system.customAttributes.custom1.hits}}</div>
+            <a class="config-button" data-action="configure" title="Configure Custom Attribute"><i class="fas fa-cog"></i></a>
+          </div>
+          
+          <!-- Custom Circle 2 -->
+          <div class="attribute-circle custom-circle" data-attribute="custom2">
+            <div class="attribute-value">
+              {{#if (eq system.customAttributes.custom2.value 0)}}
+                00
+              {{else if (lt system.customAttributes.custom2.value 10)}}
+                0{{system.customAttributes.custom2.value}}
+              {{else}}
+                {{system.customAttributes.custom2.value}}
+              {{/if}}
+            </div>
+            <div class="attribute-label">{{system.customAttributes.custom2.label}}</div>
+            <div class="attribute-bonus">+Hits {{system.customAttributes.custom2.hits}}</div>
+            <a class="config-button" data-action="configure" title="Configure Custom Attribute"><i class="fas fa-cog"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="sheet-body">
+        {{!-- Stats Tab --}}
+        <div class="tab" data-group="primary" data-tab="stats">
+          <div class="stats-content">
+            <h2>Monster Stats</h2>
+            <div class="grid grid-2col">
+              <div class="form-group">
+                <label>Hit Dice</label>
+                <select name="system.stats.hitDice.value">
+                  {{selectOptions hitDiceOptions selected=system.stats.hitDice.value localize=false}}
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label>Size</label>
+                <select name="system.stats.size.value">
+                  {{selectOptions sizes selected=system.stats.size.value localize=false}}
+                </select>
+              </div>
+            </div>
+            
+            <div class="grid grid-2col">
+              <div class="form-group">
+                <label>Weapon Type</label>
+                <select name="system.stats.weaponType.value">
+                  {{selectOptions weaponTypes selected=system.stats.weaponType.value localize=false}}
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label>Armor Type</label>
+                <select name="system.stats.armorType.value">
+                  {{selectOptions armorTypes selected=system.stats.armorType.value localize=false}}
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-2col">
+              <div class="form-group battle-wear-controls">
+                <label>Weapon Battle Wear (Max: {{system.derived.weaponBonusMax}})</label>
+                <div class="battle-wear-control">
+                  <button type="button" class="battle-wear-minus" data-type="weapon"><i class="fas fa-minus"></i></button>
+                  <span class="battle-wear-value" data-type="weapon">{{system.battleWear.weapon.value}}</span>
+                  <button type="button" class="battle-wear-plus" data-type="weapon"><i class="fas fa-plus"></i></button>
+                  <button type="button" class="battle-wear-reset" data-type="weapon"><i class="fas fa-undo"></i></button>
+                </div>
+              </div>
+              
+              <div class="form-group battle-wear-controls">
+                <label>Armor Battle Wear (Max: {{system.derived.armorBonusMax}})</label>
+                <div class="battle-wear-control">
+                  <button type="button" class="battle-wear-minus" data-type="armor"><i class="fas fa-minus"></i></button>
+                  <span class="battle-wear-value" data-type="armor">{{system.battleWear.armor.value}}</span>
+                  <button type="button" class="battle-wear-plus" data-type="armor"><i class="fas fa-plus"></i></button>
+                  <button type="button" class="battle-wear-reset" data-type="armor"><i class="fas fa-undo"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="monster-actions-section">
+                <h2>Monster Actions</h2>
+                <div class="monster-actions grid grid-2col">
+                    <button type="button" class="monster-action melee-attack">
+                        <i class="fas fa-fist-raised"></i> Melee Attack
+                    </button>
+                    <button type="button" class="monster-action specialized-roll">
+                        <i class="fas fa-dice-d20"></i> Specialized Roll
+                    </button>
+                </div>
+            </div>
+
+            <h2>Special Qualities</h2>
+            <div class="items-header flexrow">
+              <div class="item-name">Special Quality</div>
+              <div class="item-controls">
+                <a class="add-quality" title="Add Special Quality"><i class="fas fa-plus"></i></a>
+              </div>
+            </div>
+            <div class="qualities-list">
+              {{#each system.traits.specialQualities as |quality i|}}
+                <div class="quality flexrow">
+                  <input type="text" name="system.traits.specialQualities.{{i}}" value="{{quality}}" />
+                  <a class="delete-quality" data-index="{{i}}" title="Delete Special Quality"><i class="fas fa-times"></i></a>
+                </div>
+              {{/each}}
+            </div>
+            
+            <h2>Flaw</h2>
+            <div class="form-group">
+              <input type="text" name="system.traits.flaw.value" value="{{system.traits.flaw.value}}" placeholder="Monster's Flaw..." />
+            </div>
+            
+            <div class="mob-section">
+              <h3>Mob Details</h3>
+              <div class="form-group">
+                <label>Is Mob?</label>
+                <input type="checkbox" name="system.mob.isMob.value" {{checked system.mob.isMob.value}}>
+              </div>
+              {{#if system.mob.isMob.value}}
+                <div class="form-group">
+                  <label>Number of Bodies</label>
+                  <input type="number" name="system.mob.bodies.value" value="{{system.mob.bodies.value}}">
+                </div>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+        
+        {{!-- Notes Tab --}}
+        <div class="tab" data-group="primary" data-tab="notes">
+          <div class="notes-content">
+            <div class="derived-stats">
+              <h3>Derived Stats (calculated based on Hit Dice)</h3>
+              <div class="derived-stat">
+                <label>Ability Score:</label>
+                <span>{{system.derived.abilityScore}}</span>
+              </div>
+              <div class="derived-stat">
+                <label>Ability Bonus:</label>
+                <span>{{system.derived.abilityBonus}}</span>
+              </div>
+              <div class="derived-stat">
+                <label>Damage Value:</label>
+                <span>{{system.derived.damageValue}}</span>
+              </div>
+              <div class="derived-stat">
+                <label>Soak Value:</label>
+                <span>{{system.derived.soakValue}}</span>
+              </div>
+              <div class="derived-stat">
+                <label>+Hits:</label>
+                <span>{{system.derived.plusHits}}</span>
+              </div>
+            </div>
+            
+            <h2>Notes</h2>
+            <textarea name="system.notes" rows="20">{{system.notes}}</textarea>
+          </div>
+        </div>
+        
+        {{!-- Injuries Tab --}}
+        <div class="tab" data-group="primary" data-tab="injuries">
+          <div class="injuries-list">
+            <h2>Injuries</h2>
+            <div class="items-header flexrow">
+              <span class="injury-name">Name</span>
+              <span class="injury-severity">Severity</span>
+              <span class="injury-effect">Effect</span>
+              <span class="item-controls"></span>
+            </div>
+            
+            <ol class="items-list">
+              {{#each injuries as |injury id|}}
+              <li class="item flexrow" data-item-id="{{injury._id}}">
+                <div class="injury-name">{{injury.name}}</div>
+                <div class="injury-severity">{{injury.system.severity.label}}</div>
+                <div class="injury-effect">{{injury.system.effect}}</div>
+                <div class="item-controls">
+                  <a class="item-control item-edit" title="Edit Injury"><i class="fas fa-edit"></i></a>
+                  <a class="item-control item-delete" title="Delete Injury"><i class="fas fa-trash"></i></a>
+                </div>
+              </li>
+              {{/each}}
+            </ol>
+            
+            <div class="item-create">
+              <button type="button" class="create-injury" data-type="injury"><i class="fas fa-plus"></i> Add Injury</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</form> 

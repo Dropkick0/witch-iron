@@ -1,0 +1,73 @@
+{{!-- Quarrel result template --}}
+<div class="witch-iron chat-card quarrel-result">
+    <div class="quarrel-header">
+        <i class="fas fa-crossed-swords"></i>
+        <h3>
+            Quarrel
+            {{#if result.isCombatCheck}}<span class="combat-badge">Combat</span>{{/if}}
+        </h3>
+    </div>
+    <div class="card-content">
+        <div class="quarrel-combatants">
+            <div class="initiator {{result.initiatorOutcome}}">
+                <div class="token-name">{{result.initiatorName}}</div>
+                <div class="token-container">
+                    {{#if result.initiatorImg}}
+                    <img class="token-image" src="{{result.initiatorImg}}" data-actor="{{result.initiatorName}}">
+                    {{else}}
+                    <img class="token-image" src="icons/svg/mystery-man.svg" data-actor="{{result.initiatorName}}">
+                    {{/if}}
+                </div>
+                <span class="hits">Hits: {{result.initiatorHits}}</span>
+                <span class="outcome {{result.initiatorOutcome}}">{{outcomeLocalize result.initiatorOutcome}}</span>
+                {{#if (gt result.netHits 0)}}
+                <span class="net-hits positive net-hits-display" data-character="initiator">Net Hits: <span class="hits-value">+{{result.netHits}}</span></span>
+                {{/if}}
+            </div>
+            <div class="versus">
+                <span>VS</span>
+                <span class="flip-hits-btn" title="Show net hits for the other participant"><i class="fas fa-exchange-alt"></i></span>
+            </div>
+            <div class="responder {{result.responderOutcome}}">
+                <div class="token-name">{{result.responderName}}</div>
+                <div class="token-container">
+                    {{#if result.responderImg}}
+                    <img class="token-image" src="{{result.responderImg}}" data-actor="{{result.responderName}}">
+                    {{else}}
+                    <img class="token-image" src="icons/svg/mystery-man.svg" data-actor="{{result.responderName}}">
+                    {{/if}}
+                </div>
+                <span class="hits">Hits: {{result.responderHits}}</span>
+                <span class="outcome {{result.responderOutcome}}">{{outcomeLocalize result.responderOutcome}}</span>
+                {{#if (lt result.netHits 0)}}
+                <span class="net-hits positive net-hits-display" data-character="responder">Net Hits: <span class="hits-value">+{{abs result.netHits}}</span></span>
+                {{/if}}
+            </div>
+        </div>
+        <div class="hidden-net-hits" style="display:none">
+            {{#if (gt result.netHits 0)}}
+            <span class="net-hits negative" data-character="responder">Net Hits: <span class="hits-value">-{{result.netHits}}</span></span>
+            {{else}}
+            <span class="net-hits negative" data-character="initiator">Net Hits: <span class="hits-value">-{{abs result.netHits}}</span></span>
+            {{/if}}
+        </div>
+    </div>
+    
+    {{#if result.isCombatCheck}}
+        <div class="combat-result-container">
+            <div class="hit-location-actions" style="position:relative;top:-3px;right:-4px">
+                <button type="button" class="choose-hit-location" style="width:96%;color:#e6c9a3;background:#323232" 
+                    data-attacker="{{#if result.injuryData}}{{result.injuryData.attacker}}{{else}}{{#if (gt result.netHits 0)}}{{result.responderName}}{{else}}{{result.initiatorName}}{{/if}}{{/if}}" 
+                    data-defender="{{#if result.injuryData}}{{result.injuryData.defender}}{{else}}{{#if (gt result.netHits 0)}}{{result.initiatorName}}{{else}}{{result.responderName}}{{/if}}{{/if}}" 
+                    data-damage="{{abs result.netHits}}" 
+                    data-original-damage="{{abs result.netHits}}" 
+                    data-nethits="{{abs result.netHits}}" 
+                    data-weapondmg="{{#if result.injuryData}}{{result.injuryData.weaponDmg}}{{else}}0{{/if}}"
+                    data-soak="{{#if result.injuryData}}{{result.injuryData.soak}}{{else}}0{{/if}}"
+                    data-messageid="{{@root.message._id}}">
+                    <i class="fas fa-bullseye"></i> Select Hit Location
+                </button>
+            </div>
+        </div>
+    {{/if}}
+</div>

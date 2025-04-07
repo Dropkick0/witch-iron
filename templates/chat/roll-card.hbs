@@ -1,0 +1,49 @@
+<div class="witch-iron chat-card witch-iron-roll" data-hits="{{hits}}" data-actor="{{actor.name}}" {{#if isCombatCheck}}data-combat-check="true"{{/if}} data-actor-id="{{actorId}}">
+  <header class="card-header">
+    <img src="{{actor.img}}" title="{{actor.name}}" width="36" height="36"/>
+    <h3>
+      {{actor.name}} - {{label}}
+      {{#if isCombatCheck}}
+      <span class="combat-badge">Combat</span>
+      {{/if}}
+    </h3>
+  </header>
+
+  <div class="card-content">
+    <div class="roll-result {{#if isCriticalSuccess}}critical-success{{else if isFumble}}fumble{{else if isSuccess}}success{{else}}failure{{/if}}">
+      <div class="dice-roll">
+        <div class="dice-result">
+          <h4 class="dice-total">{{roll.total}}</h4>
+        </div>
+      </div>
+      
+      <div class="test-details">
+        <div class="target">Target: {{#if targetValue}}{{targetValue}}{{else}}0{{/if}}</div>
+        <div class="outcome">
+          {{#if isCriticalSuccess}}
+            Critical Success!
+          {{else if isFumble}}
+            Fumble!
+          {{else if isSuccess}}
+            Success
+          {{else}}
+            Failure
+          {{/if}}
+        </div>
+        <div class="hits">Hits: {{hits}}</div>
+        {{#if specialization}}
+        <div class="specialization">Specialization: {{specialization}}</div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+
+  <footer class="card-footer">
+    {{#if roll.formula}}
+    <div class="formula">
+      <span class="label">Formula:</span>
+      <span class="value">{{roll.formula}}</span>
+    </div>
+    {{/if}}
+  </footer>
+</div> 

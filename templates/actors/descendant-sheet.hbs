@@ -1,0 +1,775 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header">
+    <img src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
+    <div class="header-fields">
+      <h1 class="charname">
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Name"/>
+      </h1>
+      <div class="header-details flexrow">
+        <div class="tier-info">
+          {{#with system.resources.xp}}
+          <label>Experience Points</label>
+          <input type="number" name="system.resources.xp.value" value="{{value}}" data-dtype="Number"/>
+          {{/with}}
+          <div class="tier">
+            <label>Tier</label>
+            <span class="tier-value">
+              {{#if (lt system.resources.xp.value 400)}}0
+              {{else if (lt system.resources.xp.value 1200)}}1
+              {{else if (lt system.resources.xp.value 2800)}}2
+              {{else if (lt system.resources.xp.value 6000)}}3
+              {{else if (lt system.resources.xp.value 12400)}}4
+              {{else if (lt system.resources.xp.value 25200)}}5
+              {{else if (lt system.resources.xp.value 50800)}}6
+              {{else if (lt system.resources.xp.value 102000)}}7
+              {{else if (lt system.resources.xp.value 204400)}}8
+              {{else if (lt system.resources.xp.value 409200)}}9
+              {{else}}10{{/if}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="attributes">Attributes</a>
+    <a class="item" data-tab="skills">Skills</a>
+    <a class="item" data-tab="equipment">Equipment</a>
+    <a class="item" data-tab="character">Character</a>
+    <a class="item" data-tab="notes">Notes</a>
+  </nav>
+
+  <div class="sheet-content flexrow">
+    <!-- Left sidebar with attribute circles - will use sticky positioning -->
+    <div class="attributes-sidebar">
+      <div class="attribute-circles">
+        <!-- Muscle -->
+        <div class="attribute-circle" data-attribute="muscle">
+          <input type="number" name="system.attributes.muscle.value" value="{{system.attributes.muscle.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.muscle.value 10)}}0{{/if}}{{system.attributes.muscle.value}}
+          </div>
+          <div class="attribute-label">Muscle</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.muscle.value 10)}}</div>
+        </div>
+
+        <!-- Robustness -->
+        <div class="attribute-circle" data-attribute="robustness">
+          <input type="number" name="system.attributes.robustness.value" value="{{system.attributes.robustness.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.robustness.value 10)}}0{{/if}}{{system.attributes.robustness.value}}
+          </div>
+          <div class="attribute-label">Robustness</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.robustness.value 10)}}</div>
+        </div>
+
+        <!-- Agility -->
+        <div class="attribute-circle" data-attribute="agility">
+          <input type="number" name="system.attributes.agility.value" value="{{system.attributes.agility.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.agility.value 10)}}0{{/if}}{{system.attributes.agility.value}}
+          </div>
+          <div class="attribute-label">Agility</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.agility.value 10)}}</div>
+        </div>
+
+        <!-- Quickness -->
+        <div class="attribute-circle" data-attribute="quickness">
+          <input type="number" name="system.attributes.quickness.value" value="{{system.attributes.quickness.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.quickness.value 10)}}0{{/if}}{{system.attributes.quickness.value}}
+          </div>
+          <div class="attribute-label">Quickness</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.quickness.value 10)}}</div>
+        </div>
+
+        <!-- Finesse -->
+        <div class="attribute-circle" data-attribute="finesse">
+          <input type="number" name="system.attributes.finesse.value" value="{{system.attributes.finesse.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.finesse.value 10)}}0{{/if}}{{system.attributes.finesse.value}}
+          </div>
+          <div class="attribute-label">Finesse</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.finesse.value 10)}}</div>
+        </div>
+
+        <!-- Intellect -->
+        <div class="attribute-circle" data-attribute="intellect">
+          <input type="number" name="system.attributes.intellect.value" value="{{system.attributes.intellect.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.intellect.value 10)}}0{{/if}}{{system.attributes.intellect.value}}
+          </div>
+          <div class="attribute-label">Intellect</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.intellect.value 10)}}</div>
+        </div>
+
+        <!-- Willpower -->
+        <div class="attribute-circle" data-attribute="willpower">
+          <input type="number" name="system.attributes.willpower.value" value="{{system.attributes.willpower.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.willpower.value 10)}}0{{/if}}{{system.attributes.willpower.value}}
+          </div>
+          <div class="attribute-label">Willpower</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.willpower.value 10)}}</div>
+        </div>
+
+        <!-- Personality -->
+        <div class="attribute-circle" data-attribute="personality">
+          <input type="number" name="system.attributes.personality.value" value="{{system.attributes.personality.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.personality.value 10)}}0{{/if}}{{system.attributes.personality.value}}
+          </div>
+          <div class="attribute-label">Personality</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.personality.value 10)}}</div>
+        </div>
+
+        <!-- Luck -->
+        <div class="attribute-circle" data-attribute="luck">
+          <input type="number" name="system.attributes.luck.value" value="{{system.attributes.luck.value}}" data-dtype="Number"/>
+          <div class="attribute-value">
+            {{#if (lt system.attributes.luck.value 10)}}0{{/if}}{{system.attributes.luck.value}}
+          </div>
+          <div class="attribute-label">Luck</div>
+          <div class="attribute-bonus">Bonus {{floor (divide system.attributes.luck.value 10)}}</div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body">
+      {{!-- Attributes Tab --}}
+      <div class="tab attributes" data-group="primary" data-tab="attributes">
+        <section class="attributes-container">
+          <!-- Content area -->
+          <div class="attributes-content">
+            <!-- Resources -->
+            <div class="resources-section">
+              <h2>Resources</h2>
+
+              <!-- Encumbrance -->
+              <div class="resource flexrow">
+                <label>Encumbrance</label>
+                <input type="number" name="system.resources.encumbrance.current" value="{{system.resources.encumbrance.current}}" data-dtype="Number"/>
+                <span class="resource-max">/ {{multiply (add (floor (divide system.attributes.muscle.value 10)) (floor (divide system.attributes.robustness.value 10))) 2}}</span>
+              </div>
+
+              <!-- Magick (only shown if selected) -->
+              {{#if (eq system.choices.magfaith "magick")}}
+              <div class="resource flexrow">
+                <label>Magick</label>
+                <input type="number" name="system.resources.magick.value" value="{{system.resources.magick.value}}" data-dtype="Number"/>
+              </div>
+              {{/if}}
+
+              <!-- Faith (only shown if selected) -->
+              {{#if (eq system.choices.magfaith "faith")}}
+              <div class="resource flexrow">
+                <label>Faith</label>
+                <input type="number" name="system.resources.faith.value" value="{{system.resources.faith.value}}" data-dtype="Number"/>
+              </div>
+              {{/if}}
+
+              <!-- Magic/Faith Choice -->
+              <div class="resource-choice flexrow">
+                <label>Path</label>
+                <select name="system.choices.magfaith">
+                  <option value="notselected" {{#if (eq system.choices.magfaith "notselected")}}selected{{/if}}>None</option>
+                  <option value="magick" {{#if (eq system.choices.magfaith "magick")}}selected{{/if}}>Magick</option>
+                  <option value="faith" {{#if (eq system.choices.magfaith "faith")}}selected{{/if}}>Faith</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Derived Stats -->
+            <div class="derived-section">
+              <h2>Derived Stats</h2>
+              <div class="grid grid-2col">
+                <!-- Speed -->
+                <div class="derived-stat flexrow">
+                  <label>Speed</label>
+                  <span>{{add 30 (multiply (floor (divide system.attributes.agility.value 40)) 5)}}</span>
+                </div>
+
+                <!-- Global Modifier -->
+                <div class="derived-stat flexrow">
+                  <label>Global Modifier</label>
+                  <span>{{system.modifiers.custom}}</span>
+                </div>
+
+                <!-- Custom Modifier Input -->
+                <div class="derived-stat flexrow">
+                  <label>Custom Modifier</label>
+                  <input type="number" name="system.modifiers.custom" value="{{system.modifiers.custom}}" data-dtype="Number"/>
+                </div>
+
+                <!-- Combat Check -->
+                <div class="derived-stat flexrow">
+                  <label>Combat Check</label>
+                  <input type="checkbox" name="system.flags.isCombatCheck" {{checked system.flags.isCombatCheck}}/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {{!-- Skills Tab --}}
+      <div class="tab skills" data-group="primary" data-tab="skills">
+        <section class="skills-container">
+          <div class="skills-list">
+            <!-- Skill categories -->
+            <div class="skill-groups">
+              <!-- Muscle Skills -->
+              <div class="skill-attribute-group" data-attribute="muscle">
+                <h3>Muscle Skills</h3>
+                <div class="skill-column-headers">
+                  <div class="skill-name-header">Skill</div>
+                  <div class="skill-value-header">+Hits</div>
+                  <div class="skill-modifier-header">Edit</div>
+                  <div class="specializations-header">Specializations</div>
+                </div>
+                <div class="skill-list">
+                  <!-- Combat.athletics -->
+                  <div class="skill-item flexrow" data-skill="athletics">
+                    <div class="skill-name roll-skill" data-skill="athletics">Athletics</div>
+                    <input type="number" name="system.skills.combat.athletics.value" value="{{lookup (lookup system.skills.combat 'athletics') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="athletics" data-category="combat"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.combat 'athletics') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="athletics" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Combat.intimidate -->
+                  <div class="skill-item flexrow" data-skill="intimidate">
+                    <div class="skill-name roll-skill" data-skill="intimidate">Intimidate</div>
+                    <input type="number" name="system.skills.combat.intimidate.value" value="{{lookup (lookup system.skills.combat 'intimidate') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="intimidate" data-category="combat"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.combat 'intimidate') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="intimidate" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Combat.melee -->
+                  <div class="skill-item flexrow" data-skill="melee">
+                    <div class="skill-name roll-skill" data-skill="melee">Melee</div>
+                    <input type="number" name="system.skills.combat.melee.value" value="{{lookup (lookup system.skills.combat 'melee') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="melee" data-category="combat"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.combat 'melee') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="melee" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Robustness Skills -->
+              <div class="skill-attribute-group" data-attribute="robustness">
+                <h3>Robustness Skills</h3>
+                <div class="skill-column-headers">
+                  <div class="skill-name-header">Skill</div>
+                  <div class="skill-value-header">+Hits</div>
+                  <div class="skill-modifier-header">Edit</div>
+                  <div class="specializations-header">Specializations</div>
+                </div>
+                <div class="skill-list">
+                  <!-- Physical.hardship -->
+                  <div class="skill-item flexrow" data-skill="hardship">
+                    <div class="skill-name roll-skill" data-skill="hardship">Hardship</div>
+                    <input type="number" name="system.skills.physical.hardship.value" value="{{lookup (lookup system.skills.physical 'hardship') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="hardship" data-category="physical"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.physical 'hardship') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="hardship" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Physical.labor -->
+                  <div class="skill-item flexrow" data-skill="labor">
+                    <div class="skill-name roll-skill" data-skill="labor">Labor</div>
+                    <input type="number" name="system.skills.physical.labor.value" value="{{lookup (lookup system.skills.physical 'labor') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="labor" data-category="physical"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.physical 'labor') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="labor" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Physical.imbibe -->
+                  <div class="skill-item flexrow" data-skill="imbibe">
+                    <div class="skill-name roll-skill" data-skill="imbibe">Imbibe</div>
+                    <input type="number" name="system.skills.physical.imbibe.value" value="{{lookup (lookup system.skills.physical 'imbibe') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="imbibe" data-category="physical"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.physical 'imbibe') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="imbibe" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Agility Skills -->
+              <div class="skill-attribute-group" data-attribute="agility">
+                <h3>Agility Skills</h3>
+                <div class="skill-column-headers">
+                  <div class="skill-name-header">Skill</div>
+                  <div class="skill-value-header">+Hits</div>
+                  <div class="skill-modifier-header">Edit</div>
+                  <div class="specializations-header">Specializations</div>
+                </div>
+                <div class="skill-list">
+                  <!-- Physical.lightfoot -->
+                  <div class="skill-item flexrow" data-skill="lightfoot">
+                    <div class="skill-name roll-skill" data-skill="lightfoot">Light-Foot</div>
+                    <input type="number" name="system.skills.physical.lightfoot.value" value="{{lookup (lookup system.skills.physical 'lightfoot') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="lightfoot" data-category="physical"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.physical 'lightfoot') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="lightfoot" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Physical.ride -->
+                  <div class="skill-item flexrow" data-skill="ride">
+                    <div class="skill-name roll-skill" data-skill="ride">Ride</div>
+                    <input type="number" name="system.skills.physical.ride.value" value="{{lookup (lookup system.skills.physical 'ride') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="ride" data-category="physical"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.physical 'ride') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="ride" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Physical.skulk -->
+                  <div class="skill-item flexrow" data-skill="skulk">
+                    <div class="skill-name roll-skill" data-skill="skulk">Skulk</div>
+                    <input type="number" name="system.skills.physical.skulk.value" value="{{lookup (lookup system.skills.physical 'skulk') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="skulk" data-category="physical"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.physical 'skulk') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="skulk" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quickness Skills -->
+              <div class="skill-attribute-group" data-attribute="quickness">
+                <h3>Quickness Skills</h3>
+                <div class="skill-column-headers">
+                  <div class="skill-name-header">Skill</div>
+                  <div class="skill-value-header">+Hits</div>
+                  <div class="skill-modifier-header">Edit</div>
+                  <div class="specializations-header">Specializations</div>
+                </div>
+                <div class="skill-list">
+                  <!-- Quickness.cunning -->
+                  <div class="skill-item flexrow" data-skill="cunning">
+                    <div class="skill-name roll-skill" data-skill="cunning">Cunning</div>
+                    <input type="number" name="system.skills.quickness.cunning.value" value="{{lookup (lookup system.skills.quickness 'cunning') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="cunning" data-category="quickness"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.quickness 'cunning') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="cunning" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Quickness.perception -->
+                  <div class="skill-item flexrow" data-skill="perception">
+                    <div class="skill-name roll-skill" data-skill="perception">Perception</div>
+                    <input type="number" name="system.skills.quickness.perception.value" value="{{lookup (lookup system.skills.quickness 'perception') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="perception" data-category="quickness"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.quickness 'perception') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="perception" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Quickness.ranged -->
+                  <div class="skill-item flexrow" data-skill="ranged">
+                    <div class="skill-name roll-skill" data-skill="ranged">Ranged</div>
+                    <input type="number" name="system.skills.quickness.ranged.value" value="{{lookup (lookup system.skills.quickness 'ranged') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="ranged" data-category="quickness"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.quickness 'ranged') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="ranged" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Finesse Skills -->
+              <div class="skill-attribute-group" data-attribute="finesse">
+                <h3>Finesse Skills</h3>
+                <div class="skill-column-headers">
+                  <div class="skill-name-header">Skill</div>
+                  <div class="skill-value-header">+Hits</div>
+                  <div class="skill-modifier-header">Edit</div>
+                  <div class="specializations-header">Specializations</div>
+                </div>
+                <div class="skill-list">
+                  <!-- Finesse.art -->
+                  <div class="skill-item flexrow" data-skill="art">
+                    <div class="skill-name roll-skill" data-skill="art">Art</div>
+                    <input type="number" name="system.skills.finesse.art.value" value="{{lookup (lookup system.skills.finesse 'art') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="art" data-category="finesse"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.finesse 'art') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="art" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Finesse.operate -->
+                  <div class="skill-item flexrow" data-skill="operate">
+                    <div class="skill-name roll-skill" data-skill="operate">Operate</div>
+                    <input type="number" name="system.skills.finesse.operate.value" value="{{lookup (lookup system.skills.finesse 'operate') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="operate" data-category="finesse"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.finesse 'operate') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="operate" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Finesse.trade -->
+                  <div class="skill-item flexrow" data-skill="trade">
+                    <div class="skill-name roll-skill" data-skill="trade">Trade</div>
+                    <input type="number" name="system.skills.finesse.trade.value" value="{{lookup (lookup system.skills.finesse 'trade') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="trade" data-category="finesse"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.finesse 'trade') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="trade" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Intellect Skills -->
+              <div class="skill-attribute-group" data-attribute="intellect">
+                <h3>Intellect Skills</h3>
+                <div class="skill-column-headers">
+                  <div class="skill-name-header">Skill</div>
+                  <div class="skill-value-header">+Hits</div>
+                  <div class="skill-modifier-header">Edit</div>
+                  <div class="specializations-header">Specializations</div>
+                </div>
+                <div class="skill-list">
+                  <!-- Mental.heal -->
+                  <div class="skill-item flexrow" data-skill="heal">
+                    <div class="skill-name roll-skill" data-skill="heal">Heal</div>
+                    <input type="number" name="system.skills.mental.heal.value" value="{{lookup (lookup system.skills.mental 'heal') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="heal" data-category="mental"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.mental 'heal') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="heal" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Mental.research -->
+                  <div class="skill-item flexrow" data-skill="research">
+                    <div class="skill-name roll-skill" data-skill="research">Research</div>
+                    <input type="number" name="system.skills.mental.research.value" value="{{lookup (lookup system.skills.mental 'research') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="research" data-category="mental"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.mental 'research') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="research" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Mental.navigation -->
+                  <div class="skill-item flexrow" data-skill="navigation">
+                    <div class="skill-name roll-skill" data-skill="navigation">Navigation</div>
+                    <input type="number" name="system.skills.mental.navigation.value" value="{{lookup (lookup system.skills.mental 'navigation') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="navigation" data-category="mental"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.mental 'navigation') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="navigation" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Willpower Skills -->
+              <div class="skill-attribute-group" data-attribute="willpower">
+                <h3>Willpower Skills</h3>
+                <div class="skill-column-headers">
+                  <div class="skill-name-header">Skill</div>
+                  <div class="skill-value-header">+Hits</div>
+                  <div class="skill-modifier-header">Edit</div>
+                  <div class="specializations-header">Specializations</div>
+                </div>
+                <div class="skill-list">
+                  <!-- Mental.steel -->
+                  <div class="skill-item flexrow" data-skill="steel">
+                    <div class="skill-name roll-skill" data-skill="steel">Steel</div>
+                    <input type="number" name="system.skills.mental.steel.value" value="{{lookup (lookup system.skills.mental 'steel') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="steel" data-category="mental"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.mental 'steel') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="steel" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Mental.survival -->
+                  <div class="skill-item flexrow" data-skill="survival">
+                    <div class="skill-name roll-skill" data-skill="survival">Survival</div>
+                    <input type="number" name="system.skills.mental.survival.value" value="{{lookup (lookup system.skills.mental 'survival') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="survival" data-category="mental"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.mental 'survival') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="survival" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Mental.husbandry -->
+                  <div class="skill-item flexrow" data-skill="husbandry">
+                    <div class="skill-name roll-skill" data-skill="husbandry">Husbandry</div>
+                    <input type="number" name="system.skills.mental.husbandry.value" value="{{lookup (lookup system.skills.mental 'husbandry') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="husbandry" data-category="mental"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.mental 'husbandry') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="husbandry" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Personality Skills -->
+              <div class="skill-attribute-group" data-attribute="personality">
+                <h3>Personality Skills</h3>
+                <div class="skill-column-headers">
+                  <div class="skill-name-header">Skill</div>
+                  <div class="skill-value-header">+Hits</div>
+                  <div class="skill-modifier-header">Edit</div>
+                  <div class="specializations-header">Specializations</div>
+                </div>
+                <div class="skill-list">
+                  <!-- Social.leadership -->
+                  <div class="skill-item flexrow" data-skill="leadership">
+                    <div class="skill-name roll-skill" data-skill="leadership">Leadership</div>
+                    <input type="number" name="system.skills.social.leadership.value" value="{{lookup (lookup system.skills.social 'leadership') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="leadership" data-category="social"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.social 'leadership') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="leadership" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Social.carouse -->
+                  <div class="skill-item flexrow" data-skill="carouse">
+                    <div class="skill-name roll-skill" data-skill="carouse">Carouse</div>
+                    <input type="number" name="system.skills.social.carouse.value" value="{{lookup (lookup system.skills.social 'carouse') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="carouse" data-category="social"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.social 'carouse') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="carouse" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                  
+                  <!-- Social.coerce -->
+                  <div class="skill-item flexrow" data-skill="coerce">
+                    <div class="skill-name roll-skill" data-skill="coerce">Coerce</div>
+                    <input type="number" name="system.skills.social.coerce.value" value="{{lookup (lookup system.skills.social 'coerce') 'value'}}" data-dtype="Number" />
+                    <button type="button" class="skill-specialization-button" data-skill="coerce" data-category="social"><i class="fas fa-plus"></i></button>
+                    <div class="specializations-inline">
+                      {{#each (lookup (lookup system.skills.social 'coerce') 'specializations') as |spec index|}}
+                      <span class="specialization-tag roll-specialization" data-skill="coerce" data-rating="{{spec.rating}}">{{spec.name}} +{{spec.rating}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {{!-- Equipment Tab --}}
+      <div class="tab equipment" data-group="primary" data-tab="equipment">
+        <section class="equipment-container">
+          <div class="inventory-list">
+            <!-- Weapons -->
+            <div class="inventory-section">
+              <h2>Weapons <button type="button" class="create-item" data-type="weapon"><i class="fas fa-plus"></i></button></h2>
+              <div class="items-list">
+                <div class="inventory-header flexrow">
+                  <div class="item-name">Name</div>
+                  <div class="item-damage">Damage</div>
+                  <div class="item-weight">Weight</div>
+                  <div class="item-controls"></div>
+                </div>
+                {{#each weapons as |item id|}}
+                <div class="item flexrow" data-item-id="{{item._id}}">
+                  <div class="item-name">{{item.name}}</div>
+                  <div class="item-damage">{{item.system.damage}}</div>
+                  <div class="item-weight">{{item.system.encumbrance.value}}</div>
+                  <div class="item-controls">
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                  </div>
+                </div>
+                {{/each}}
+              </div>
+            </div>
+
+            <!-- Armor -->
+            <div class="inventory-section">
+              <h2>Armor <button type="button" class="create-item" data-type="armor"><i class="fas fa-plus"></i></button></h2>
+              <div class="items-list">
+                <div class="inventory-header flexrow">
+                  <div class="item-name">Name</div>
+                  <div class="item-defense">Defense</div>
+                  <div class="item-weight">Weight</div>
+                  <div class="item-controls"></div>
+                </div>
+                {{#each armor as |item id|}}
+                <div class="item flexrow" data-item-id="{{item._id}}">
+                  <div class="item-name">{{item.name}}</div>
+                  <div class="item-defense">{{item.system.defense}}</div>
+                  <div class="item-weight">{{item.system.encumbrance.value}}</div>
+                  <div class="item-controls">
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                  </div>
+                </div>
+                {{/each}}
+              </div>
+            </div>
+
+            <!-- Gear -->
+            <div class="inventory-section">
+              <h2>Gear <button type="button" class="create-item" data-type="gear"><i class="fas fa-plus"></i></button></h2>
+              <div class="items-list">
+                <div class="inventory-header flexrow">
+                  <div class="item-name">Name</div>
+                  <div class="item-qty">Qty</div>
+                  <div class="item-weight">Weight</div>
+                  <div class="item-controls"></div>
+                </div>
+                {{#each gear as |item id|}}
+                <div class="item flexrow" data-item-id="{{item._id}}">
+                  <div class="item-name">{{item.name}}</div>
+                  <div class="item-qty">{{item.system.quantity}}</div>
+                  <div class="item-weight">{{item.system.encumbrance.value}}</div>
+                  <div class="item-controls">
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                  </div>
+                </div>
+                {{/each}}
+              </div>
+            </div>
+
+            <!-- Consumables -->
+            <div class="inventory-section">
+              <h2>Consumables <button type="button" class="create-item" data-type="consumable"><i class="fas fa-plus"></i></button></h2>
+              <div class="items-list">
+                <div class="inventory-header flexrow">
+                  <div class="item-name">Name</div>
+                  <div class="item-qty">Qty</div>
+                  <div class="item-weight">Weight</div>
+                  <div class="item-controls"></div>
+                </div>
+                {{#each consumables as |item id|}}
+                <div class="item flexrow" data-item-id="{{item._id}}">
+                  <div class="item-name">{{item.name}}</div>
+                  <div class="item-qty">{{item.system.quantity}}</div>
+                  <div class="item-weight">{{item.system.encumbrance.value}}</div>
+                  <div class="item-controls">
+                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                  </div>
+                </div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {{!-- Character Tab --}}
+      <div class="tab character" data-group="primary" data-tab="character">
+        <section class="character-container">
+          <div class="character-details">
+            <!-- Bio -->
+            <div class="bio-section">
+              <h2>Biography</h2>
+              <div class="form-group">
+                <label>Age</label>
+                <input type="text" name="system.details.age" value="{{system.details.age}}">
+              </div>
+              <div class="form-group">
+                <label>Gender</label>
+                <input type="text" name="system.details.gender" value="{{system.details.gender}}">
+              </div>
+              <div class="form-group">
+                <label>Height</label>
+                <input type="text" name="system.details.height" value="{{system.details.height}}">
+              </div>
+              <div class="form-group">
+                <label>Weight</label>
+                <input type="text" name="system.details.weight" value="{{system.details.weight}}">
+              </div>
+              <div class="form-group">
+                <label>Looks</label>
+                <textarea name="system.details.looks">{{system.details.looks}}</textarea>
+              </div>
+            </div>
+
+            <!-- Background -->
+            <div class="background-section">
+              <h2>Background</h2>
+              <div class="form-group">
+                <label>History</label>
+                <textarea name="system.details.history">{{system.details.history}}</textarea>
+              </div>
+              <div class="form-group">
+                <label>Personality</label>
+                <textarea name="system.details.personality">{{system.details.personality}}</textarea>
+              </div>
+              <div class="form-group">
+                <label>Beliefs</label>
+                <textarea name="system.details.beliefs">{{system.details.beliefs}}</textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {{!-- Notes Tab --}}
+      <div class="tab notes" data-group="primary" data-tab="notes">
+        <section class="notes-container">
+          <div class="notes-area">
+            <h2>Notes</h2>
+            <textarea name="system.notes" rows="20">{{system.notes}}</textarea>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+</form> 

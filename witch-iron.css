@@ -1,0 +1,240 @@
+/* Quarrel Result Styles */
+.witch-iron-quarrel-result {
+  background: var(--witchiron-bg, #f5f3e6);
+  border: 1px solid var(--witchiron-border, #a39388);
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+  font-family: var(--witchiron-font, serif);
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron-quarrel-result .quarrel-header {
+  background-color: var(--witchiron-header-bg, #a39388);
+  color: var(--witchiron-header-text, white);
+  padding: 0.3rem 0.5rem;
+  margin: -0.5rem -0.5rem 0.5rem -0.5rem;
+  border-radius: 4px 4px 0 0;
+  text-align: center;
+}
+
+.witch-iron-quarrel-result .quarrel-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  border-bottom: none;
+}
+
+.witch-iron-quarrel-result .quarrel-combatants {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron-quarrel-result .combatant {
+  flex: 0 0 45%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.witch-iron-quarrel-result .combatant-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+  border: 2px solid var(--witchiron-border, #a39388);
+}
+
+.witch-iron-quarrel-result .combatant-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.witch-iron-quarrel-result .combatant-details h3 {
+  margin: 0;
+  font-size: 1rem;
+  border-bottom: none;
+}
+
+.witch-iron-quarrel-result .quarrel-vs {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--witchiron-text-accent, #7b2d26);
+}
+
+.witch-iron-quarrel-result .outcome {
+  font-weight: bold;
+  margin-top: 0.3rem;
+}
+
+.witch-iron-quarrel-result .outcome.Victory {
+  color: var(--witchiron-success, green);
+}
+
+.witch-iron-quarrel-result .outcome.Defeat {
+  color: var(--witchiron-danger, #7b2d26);
+}
+
+.witch-iron-quarrel-result .outcome.Victory\ at\ a\ Cost {
+  color: var(--witchiron-warning, orange);
+}
+
+.witch-iron-quarrel-result .quarrel-result {
+  background-color: var(--witchiron-panel-bg, #e5e2d5);
+  border: 1px solid var(--witchiron-border, #a39388);
+  border-radius: 3px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron-quarrel-result .net-hits {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.witch-iron-quarrel-result .combat-results {
+  background-color: var(--witchiron-panel-bg, #e5e2d5);
+  border: 1px solid var(--witchiron-border, #a39388);
+  border-radius: 3px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron-quarrel-result .section-title {
+  border-bottom: 1px solid var(--witchiron-border, #a39388);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  padding-bottom: 0.3rem;
+}
+
+.witch-iron-quarrel-result .injury-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron-quarrel-result .weapon-damage,
+.witch-iron-quarrel-result .hit-bonus,
+.witch-iron-quarrel-result .soak-value,
+.witch-iron-quarrel-result .net-damage {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem 0.5rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 3px;
+}
+
+.witch-iron-quarrel-result .label {
+  font-weight: bold;
+  color: var(--witchiron-text, #444);
+}
+
+.witch-iron-quarrel-result .value {
+  font-weight: bold;
+}
+
+.witch-iron-quarrel-result .injury-table {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 3px;
+  padding: 0.5rem;
+}
+
+.witch-iron-quarrel-result .hit-location {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  border-bottom: 1px dashed var(--witchiron-border, #a39388);
+  padding-bottom: 0.3rem;
+}
+
+.witch-iron-quarrel-result .hit-location .roll {
+  color: var(--witchiron-dice, #7b2d26);
+  margin-right: 0.3rem;
+}
+
+.witch-iron-quarrel-result .injury-description {
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.witch-iron-quarrel-result .injury-effect,
+.witch-iron-quarrel-result .injury-conditions {
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron-quarrel-result .injury-care {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.witch-iron-quarrel-result .medical-aid,
+.witch-iron-quarrel-result .surgery {
+  background-color: var(--witchiron-warning-bg, #fff3cd);
+  color: var(--witchiron-warning-text, #856404);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.9rem;
+}
+
+.witch-iron-quarrel-result .surgery {
+  background-color: var(--witchiron-danger-bg, #f8d7da);
+  color: var(--witchiron-danger-text, #721c24);
+}
+
+.witch-iron-quarrel-result .create-injury-button {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.witch-iron-quarrel-result .create-injury {
+  background-color: var(--witchiron-button-bg, #a39388);
+  color: var(--witchiron-button-text, white);
+  border: none;
+  border-radius: 3px;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.witch-iron-quarrel-result .create-injury:hover {
+  background-color: var(--witchiron-button-hover, #857971);
+}
+
+.witch-iron-quarrel-result .no-injury {
+  text-align: center;
+  font-style: italic;
+  color: var(--witchiron-text-muted, #777);
+  padding: 0.5rem;
+}
+
+.witch-iron-quarrel-result .quarrel-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.witch-iron-quarrel-result .toggle-combat-results,
+.witch-iron-quarrel-result .toggle-injury-results {
+  background-color: var(--witchiron-button-secondary-bg, #e5e2d5);
+  color: var(--witchiron-button-secondary-text, #444);
+  border: 1px solid var(--witchiron-border, #a39388);
+  border-radius: 3px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.witch-iron-quarrel-result .toggle-combat-results:hover,
+.witch-iron-quarrel-result .toggle-injury-results:hover {
+  background-color: var(--witchiron-button-secondary-hover, #d5d2c5);
+} 

@@ -1,0 +1,99 @@
+/* Updated Combat Card Styles */
+
+/* Update the combat-details to use a single column layout with one data point per row */
+.combat-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+/* Make each piece of data have its own row */
+.detail-item {
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Style the label to not wrap and be just wide enough */
+.detail-item .label {
+  font-weight: bold;
+  color: #a89078;
+  display: inline-block;
+  width: 100px;
+  padding-right: 10px;
+}
+
+/* Style the value */
+.detail-item .value {
+  color: #f5e8d2;
+}
+
+/* Handle any existing detail-row elements for backward compatibility */
+.detail-row {
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.detail-row .label {
+  font-weight: bold;
+  color: #a89078;
+  display: inline-block;
+  width: 100px;
+  padding-right: 10px;
+}
+
+.detail-row .value {
+  color: #f5e8d2;
+}
+
+/* Combat result container - simplified version */
+.combat-result-container {
+  margin-top: 10px;
+  border-top: 1px solid #444;
+  padding-top: 8px;
+}
+
+/* Hit location selection button */
+.hit-location-actions {
+  margin: 8px 0;
+  text-align: center;
+  padding: 5px;
+}
+
+.choose-hit-location {
+  background: rgba(30, 30, 30, 0.9);
+  color: #e6c9a3;
+  border: 1px solid #666;
+  border-radius: 3px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s, transform 0.1s;
+  width: 100%;
+}
+
+.choose-hit-location:hover {
+  background: rgba(50, 50, 50, 0.9);
+  text-shadow: 0 0 5px #e6c9a3;
+  transform: translateY(-2px);
+}
+
+.choose-hit-location i {
+  margin-right: 5px;
+}
+
+/* No damage message */
+.no-damage-message {
+  padding: 10px;
+  text-align: center;
+  color: #7b2d26;
+  font-style: italic;
+}
+
+/* No injury data message - reused from existing styles */
+.no-injury-data {
+  padding: 10px;
+  color: #7b2d26;
+  text-align: center;
+  font-style: italic;
+} 

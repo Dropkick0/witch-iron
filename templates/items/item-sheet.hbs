@@ -1,0 +1,98 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header">
+    <img src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
+    <div class="header-fields">
+      <h1 class="itemname">
+        <input name="name" type="text" value="{{item.name}}" placeholder="Item Name"/>
+      </h1>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">Description</a>
+    <a class="item" data-tab="details">Details</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="system.description" rows="8">{{system.description}}</textarea>
+      </div>
+    </div>
+
+    {{!-- Details Tab --}}
+    <div class="tab" data-group="primary" data-tab="details">
+      <div class="form-group">
+        <label>Encumbrance</label>
+        <input type="number" name="system.encumbrance.value" value="{{system.encumbrance.value}}" data-dtype="Number"/>
+      </div>
+
+      {{#if (eq item.type "weapon")}}
+      <div class="form-group">
+        <label>Damage</label>
+        <input type="text" name="system.damage.value" value="{{system.damage.value}}"/>
+      </div>
+      <div class="form-group">
+        <label>Properties</label>
+        <input type="text" name="system.properties" value="{{system.properties}}"/>
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type "armor")}}
+      <div class="form-group">
+        <label>Protection</label>
+        <input type="number" name="system.protection.value" value="{{system.protection.value}}" data-dtype="Number"/>
+      </div>
+      <div class="form-group">
+        <label>Penalties</label>
+        <input type="text" name="system.penalties" value="{{system.penalties}}"/>
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type "consumable")}}
+      <div class="form-group">
+        <label>Charges</label>
+        <div class="flexrow">
+          <input type="number" name="system.charges.value" value="{{system.charges.value}}" data-dtype="Number"/>
+          <span>/</span>
+          <input type="number" name="system.charges.max" value="{{system.charges.max}}" data-dtype="Number"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Effect</label>
+        <textarea name="system.effect" rows="4">{{system.effect}}</textarea>
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type "artifact")}}
+      <div class="form-group">
+        <label>Stage</label>
+        <input type="number" name="system.stage.value" value="{{system.stage.value}}" data-dtype="Number"/>
+      </div>
+      <div class="form-group">
+        <label>Lineage</label>
+        <input type="text" name="system.lineage" value="{{system.lineage}}"/>
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type "mutation")}}
+      <div class="form-group">
+        <label>Effect</label>
+        <textarea name="system.effect" rows="4">{{system.effect}}</textarea>
+      </div>
+      {{/if}}
+
+      {{#if (eq item.type "madness")}}
+      <div class="form-group">
+        <label>Effect</label>
+        <textarea name="system.effect" rows="4">{{system.effect}}</textarea>
+      </div>
+      {{/if}}
+    </div>
+  </section>
+</form> 

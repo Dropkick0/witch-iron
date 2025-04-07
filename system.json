@@ -1,0 +1,67 @@
+{
+  "id": "witch-iron",
+  "title": "Witch Iron",
+  "description": "A system for playing in the Witch Iron post-apocalyptic fantasy setting",
+  "version": "12",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12",
+    "maximum": "12"
+  },
+  "authors": [
+    {
+      "name": "System Developer",
+      "discord": "username#1234"
+    }
+  ],
+  "esmodules": [
+    "scripts/witch-iron.js"
+  ],
+  "styles": [
+    "styles/witch-iron.css",
+    "styles/combat-card.css",
+    "styles/hit-location.css",
+    "styles/injury-card.css"
+  ],
+  "packs": [
+    {
+      "name": "witch-iron-actors",
+      "label": "Witch Iron Actors",
+      "path": "packs/witch-iron-actors.db",
+      "type": "Actor",
+      "system": "witch-iron"
+    },
+    {
+      "name": "witch-iron-items",
+      "label": "Witch Iron Items",
+      "path": "packs/witch-iron-items.db",
+      "type": "Item",
+      "system": "witch-iron"
+    },
+    {
+      "name": "witch-iron-tables",
+      "label": "Witch Iron Roll Tables",
+      "path": "packs/witch-iron-tables.db",
+      "type": "RollTable",
+      "system": "witch-iron"
+    }
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "grid": {
+    "distance": 5,
+    "units": "ft"
+  },
+  "primaryTokenAttribute": null,
+  "secondaryTokenAttribute": null,
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": "LICENSE.txt",
+  "changelog": "CHANGELOG.md"
+} 

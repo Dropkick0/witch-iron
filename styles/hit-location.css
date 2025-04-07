@@ -1,0 +1,217 @@
+/* Hit Location Selector Styles */
+.hit-location-selector {
+    padding: 10px;
+    color: #000;
+    font-family: 'Gentium Book', serif;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.hit-location-selector h2 {
+    text-align: center;
+    color: #000;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #666;
+    padding-bottom: 3px;
+}
+
+.hit-location-body {
+    position: relative;
+    width: 280px;
+    height: 370px; /* Slightly reduced from 380px */
+    margin: 0 auto; /* centered horizontally */
+    max-width: 100%;
+    flex-grow: 1;
+}
+
+.body-outline {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* SVG styling */
+.body-outline svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Body part styling */
+.body-part {
+    transition: fill 0.3s, stroke 0.3s, filter 0.3s;
+    cursor: pointer;
+}
+
+.body-part.selected {
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+}
+
+.body-part.available {
+    filter: drop-shadow(0 0 3px rgba(0, 255, 0, 0.5));
+}
+
+/* Location labels styling */
+.location-label {
+    position: absolute;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.location-label:hover {
+    color: #000;
+}
+
+.location-label.selected {
+    color: #000;
+    text-decoration: underline;
+}
+
+.location-label.available {
+    color: #006400;
+    text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
+}
+
+/* Position each label exactly as in the example */
+.head-label {
+    top: 15px;
+    left: 118px;
+}
+
+.torso-label {
+    top: 100px;
+    left: 118px;
+}
+
+.left-arm-label {
+    top: 140px;
+    left: 38px;
+}
+
+.right-arm-label {
+    top: 140px;
+    left: 185px;
+}
+
+.left-leg-label {
+    top: 270px;
+    left: 38px;
+}
+
+.right-leg-label {
+    top: 270px;
+    left: 185px;
+}
+
+/* Compact info styling */
+.compact-info {
+    text-align: center;
+    margin: 0 0 5px 0;
+}
+
+.compact-info p {
+    margin: 5px 0;
+}
+
+/* Instruction text styling */
+.instruction-text {
+    text-align: center;
+    margin: 3px 0;
+    color: #000;
+}
+
+.instruction-text.defender-phase {
+    font-style: italic;
+}
+
+.compact-instructions {
+    margin: 0;
+    padding: 0;
+    font-size: 0.95em;
+}
+
+/* Phase-specific styling */
+.hit-location-phase {
+    margin-bottom: 3px;
+}
+
+/* Net hits display */
+.net-hits-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.net-hits-display p {
+    margin: 0;
+}
+
+.net-hits-display #net-hits-remaining {
+    font-size: 24px;
+    color: #000;
+}
+
+.undo-move-btn {
+    padding: 2px 10px;
+    background: #323232;
+    color: #e6c9a3;
+    border: 1px solid #666;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    font-size: 0.8em;
+}
+
+.undo-move-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.undo-move-btn:hover:not(:disabled) {
+    background: rgba(70, 70, 70, 0.9);
+    transform: translateY(-1px);
+}
+
+.move-cost {
+    font-style: italic;
+    font-size: 0.8em;
+    color: #666;
+    margin: 0;
+}
+
+/* Dialog buttons */
+.dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.dialog-buttons button {
+    background: rgba(50, 50, 50, 0.8);
+    color: #e6c9a3;
+    border: 1px solid #666;
+    padding: 6px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.dialog-buttons button:hover {
+    background: rgba(70, 70, 70, 0.9);
+    text-shadow: 0 0 5px #e6c9a3;
+    transform: translateY(-2px);
+}
+
+.random-location-btn, .confirm-location-btn {
+    background: rgba(123, 45, 38, 0.8) !important;
+}
+
+.random-location-btn:hover, .confirm-location-btn:hover {
+    background: rgba(143, 55, 48, 0.9) !important;
+} 

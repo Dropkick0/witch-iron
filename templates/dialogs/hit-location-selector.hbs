@@ -1,0 +1,265 @@
+<div class="hit-location-selector">
+    <h2>Select Hit Location</h2>
+    
+    <div class="hit-location-phase defender-phase">
+        <div class="compact-info" style="color: #000;">
+            <p><strong id="damage-amount">{{damageAmount}}</strong> damage to <strong id="defender-name">{{defenderName}}</strong></p>
+            {{#if battleWear}}
+            <div class="battle-wear-info">
+                <p>Weapon Wear: <strong>{{battleWear.attacker.currentWear}}/{{battleWear.attacker.maxWear}}</strong> | Armor Wear: <strong>{{battleWear.defender.currentWear}}/{{battleWear.defender.maxWear}}</strong></p>
+                <p class="effective-bonus">Effective Bonuses: Weapon +<strong>{{battleWear.attacker.weaponBonus}}</strong> | Armor +<strong>{{battleWear.defender.armorBonus}}</strong></p>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    
+    <div class="hit-location-phase attacker-phase" style="display: none;">
+        <div class="compact-info">
+            <div class="net-hits-display">
+                <p>Net Hits: <strong id="net-hits-remaining">{{netHits}}</strong></p>
+                <button class="undo-move-btn" disabled>Undo Last Move</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hit-location-body">
+        <!-- Body Silhouette -->
+        <div class="body-outline">
+            <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+                <!-- Torso (shorter) -->
+                <path d="M100,50
+                         C120,50 120,60 120,70
+                         L120,110
+                         C120,130 110,140 100,150
+                         C90,140 80,130 80,110
+                         L80,70
+                         C80,60 80,50 100,50Z"
+                      fill="#693731" class="body-part torso-part" data-location="torso" />
+                <!-- Head (larger circle) -->
+                <circle cx="100" cy="35" r="15" fill="#693731" class="body-part head-part" data-location="head" />
+                <!-- Arms -->
+                <path d="M80,70
+                         C70,75 55,90 50,110
+                         C45,130 45,140 55,150"
+                      stroke="#693731" stroke-width="16" fill="none" class="body-part left-arm-part" data-location="left-arm" />
+                <path d="M120,70
+                         C130,75 145,90 150,110
+                         C155,130 155,140 145,150"
+                      stroke="#693731" stroke-width="16" fill="none" class="body-part right-arm-part" data-location="right-arm" />
+                <!-- Legs -->
+                <path d="M90,150
+                         C85,170 80,190 75,230"
+                      stroke="#693731" stroke-width="15" fill="none" class="body-part left-leg-part" data-location="left-leg" />
+                <path d="M110,150
+                         C115,170 120,190 125,230"
+                      stroke="#693731" stroke-width="15" fill="none" class="body-part right-leg-part" data-location="right-leg" />
+            </svg>
+        </div>
+        
+        <!-- Labels (clickable) -->
+        <div class="location-label head-label" data-location="head" style="left: 123px;">Head</div>
+        <div class="location-label torso-label" data-location="torso" style="left: 123px;">Torso</div>
+        <div class="location-label left-arm-label" data-location="left-arm">Left Arm</div>
+        <div class="location-label right-arm-label" data-location="right-arm">Right Arm</div>
+        <div class="location-label left-leg-label" data-location="left-leg">Left Leg</div>
+        <div class="location-label right-leg-label" data-location="right-leg">Right Leg</div>
+    </div>
+    
+    <div class="instruction-text defender-phase">
+        <p>Select a location to apply damage</p>
+    </div>
+    
+    <div class="instruction-text attacker-phase" style="display: none;">
+        <p class="compact-instructions">Selected: <strong id="selected-location">None</strong> <span class="move-cost">(Moving costs 2 net hits per adjacent location)</span></p>
+    </div>
+    
+    <div class="dialog-buttons defender-buttons">
+        <button class="random-location-btn action-button">Random Location</button>
+        <button class="dialog-button close action-button">Close</button>
+    </div>
+    
+    <div class="dialog-buttons attacker-buttons" style="display: none;">
+        <button class="confirm-location-btn action-button">Confirm Location</button>
+        <button class="dialog-button close action-button">Cancel</button>
+    </div>
+</div>
+
+<style>
+/* Inline styles for debugging */
+.hit-location-selector {
+  display: flex;
+  flex-direction: column;
+  max-height: 550px;
+}
+
+.hit-location-selector h2 {
+  margin-bottom: 5px;
+  padding-bottom: 3px;
+}
+
+.compact-info {
+  text-align: center;
+  margin: 0 0 5px 0;
+}
+
+.compact-info p {
+  margin: 5px 0;
+}
+
+.hit-location-body {
+  position: relative;
+  width: 280px;
+  height: 370px;
+  margin: 0 auto;
+}
+
+.body-outline svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.instruction-text {
+  text-align: center;
+  margin: 3px 0;
+  color: #000;
+}
+
+.instruction-text.defender-phase {
+  font-style: italic;
+}
+
+.compact-instructions {
+  margin: 0;
+  padding: 0;
+  font-size: 0.95em;
+}
+
+.net-hits-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.net-hits-display p {
+  margin: 0;
+}
+
+.net-hits-display #net-hits-remaining {
+  font-size: 24px;
+  color: #000;
+}
+
+.location-label {
+  position: absolute;
+  font-weight: bold;
+  color: #000000;
+  cursor: pointer;
+}
+
+.head-label {
+  top: 15px;
+  left: 118px;
+}
+
+.torso-label {
+  top: 100px;
+  left: 118px;
+}
+
+.left-arm-label {
+  top: 140px;
+  left: 38px;
+}
+
+.right-arm-label {
+  top: 140px;
+  left: 185px;
+}
+
+.left-leg-label {
+  top: 270px;
+  left: 38px;
+}
+
+.right-leg-label {
+  top: 270px;
+  left: 185px;
+}
+
+.location-label:hover {
+  color: #000;
+  transform: scale(1.1);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.location-label.selected {
+  color: #000;
+  text-decoration: underline;
+  transform: scale(1.20);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.location-label.available {
+  color: #006400;
+  text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
+}
+
+.body-part {
+  transition: fill 0.3s, stroke 0.3s, filter 0.3s;
+  cursor: pointer;
+}
+
+.body-part.selected {
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.8));
+}
+
+.body-part.available {
+  filter: drop-shadow(0 0 3px rgba(0, 255, 0, 0.5));
+}
+
+.undo-move-btn, .action-button {
+  padding: 4px 12px;
+  background: rgba(50, 50, 50, 0.8);
+  color: #e6c9a3;
+  border: 1px solid #666;
+  border-radius: 3px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.undo-move-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.undo-move-btn:not(:disabled):hover, .action-button:hover {
+  background: rgba(70, 70, 70, 0.9);
+  transform: translateY(-1px);
+}
+
+.random-location-btn, .confirm-location-btn {
+  background: rgba(123, 45, 38, 0.8);
+}
+
+.random-location-btn:hover, .confirm-location-btn:hover {
+  background: rgba(143, 55, 48, 0.9);
+}
+
+.move-cost {
+  font-style: italic;
+  font-size: 0.8em;
+  color: #666;
+  margin: 0;
+  display: inline-block;
+}
+
+.dialog-buttons {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+</style> 

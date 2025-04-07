@@ -1,0 +1,285 @@
+{
+  "Actor": {
+    "types": ["descendant", "monster"],
+    "templates": {
+      "base": {
+        "resources": {
+          "health": {
+            "value": 10,
+            "min": 0,
+            "max": 10
+          }
+        },
+        "details": {
+          "notes": ""
+        }
+      }
+    },
+    "descendant": {
+      "templates": ["base"],
+      "attributes": {
+        "muscle": {
+          "value": 40
+        },
+        "robustness": {
+          "value": 40
+        },
+        "agility": {
+          "value": 40
+        },
+        "quickness": {
+          "value": 40
+        },
+        "finesse": {
+          "value": 40
+        },
+        "intellect": {
+          "value": 40
+        },
+        "willpower": {
+          "value": 40
+        },
+        "personality": {
+          "value": 40
+        },
+        "luck": {
+          "value": 40
+        }
+      },
+      "skills": {
+        "athletics": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "intimidate": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "melee": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "hardship": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "labor": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "imbibe": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "lightfoot": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "ride": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "skulk": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "cunning": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "perception": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "ranged": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "art": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "operate": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "trade": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "heal": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "research": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "navigation": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "steel": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "survival": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "husbandry": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "leadership": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "carouse": {
+          "rating": 0,
+          "specialization": ""
+        },
+        "coerce": {
+          "rating": 0,
+          "specialization": ""
+        }
+      },
+      "resources": {
+        "xp": {
+          "value": 0
+        },
+        "encumbrance": {
+          "current": 0
+        },
+        "magick": {
+          "value": 0
+        },
+        "faith": {
+          "value": 0
+        }
+      },
+      "choices": {
+        "magfaith": "notselected"
+      },
+      "modifiers": {
+        "custom": 0
+      },
+      "details": {
+        "lineages": "",
+        "geneticTraits": "",
+        "lifespan": {
+          "value": 75
+        }
+      },
+      "notes": ""
+    },
+    "monster": {
+      "templates": ["base"],
+      "stats": {
+        "hitDice": {
+          "value": 1
+        },
+        "size": {
+          "value": "medium"
+        },
+        "weaponType": {
+          "value": "none"
+        },
+        "armorType": {
+          "value": "none"
+        }
+      },
+      "mob": {
+        "isMob": {
+          "value": false
+        },
+        "bodies": {
+          "value": 0
+        }
+      },
+      "traits": {
+        "flaw": {
+          "value": ""
+        },
+        "specialQualities": []
+      },
+      "details": {
+        "description": "",
+        "notes": ""
+      }
+    }
+  },
+  "Item": {
+    "types": ["injury", "weapon", "armor", "gear", "consumable", "artifact", "mutation", "madness"],
+    "templates": {
+      "base": {
+        "description": ""
+      },
+      "physical": {
+        "encumbrance": {
+          "value": 0
+        },
+        "quantity": 1
+      }
+    },
+    "injury": {
+      "templates": ["base"],
+      "severity": {
+        "value": 1
+      },
+      "location": "",
+      "effect": "",
+      "treatment": "",
+      "isStabilized": false
+    },
+    "weapon": {
+      "templates": ["base", "physical"],
+      "damage": {
+        "value": 0
+      },
+      "range": {
+        "value": "melee"
+      },
+      "traits": []
+    },
+    "armor": {
+      "templates": ["base", "physical"],
+      "protection": {
+        "value": 0
+      },
+      "location": "body",
+      "traits": []
+    },
+    "gear": {
+      "templates": ["base", "physical"],
+      "traits": []
+    },
+    "consumable": {
+      "templates": ["base", "physical"],
+      "effect": "",
+      "uses": {
+        "value": 1,
+        "max": 1
+      }
+    },
+    "artifact": {
+      "templates": ["base", "physical"],
+      "power": "",
+      "curseEffect": ""
+    },
+    "mutation": {
+      "templates": ["base"],
+      "effect": "",
+      "location": "",
+      "visible": true
+    },
+    "madness": {
+      "templates": ["base"],
+      "severity": {
+        "value": 1
+      },
+      "trigger": "",
+      "effect": ""
+    }
+  }
+} 

@@ -1,0 +1,148 @@
+{
+  "witch-iron": {
+    "attributes": {
+      "muscle": "Muscle",
+      "robustness": "Robustness",
+      "agility": "Agility",
+      "quickness": "Quickness",
+      "finesse": "Finesse",
+      "intellect": "Intellect",
+      "willpower": "Willpower",
+      "personality": "Personality",
+      "luck": "Luck"
+    },
+    "skills": {
+      "athletics": "Athletics",
+      "intimidate": "Intimidate",
+      "melee": "Melee",
+      "hardship": "Hardship",
+      "labor": "Labor",
+      "imbibe": "Imbibe",
+      "lightfoot": "Lightfoot",
+      "ride": "Ride",
+      "skulk": "Skulk",
+      "cunning": "Cunning",
+      "perception": "Perception",
+      "ranged": "Ranged",
+      "art": "Art",
+      "operate": "Operate",
+      "trade": "Trade",
+      "heal": "Heal",
+      "research": "Research",
+      "navigation": "Navigation",
+      "steel": "Steel",
+      "survival": "Survival",
+      "husbandry": "Husbandry",
+      "leadership": "Leadership",
+      "carouse": "Carouse",
+      "coerce": "Coerce"
+    },
+    "resources": {
+      "xp": "Experience",
+      "encumbrance": "Encumbrance",
+      "encumbranceCurrent": "Current Encumbrance",
+      "encumbranceMax": "Max Encumbrance",
+      "magick": "Magick",
+      "faith": "Faith",
+      "speed": "Speed"
+    },
+    "choices": {
+      "magfaith": {
+        "label": "Path Choice",
+        "notselected": "Not Selected",
+        "magick": "Magick",
+        "faith": "Faith"
+      }
+    },
+    "conditions": {
+      "pain": "Pain",
+      "blind": "Blind",
+      "prone": "Prone"
+    },
+    "details": {
+      "lineages": "Lineages",
+      "geneticTraits": "Genetic Traits",
+      "lifespan": "Lifespan"
+    },
+    "tabs": {
+      "main": "Main",
+      "skills": "Skills",
+      "items": "Items",
+      "details": "Details",
+      "notes": "Notes"
+    },
+    "monster": {
+      "hitDice": "Hit Dice",
+      "size": "Size",
+      "weaponType": "Weapon Type",
+      "armorType": "Armor Type",
+      "flaw": "Flaw",
+      "specialQualities": "Special Qualities",
+      "isMob": "Is Mob",
+      "bodies": "Bodies"
+    },
+    "sizes": {
+      "tiny": "Tiny",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large",
+      "huge": "Huge",
+      "gigantic": "Gigantic"
+    },
+    "weaponTypes": {
+      "none": "None",
+      "light": "Light",
+      "medium": "Medium",
+      "heavy": "Heavy",
+      "superheavy": "Superheavy"
+    },
+    "armorTypes": {
+      "none": "None",
+      "light": "Light",
+      "medium": "Medium",
+      "heavy": "Heavy",
+      "superheavy": "Superheavy"
+    },
+    "injury": {
+      "severity": "Severity",
+      "severityValues": {
+        "1": "Minor",
+        "2": "Major",
+        "3": "Severe"
+      },
+      "effect": "Effect",
+      "surgery": "Surgery"
+    },
+    "rollOutcomes": {
+      "success": "Success",
+      "failure": "Failure",
+      "criticalSuccess": "Critical Success",
+      "criticalFailure": "Critical Failure"
+    },
+    "buttons": {
+      "roll": "Roll",
+      "add": "Add",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "WITCHIRON.QuarrelResult": "Quarrel Result",
+    "WITCHIRON.Victory": "Victory",
+    "WITCHIRON.Defeat": "Defeat",
+    "WITCHIRON.VictoryAtACost": "Victory at a Cost",
+    "WITCHIRON.Hits": "Hits",
+    "WITCHIRON.NetHits": "Net Hits",
+    "WITCHIRON.CombatResults": "Combat Results",
+    "WITCHIRON.Weapon": "Weapon",
+    "WITCHIRON.Soak": "Soak",
+    "WITCHIRON.NetDamage": "Net Damage",
+    "WITCHIRON.Injury": "Injury",
+    "WITCHIRON.Effect": "Effect",
+    "WITCHIRON.Conditions": "Conditions",
+    "WITCHIRON.RequiresMedicalAid": "Requires Medical Aid",
+    "WITCHIRON.RequiresSurgery": "Requires Surgery",
+    "WITCHIRON.CreateInjury": "Create Injury",
+    "WITCHIRON.NoInjury": "No injury was sustained in this combat",
+    "WITCHIRON.ToggleCombatResults": "Toggle Combat Results",
+    "WITCHIRON.ToggleInjuryResults": "Toggle Injury Details"
+  }
+} 
