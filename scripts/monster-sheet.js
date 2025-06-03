@@ -141,8 +141,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     context.system = actorData.system;
     context.flags = actorData.flags;
     
-    // Ensure CONFIG.WitchIron and its properties are accessed safely
-    const witchIronConfig = CONFIG.WitchIron || {};
+    // Ensure CONFIG.WITCH_IRON and its properties are accessed safely
+    const witchIronConfig = CONFIG.WITCH_IRON || {};
     context.config = witchIronConfig;
 
     // Prepare conditions for the #each helper
