@@ -376,7 +376,8 @@ export class WitchIronActorSheet extends ActorSheet {
             const situationalMod = parseInt(form.situationalMod.value) || 0;
             const additionalHits = parseInt(form.additionalHits.value) || 0;
             
-            this.actor.monsterRoll({
+            // Call the actor's rollMonsterCheck method (renamed from monsterRoll)
+            this.actor.rollMonsterCheck({
               label: label,
               situationalMod: situationalMod,
               additionalHits: additionalHits
