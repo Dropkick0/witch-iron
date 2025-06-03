@@ -14,6 +14,7 @@ import { WitchIronInjurySheet } from "./injury-sheet.js";
 import { initQuarrel, manualQuarrel } from "./quarrel.js";
 import { HitLocationSelector } from "./hit-location.js";
 import { InjuryTables } from "./injury-tables.js";
+import { registerCommonHandlebarsHelpers } from "./handlebars-helpers.js";
 
 // Define the system configuration object
 CONFIG.WITCH_IRON = {
@@ -70,117 +71,15 @@ CONFIG.WITCH_IRON = {
   }
 };
 
-// Register Handlebars helpers with proper block helper format
-Handlebars.registerHelper('range', function(context, options) {
-  let output = "";
-  const data = Handlebars.createFrame(options.data);
-  
-  for (let i = 0; i < context; i++) {
-    data.index = i;
-    output += options.fn(this, { data: data });
-  }
-  
-  return output;
-});
-
-// Add Array constructor helper
-Handlebars.registerHelper('Array', function(n) {
-  return [...Array(n).keys()];
-});
-
-// Add JSON stringify helper for debugging
-Handlebars.registerHelper('json', function(context) {
-  return JSON.stringify(context, null, 2);
-});
-
-// Block helpers for comparison
-Handlebars.registerHelper('eq', function(v1, v2, options) {
-  // When used as {{eq value1 value2}} without a block
-  if (!options.fn) return v1 === v2;
-  
-  // When used as {{#eq value1 value2}}...{{/eq}}
-  if (v1 === v2) {
-    return options.fn(this);
-  }
-  return options.inverse ? options.inverse(this) : '';
-});
-
-Handlebars.registerHelper('lt', function(v1, v2, options) {
-  // When used as {{lt value1 value2}} without a block
-  if (!options.fn) return v1 < v2;
-  
-  // When used as {{#lt value1 value2}}...{{/lt}}
-  if (v1 < v2) {
-    return options.fn(this);
-  }
-  return options.inverse ? options.inverse(this) : '';
-});
-
-Handlebars.registerHelper('gt', function(v1, v2, options) {
-  // When used as {{gt value1 value2}} without a block
-  if (!options.fn) return v1 > v2;
-  
-  // When used as {{#gt value1 value2}}...{{/gt}}
-  if (v1 > v2) {
-    return options.fn(this);
-  }
-  return options.inverse ? options.inverse(this) : '';
-});
-
-Handlebars.registerHelper('le', function(v1, v2, options) {
-  // When used as {{le value1 value2}} without a block
-  if (!options.fn) return v1 <= v2;
-  
-  // When used as {{#le value1 value2}}...{{/le}}
-  if (v1 <= v2) {
-    return options.fn(this);
-  }
-  return options.inverse ? options.inverse(this) : '';
-});
-
-Handlebars.registerHelper('ge', function(v1, v2, options) {
-  // When used as {{ge value1 value2}} without a block
-  if (!options.fn) return v1 >= v2;
-  
-  // When used as {{#ge value1 value2}}...{{/ge}}
-  if (v1 >= v2) {
-    return options.fn(this);
-  }
-  return options.inverse ? options.inverse(this) : '';
-});
-
-// Ensure gte alias exists for greater than or equal
-Handlebars.registerHelper('gte', function(v1, v2, options) {
-  return Handlebars.helpers.ge(v1, v2, options);
-});
-
-// Simple expression helpers
-Handlebars.registerHelper('add', function(v1, v2) {
-  return Number(v1) + Number(v2);
-});
-
-Handlebars.registerHelper('subtract', function(v1, v2) {
-  return Number(v1) - Number(v2);
-});
-
-Handlebars.registerHelper('multiply', function(v1, v2) {
-  return Number(v1) * Number(v2);
-});
-
-Handlebars.registerHelper('divide', function(v1, v2) {
-  return Number(v1) / Number(v2);
-});
-
-Handlebars.registerHelper('floor', function(v1) {
-  return Math.floor(Number(v1));
-});
-
 /* -------------------------------------------- */
 /*  Initialization                              */
 /* -------------------------------------------- */
 
 Hooks.once("init", function() {
   console.log("Witch Iron | Initializing Witch Iron System");
+
+  // Register shared Handlebars helpers
+  registerCommonHandlebarsHelpers();
   
   // Register system settings
   game.settings.register("witch-iron", "extendedRollVisibility", {

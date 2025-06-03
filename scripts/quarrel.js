@@ -1,3 +1,5 @@
+import { registerCommonHandlebarsHelpers } from "./handlebars-helpers.js";
+
 /**
  * Quarrel system for Witch Iron
  * Implements contested checks with Net Hits results
@@ -1952,14 +1954,11 @@ function determineInjury(locationRoll, netDamage) {
  * Initialize the Handlebar helpers for quarrel messages
  */
 function initQuarrelHandlebarHelpers() {
+    // Ensure common helpers are available
+    registerCommonHandlebarsHelpers();
     Handlebars.registerHelper('actorName', function(actorId) {
         const actor = game.actors.get(actorId);
         return actor ? actor.name : "Unknown";
-    });
-    
-    // Helper to stringify an object to JSON
-    Handlebars.registerHelper('json', function(context) {
-        return JSON.stringify(context);
     });
     
     // Helper to concatenate strings
@@ -1971,15 +1970,6 @@ function initQuarrelHandlebarHelpers() {
     // Add helper for absolute values
     Handlebars.registerHelper('abs', function(num) {
         return Math.abs(Number(num));
-    });
-    
-    // Add comparison helpers
-    Handlebars.registerHelper('gt', function(a, b) {
-        return Number(a) > Number(b);
-    });
-    
-    Handlebars.registerHelper('lt', function(a, b) {
-        return Number(a) < Number(b);
     });
     
     // Add a more specific localization helper for quarrel outcomes
