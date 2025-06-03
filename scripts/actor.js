@@ -59,6 +59,8 @@ export class WitchIronActor extends Actor {
     if (!systemData.skills.physical) systemData.skills.physical = {};
     if (!systemData.skills.social) systemData.skills.social = {};
     if (!systemData.skills.mental) systemData.skills.mental = {};
+    if (!systemData.skills.quickness) systemData.skills.quickness = {};
+    if (!systemData.skills.finesse) systemData.skills.finesse = {};
     
     // Combat skills
     if (!systemData.skills.combat.athletics) {
@@ -92,16 +94,29 @@ export class WitchIronActor extends Actor {
     }
     
     // Add Social and Mental skills in the same pattern...
+    // Quickness skills
+    if (!systemData.skills.quickness.cunning) {
+      systemData.skills.quickness.cunning = { value: 0, ability: "quickness", label: "Cunning", specializations: [] };
+    }
+    if (!systemData.skills.quickness.perception) {
+      systemData.skills.quickness.perception = { value: 0, ability: "quickness", label: "Perception", specializations: [] };
+    }
+    if (!systemData.skills.quickness.ranged) {
+      systemData.skills.quickness.ranged = { value: 0, ability: "quickness", label: "Ranged", specializations: [] };
+    }
+
+    // Finesse skills
+    if (!systemData.skills.finesse.art) {
+      systemData.skills.finesse.art = { value: 0, ability: "finesse", label: "Art", specializations: [] };
+    }
+    if (!systemData.skills.finesse.operate) {
+      systemData.skills.finesse.operate = { value: 0, ability: "finesse", label: "Operate", specializations: [] };
+    }
+    if (!systemData.skills.finesse.trade) {
+      systemData.skills.finesse.trade = { value: 0, ability: "finesse", label: "Trade", specializations: [] };
+    }
+
     // Social skills
-    if (!systemData.skills.social.cunning) {
-      systemData.skills.social.cunning = { value: 0, ability: "quickness", label: "Cunning", specializations: [] };
-    }
-    if (!systemData.skills.social.perception) {
-      systemData.skills.social.perception = { value: 0, ability: "quickness", label: "Perception", specializations: [] };
-    }
-    if (!systemData.skills.social.ranged) {
-      systemData.skills.social.ranged = { value: 0, ability: "quickness", label: "Ranged", specializations: [] };
-    }
     if (!systemData.skills.social.leadership) {
       systemData.skills.social.leadership = { value: 0, ability: "personality", label: "Leadership", specializations: [] };
     }
@@ -111,17 +126,8 @@ export class WitchIronActor extends Actor {
     if (!systemData.skills.social.coerce) {
       systemData.skills.social.coerce = { value: 0, ability: "personality", label: "Coerce", specializations: [] };
     }
-    
+
     // Mental skills
-    if (!systemData.skills.mental.art) {
-      systemData.skills.mental.art = { value: 0, ability: "finesse", label: "Art", specializations: [] };
-    }
-    if (!systemData.skills.mental.operate) {
-      systemData.skills.mental.operate = { value: 0, ability: "finesse", label: "Operate", specializations: [] };
-    }
-    if (!systemData.skills.mental.trade) {
-      systemData.skills.mental.trade = { value: 0, ability: "finesse", label: "Trade", specializations: [] };
-    }
     if (!systemData.skills.mental.heal) {
       systemData.skills.mental.heal = { value: 0, ability: "intellect", label: "Heal", specializations: [] };
     }
@@ -142,7 +148,7 @@ export class WitchIronActor extends Actor {
     }
     
     // Ensure all skills have the specializations array
-    for (const category of ["combat", "physical", "social", "mental"]) {
+    for (const category of ["combat", "physical", "quickness", "finesse", "social", "mental"]) {
       for (const skillKey in systemData.skills[category]) {
         if (!systemData.skills[category][skillKey].specializations) {
           systemData.skills[category][skillKey].specializations = [];
@@ -613,24 +619,28 @@ export class WitchIronActor extends Actor {
         ride: "agility",
         skulk: "agility"
       },
-      social: {
+      quickness: {
         cunning: "quickness",
         perception: "quickness",
-        ranged: "quickness",
-        leadership: "personality",
-        carouse: "personality",
-        coerce: "personality"
+        ranged: "quickness"
       },
-      mental: {
+      finesse: {
         art: "finesse",
         operate: "finesse",
-        trade: "finesse",
+        trade: "finesse"
+      },
+      mental: {
         heal: "intellect",
         research: "intellect",
         navigation: "intellect",
         steel: "willpower",
         survival: "willpower",
         husbandry: "willpower"
+      },
+      social: {
+        leadership: "personality",
+        carouse: "personality",
+        coerce: "personality"
       }
     };
     
