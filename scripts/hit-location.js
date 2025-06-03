@@ -1,6 +1,9 @@
-﻿/**
+/**
  * Hit Location Selection Module for Witch Iron
  */
+
+// Import the injury tables
+import { rollOnInjuryTable, getFullInjuryName, getInjuryEffect } from './injury-tables.js';
 
 // Add a log message when this module is loaded
 console.log("Witch Iron | Hit Location module loaded");
@@ -220,7 +223,59 @@ export class HitLocationSelector {
             word.charAt(0).toUpperCase() + word.slice(1)
         ).join(' ');
         
-        // Generic injury effects based on severity and location
+        // First, check if we have a detailed injury table for this location
+        // Get the base location (head, torso, arm, leg)
+        let baseLocation = null;
+        
+        if (normalizedLocation.includes('Head')) {
+            baseLocation = 'head';
+        } else if (normalizedLocation.includes('Torso')) {
+            baseLocation = 'torso';
+        } else if (normalizedLocation.includes('Arm')) {
+            baseLocation = 'arm';
+        } else if (normalizedLocation.includes('Leg')) {
+            baseLocation = 'leg';
+        }
+        
+        // If we have a base location, determine the specific injury
+        if (baseLocation) {
+            // Ensure temporary storage exists
+            if (!game.witch) game.witch = {};
+            if (!game.witch.currentInjury) game.witch.currentInjury = {};
+            
+            // Check if a roll already exists for this injury instance
+            let locationRoll = game.witch.currentInjury.locationRoll;
+            
+            // If no roll exists, perform it ONCE and store it
+            if (locationRoll === undefined || locationRoll === null) {
+                locationRoll = Math.floor(Math.random() * 10) + 1;
+                game.witch.currentInjury.locationRoll = locationRoll; // Store the roll
+                console.log(`Rolled NEW specific location for ${baseLocation}: ${locationRoll}`);
+            } else {
+                console.log(`Using EXISTING specific location roll for ${baseLocation}: ${locationRoll}`);
+            }
+            
+            // Get the detailed injury using the determined roll
+            const injury = rollOnInjuryTable(baseLocation, locationRoll);
+            
+            // If we have a valid injury, get the effect
+            if (injury) {
+                const specificLocation = getFullInjuryName(injury);
+                const effect = getInjuryEffect(injury, damage);
+                
+                // Store the specific location and effect (roll is already stored)
+                game.witch.currentInjury.baseLocation = baseLocation;
+                game.witch.currentInjury.specificLocation = specificLocation;
+                game.witch.currentInjury.effect = effect;
+                
+                console.log(`Detailed injury: ${baseLocation} (${locationRoll}) -> ${specificLocation} with effect: ${effect}`);
+                
+                return effect;
+            }
+        }
+        
+        // Fallback to original generic logic if no detailed table or injury found
+        console.log("Falling back to generic injury effect generation");
         const lowEffect = "Pain 1";
         const medEffect = "Pain 2";
         const highEffect = "Trauma 2";
@@ -275,17 +330,7 @@ export class HitLocationSelector {
         if (combatData.preserveDamage) {
             combatData.severity = combatData.originalDamage || combatData.severity;
             console.log(`Preserving original damage value: ${combatData.severity}`);
-        } else {
-        // Roll a random severity if not provided
-        if (!combatData.severity) {
-            combatData.severity = Math.floor(Math.random() * 10) + 1;
-        }
-        
-        // If the severity has been recomputed, use that
-        if (combatData.recalculatedDamage !== undefined) {
-            combatData.severity = combatData.recalculatedDamage;
-            }
-        }
+        } 
         
         // Ensure we have a combatId
         if (!combatData.combatId) {
@@ -293,143 +338,108 @@ export class HitLocationSelector {
             console.log(`Generated new combat ID for injury message: ${combatData.combatId}`);
         }
         
-        console.log(`Creating injury message for combat ID: ${combatData.combatId} with damage: ${combatData.severity}`);
+        // Clear any previous temporary injury data before processing the new one
+        if (game.witch) game.witch.currentInjury = {};
         
-        // Generate a description for the injury based on location and severity
-        combatData.description = this._generateInjuryDescription(combatData.location, combatData.severity);
+        // Get battle wear data AND actor references from attacker and defender
+        const returnData = await this._getBattleWearData(combatData.attacker, combatData.defender);
+        const battleWearDataForTemplate = { attacker: returnData.attacker, defender: returnData.defender }; // Separate for template clarity
+        const attackerActor = returnData.actors.attacker; // Use actor from _getBattleWearData
+        const defenderActor = returnData.actors.defender; // Use actor from _getBattleWearData
         
-        // Generate an effect for the injury based on location and severity
-        combatData.effect = HitLocationSelector._generateInjuryEffect(combatData.location.toLowerCase().replace(' ', '-'), combatData.severity);
+        // Initialize bonuses
+        let attackerAbilityBonus = 3; 
+        let defenderAbilityBonus = 3; 
+        let weaponBonus = 0; // Effective bonus for calc
+        let armorBonus = 0;  // Effective bonus for calc
+        let weaponBonusMax = 0; // Max bonus for display
+        let armorBonusMax = 0;  // Max bonus for display
         
-        // Get battle wear data from attacker and defender
-        const battleWearData = await this._getBattleWearData(combatData.attacker, combatData.defender);
-        
-        // Find attacker and defender actors to get their ability bonus and equipment values
-        let attackerActor = null;
-        let defenderActor = null;
-        let attackerAbilityBonus = 3; // default
-        let defenderAbilityBonus = 3; // default
-        let weaponBonus = 0;
-        let armorBonus = 0;
-        
-        // Try to find actors by name
-        if (combatData.attacker) {
-            attackerActor = game.actors.find(a => a.name === combatData.attacker);
-            if (!attackerActor) {
-                // Try to find by token ID if we have it
-                if (combatData.attackerTokenId) {
-                    const attackerToken = canvas.tokens.get(combatData.attackerTokenId);
-                    if (attackerToken) {
-                        attackerActor = attackerToken.actor;
-                    }
-                }
-            }
-        }
-        
-        if (combatData.defender) {
-            defenderActor = game.actors.find(a => a.name === combatData.defender);
-            if (!defenderActor) {
-                // Try to find by token ID if we have it
-                if (combatData.defenderTokenId) {
-                    const defenderToken = canvas.tokens.get(combatData.defenderTokenId);
-                    if (defenderToken) {
-                        defenderActor = defenderToken.actor;
-                    }
-                }
-            }
-        }
-        
-        // If we found the attacker, get their ability bonus
+        // Get bonuses from the fetched actors
         if (attackerActor) {
-            // Get ability bonus from attacker
             attackerAbilityBonus = attackerActor.system?.derived?.abilityBonus || 3;
-            
-            // Get weapon bonus from attacker - use effective bonus which accounts for normal battle wear
-            weaponBonus = attackerActor.system?.derived?.weaponBonusEffective || 0;
-            
-            console.log(`Attacker ${combatData.attacker} - Ability: ${attackerAbilityBonus}, Weapon Bonus: ${weaponBonus}`);
+            weaponBonus = attackerActor.system?.derived?.weaponBonusEffective || 0; 
+            weaponBonusMax = attackerActor.system?.derived?.weaponBonusMax || 0; 
+            console.log(`Attacker ${combatData.attacker} - Ability: ${attackerAbilityBonus}, Effective Weapon: ${weaponBonus}, Max Weapon: ${weaponBonusMax}`);
         }
         
         if (defenderActor) {
-            // Get ability bonus from defender (use Hidden Depths if available)
             defenderAbilityBonus = defenderActor.system?.derived?.abilityBonus || 3;
-            
-            // Get effective armor bonus (accounts for battle wear)
-            armorBonus = defenderActor.system?.derived?.armorBonusEffective || 0;
-            
-            console.log(`Defender ${combatData.defender} - Ability: ${defenderAbilityBonus}, Effective Armor Bonus: ${armorBonus}`);
+            armorBonus = defenderActor.system?.derived?.armorBonusEffective || 0; 
+            armorBonusMax = defenderActor.system?.derived?.armorBonusMax || 0; 
+            console.log(`Defender ${combatData.defender} - Ability: ${defenderAbilityBonus}, Effective Armor: ${armorBonus}, Max Armor: ${armorBonusMax}`);
         }
         
         // *** IMPORTANT: Use the REMAINING net hits after location adjustments ***
-        // If remainingNetHits is provided, use that instead of the original netHits
-        // This ensures hits spent on location movement are accounted for
         const netHits = combatData.remainingNetHits !== undefined 
             ? Math.abs(combatData.remainingNetHits) 
             : Math.abs(combatData.netHits || 0);
             
         console.log(`Using remaining net hits for damage calculation: ${netHits} (original: ${combatData.netHits}, remaining: ${combatData.remainingNetHits})`);
         
-        // If preserveDamage flag is set, don't recalculate damage
-        let netDamage = combatData.severity;
+        // Calculate net damage using correct formula: (Damage + Net Hits) - Soak
+        // Using EFFECTIVE bonuses for calculation
+        const attackerDamage = attackerAbilityBonus + weaponBonus; // weaponBonus IS the effective bonus
+        const defenderSoak = defenderAbilityBonus + armorBonus;   // armorBonus IS the effective bonus
+        const baseDamage = Math.max(0, (attackerDamage + netHits) - defenderSoak);
         
-        if (!combatData.preserveDamage) {
-            // Calculate net damage using correct formula: (Damage + Net Hits) - Soak
-            // Where Damage is Ability + Weapon
-            const attackerDamage = attackerAbilityBonus + weaponBonus;
-            const defenderSoak = defenderAbilityBonus + armorBonus;
-            
-            // Add the remaining net hits to attacker's damage
-            const baseDamage = Math.max(0, (attackerDamage + netHits) - defenderSoak);
-            
-            // NOW CORRECTLY APPLY BATTLE WEAR:
-            // 1. Get initial attacker weapon wear (to be ADDED to damage)
-            const attackerWeaponWear = battleWearData?.attacker?.currentWear || 0;
-            
-            // 2. Calculate net damage with weapon battle wear added
-            netDamage = baseDamage + attackerWeaponWear;
-            
-            console.log(`BASE damage calculation: (${attackerAbilityBonus} ability + ${weaponBonus} weapon + ${netHits} remaining net hits) - (${defenderAbilityBonus} ability + ${armorBonus} armor) = ${baseDamage}`);
-            console.log(`FINAL damage with battle wear: ${baseDamage} + ${attackerWeaponWear} weapon wear = ${netDamage}`);
-        } else {
-            // Even with preserved damage, we need to ensure the combat details reflect accurate values
-            // Calculate what the damage would normally be with the formula
-            const attackerDamage = attackerAbilityBonus + weaponBonus;
-            const defenderSoak = defenderAbilityBonus + armorBonus;
-            const calculatedDamage = Math.max(0, (attackerDamage + netHits) - defenderSoak);
-            
-            console.log(`Using preserved damage ${netDamage}, calculated damage would be: (${attackerAbilityBonus} ability + ${weaponBonus} weapon + ${netHits} remaining net hits) - (${defenderAbilityBonus} ability + ${armorBonus} armor) = ${calculatedDamage}`);
-        }
+        let netDamage = baseDamage; // Use the base damage calculated with effective bonuses
+
+        console.log(`INITIAL damage calculation using EFFECTIVE bonuses: (${attackerAbilityBonus} ability + ${weaponBonus} effective weapon + ${netHits} remaining net hits) - (${defenderAbilityBonus} ability + ${armorBonus} effective armor) = ${netDamage}`);
         
-        // Format the display text for damage and soak
-        const damageText = `${attackerAbilityBonus}(${weaponBonus})`;
-        const soakText = `${defenderAbilityBonus}(${armorBonus})`;
+        // Format the display text for damage and soak using EFFECTIVE bonuses
+        // Change weaponBonusMax -> weaponBonus and armorBonusMax -> armorBonus
+        const damageText = `${attackerAbilityBonus}(${weaponBonus})`; // Use effective weapon bonus
+        const soakText = `${defenderAbilityBonus}(${armorBonus})`;   // Use effective armor bonus
         
         // Set the flavor text and message type based on whether the attack was deflected
         const isDeflected = netDamage <= 0;
         const flavor = isDeflected ? "Attack Deflected" : "Combat Injury";
         const messageType = isDeflected ? "deflection" : "injury";
         
+        // Generate injury description and effect ONCE
+        const description = this._generateInjuryDescription(combatData.location, netDamage);
+        const effect = HitLocationSelector._generateInjuryEffect(combatData.location.toLowerCase().replace(' ', '-'), netDamage);
+        
+        // Retrieve the specific location details stored by _generateInjuryEffect
+        const specificLocation = game.witch?.currentInjury?.specificLocation || null;
+        const locationRoll = game.witch?.currentInjury?.locationRoll || null;
+
+        // Determine tooltip text based on effect symbols
+        let tooltipText = "";
+        if (effect.includes('*')) {
+            const hits = Math.floor(netDamage / 2);
+            tooltipText = `Medical Aid*: Quarrel vs ${hits} Hits`;
+        } else if (effect.includes('‡')) {
+            const hits = netDamage;
+            tooltipText = `Surgery‡: Quarrel vs ${hits} Hits or Advanced Surgery`;
+        }
+
+        console.log(`Creating injury message for combat ID: ${combatData.combatId} with damage: ${netDamage}, location: ${combatData.location}, specific: ${specificLocation} (Roll: ${locationRoll}), effect: ${effect}`);
+        
         // Render the template and create the chat message
         const content = await renderTemplate("systems/witch-iron/templates/chat/injury-message.hbs", {
             attacker: combatData.attacker,
             defender: combatData.defender,
-            location: combatData.location,
-            severity: netDamage, // Use our calculated net damage or preserved damage
+            location: combatData.location, // General location
+            severity: netDamage, // Initial calculated net damage
             damage: netDamage, // Same as severity
-            damageText: damageText, // For display in combat details
-            soakText: soakText, // For display in combat details
-            weapon: weaponBonus || "-",
-            soak: defenderAbilityBonus + armorBonus || 0,
+            damageText: damageText, // Uses EFFECTIVE Bonus now
+            soakText: soakText,     // Uses EFFECTIVE Bonus now
+            weapon: weaponBonusMax || "-", // Keep Max weapon bonus for details section display
+            soak: defenderAbilityBonus + armorBonusMax || 0, // Keep Max soak for details section display
             netHits: netHits,
-            description: this._generateInjuryDescription(combatData.location, netDamage),
-            effect: HitLocationSelector._generateInjuryEffect(combatData.location.toLowerCase().replace(' ', '-'), netDamage),
+            description: description, 
+            effect: effect, 
             isDeflected: isDeflected,
-            battleWear: battleWearData,
-            // Add new values
+            battleWear: battleWearDataForTemplate, // Battle wear data for the card controls
             abilityBonus: attackerAbilityBonus,
-            weaponBonus: weaponBonus,
-            armorBonus: armorBonus,
-            combatId: combatData.combatId
+            weaponBonus: weaponBonus, // Pass effective bonus for calculation details
+            armorBonus: armorBonus,   // Pass effective bonus for calculation details
+            combatId: combatData.combatId,
+            specificLocation: specificLocation, 
+            locationRoll: locationRoll, 
+            tooltipText: tooltipText 
         });
         
         // Create the chat message
@@ -456,7 +466,10 @@ export class HitLocationSelector {
                         armorSoak: armorBonus,
                         combatId: combatData.combatId,
                         messageId: combatData.messageId,
-                        preservedDamage: combatData.preserveDamage
+                        preservedDamage: combatData.preserveDamage,
+                        // Add specific location info to flags
+                        specificLocation: game.witch?.currentInjury?.specificLocation || null,
+                        locationRoll: game.witch?.currentInjury?.locationRoll || null
                     }
                 }
             }
@@ -507,19 +520,25 @@ export class HitLocationSelector {
             defenderActor = game.actors.find(a => a.name === defenderName);
         }
         
-        // Default battle wear data
-        const battleWearData = {
+        // Default battle wear data object also holds actor refs
+        const returnData = {
+            actors: {
+                attacker: attackerActor, // Store found attacker actor (or null)
+                defender: defenderActor  // Store found defender actor (or null)
+            },
             attacker: {
-                maxWear: 4,
-                weaponBonus: 0,
-                currentWear: 0,
-                tokenImg: "icons/svg/mystery-man.svg"
+                maxWear: 0, // This will now be REMAINING wear capacity for the card
+                weaponBonus: 0, // Effective bonus (max - current wear)
+                currentWear: 0, // Interaction wear (starts at 0 on the card)
+                tokenImg: "icons/svg/mystery-man.svg",
+                actualWear: 0 // Current wear on the actor's sheet
             },
             defender: {
-                maxWear: 4,
-                armorBonus: 0,
-                currentWear: 0,
-                tokenImg: "icons/svg/mystery-man.svg"
+                maxWear: 0, // This will now be REMAINING wear capacity for the card
+                armorBonus: 0, // Effective bonus (max - current wear)
+                currentWear: 0, // Interaction wear (starts at 0 on the card)
+                tokenImg: "icons/svg/mystery-man.svg",
+                actualWear: 0 // Current wear on the actor's sheet
             }
         };
         
@@ -528,38 +547,34 @@ export class HitLocationSelector {
             // Get weapon bonus and battle wear from the actor's derived data
             if (attackerActor.system?.derived) {
                 const actorWeaponWear = attackerActor.system.battleWear?.weapon?.value || 0;
-                // Get the actual weapon bonus max from actor's derived data
                 const actorWeaponMax = attackerActor.system.derived.weaponBonusMax || 0;
+                const effectiveWeaponBonus = attackerActor.system.derived.weaponBonusEffective || 0;
                 
-                // Display max wear as the weapon bonus max - current wear
-                // For injury card, we want to start at 0 and subtract from max
-                battleWearData.attacker.maxWear = Math.max(0, actorWeaponMax - actorWeaponWear);
-                battleWearData.attacker.weaponBonus = attackerActor.system.derived.weaponBonusEffective || 0;
-                battleWearData.attacker.currentWear = 0; // Start at 0 for the injury card
-                battleWearData.attacker.actualWear = actorWeaponWear; // Store the actual wear for reference
+                // Calculate REMAINING wear capacity for the card controls
+                returnData.attacker.maxWear = Math.max(0, actorWeaponMax - actorWeaponWear); 
+                returnData.attacker.weaponBonus = effectiveWeaponBonus; // Store effective bonus
+                returnData.attacker.currentWear = 0; // Start card interaction wear at 0
+                returnData.attacker.actualWear = actorWeaponWear; // Store actor's current wear
+
+                console.log(`Attacker ${attackerName}: Max Bonus=${actorWeaponMax}, Current Wear=${actorWeaponWear}, Remaining Card MaxWear=${returnData.attacker.maxWear}, Effective Bonus=${effectiveWeaponBonus}`);
+
             } else {
-                // Fallback to finding the actor's equipped weapon
-            const equippedWeapon = attackerActor.items.find(i => 
-                i.type === "weapon" && 
-                i.system.equipped
-            );
-            
-            if (equippedWeapon) {
-                // Get the weapon's damage bonus as max wear
-                    const weaponBonus = parseInt(equippedWeapon.system.damage?.bonus) || 0;
-                    battleWearData.attacker.maxWear = weaponBonus;
-                    battleWearData.attacker.weaponBonus = weaponBonus;
-                battleWearData.attacker.weaponName = equippedWeapon.name;
-                }
+                 // Fallback logic
+                 const equippedWeapon = attackerActor.items.find(i => i.type === "weapon" && i.system.equipped);
+                 if (equippedWeapon) {
+                     const weaponBonus = parseInt(equippedWeapon.system.damage?.bonus) || 0;
+                     returnData.attacker.maxWear = weaponBonus; // Fallback: Max wear is total bonus
+                     returnData.attacker.weaponBonus = weaponBonus; // Fallback: Effective is total bonus
+                 }
             }
             
             // Get token image
             if (attackerActor.token) {
-                battleWearData.attacker.tokenImg = attackerActor.token.img;
+                returnData.attacker.tokenImg = attackerActor.token.texture?.src || attackerActor.token.img || attackerActor.prototypeToken?.texture?.src || attackerActor.img;
             } else if (attackerActor.prototypeToken) {
-                battleWearData.attacker.tokenImg = attackerActor.prototypeToken.texture.src;
+                returnData.attacker.tokenImg = attackerActor.prototypeToken.texture?.src || attackerActor.img;
             } else {
-                battleWearData.attacker.tokenImg = attackerActor.img;
+                returnData.attacker.tokenImg = attackerActor.img;
             }
         }
         
@@ -568,42 +583,38 @@ export class HitLocationSelector {
             // Get armor bonus and battle wear from the actor's derived data
             if (defenderActor.system?.derived) {
                 const actorArmorWear = defenderActor.system.battleWear?.armor?.value || 0;
-                // Get the actual armor bonus max from actor's derived data
                 const actorArmorMax = defenderActor.system.derived.armorBonusMax || 0;
+                const effectiveArmorBonus = defenderActor.system.derived.armorBonusEffective || 0;
                 
-                // Display max wear as the armor bonus max - current wear
-                // For injury card, we want to start at 0 and subtract from max
-                battleWearData.defender.maxWear = Math.max(0, actorArmorMax - actorArmorWear);
-                battleWearData.defender.armorBonus = defenderActor.system.derived.armorBonusEffective || 0;
-                battleWearData.defender.currentWear = 0; // Start at 0 for the injury card
-                battleWearData.defender.actualWear = actorArmorWear; // Store the actual wear for reference
+                // Calculate REMAINING wear capacity for the card controls
+                returnData.defender.maxWear = Math.max(0, actorArmorMax - actorArmorWear); 
+                returnData.defender.armorBonus = effectiveArmorBonus; // Store effective bonus
+                returnData.defender.currentWear = 0; // Start card interaction wear at 0
+                returnData.defender.actualWear = actorArmorWear; // Store actor's current wear
+
+                console.log(`Defender ${defenderName}: Max Bonus=${actorArmorMax}, Current Wear=${actorArmorWear}, Remaining Card MaxWear=${returnData.defender.maxWear}, Effective Bonus=${effectiveArmorBonus}`);
+
             } else {
-                // Fallback to finding the actor's equipped armor
-            const equippedArmor = defenderActor.items.find(i => 
-                i.type === "armor" && 
-                i.system.equipped
-            );
-            
-            if (equippedArmor) {
-                // Get the armor's soak bonus as max wear
-                    const armorBonus = parseInt(equippedArmor.system.soak?.bonus) || 0;
-                    battleWearData.defender.maxWear = armorBonus;
-                    battleWearData.defender.armorBonus = armorBonus;
-                battleWearData.defender.armorName = equippedArmor.name;
-                }
+                 // Fallback logic
+                 const equippedArmor = defenderActor.items.find(i => i.type === "armor" && i.system.equipped);
+                 if (equippedArmor) {
+                     const armorBonus = parseInt(equippedArmor.system.soak?.bonus) || 0;
+                     returnData.defender.maxWear = armorBonus; // Fallback: Max wear is total bonus
+                     returnData.defender.armorBonus = armorBonus; // Fallback: Effective is total bonus
+                 }
             }
             
             // Get token image
             if (defenderActor.token) {
-                battleWearData.defender.tokenImg = defenderActor.token.img;
+                returnData.defender.tokenImg = defenderActor.token.texture?.src || defenderActor.token.img || defenderActor.prototypeToken?.texture?.src || defenderActor.img;
             } else if (defenderActor.prototypeToken) {
-                battleWearData.defender.tokenImg = defenderActor.prototypeToken.texture.src;
+                returnData.defender.tokenImg = defenderActor.prototypeToken.texture?.src || defenderActor.img;
             } else {
-                battleWearData.defender.tokenImg = defenderActor.img;
+                returnData.defender.tokenImg = defenderActor.img;
             }
         }
         
-        return battleWearData;
+        return returnData; // Return the object containing actors and battle wear data
     }
     
     /**
@@ -616,20 +627,60 @@ export class HitLocationSelector {
      * @private
      */
     static async _createInjuryItem(defenderActor, injuryName, location, damage, injuryEffect) {
-        // Create a new injury item
+        // Check if we have a current detailed injury
+        let specificLocation = location;
+        if (game.witch?.currentInjury?.specificLocation) {
+            specificLocation = `${game.witch.currentInjury.specificLocation} (${location})`;
+        }
+        
+        // Parse the injuryEffect to extract individual conditions and required treatment
+        const parts = (injuryEffect || "").split("|");
+        const conditions = [];
+        let sheetMedOption = 'none';
+        for (let part of parts) {
+          // Take the substring after the last comma (or full if none)
+          const afterComma = part.includes(',') ? part.slice(part.lastIndexOf(',') + 1) : part;
+          let condStr = afterComma.trim();
+          // Detect treatment footnotes '*' = aid, '‡' = surgery
+          let foot = condStr.endsWith('*') ? '*' : condStr.endsWith('‡') ? '‡' : '';
+          if (foot === '*') sheetMedOption = sheetMedOption === 'surgery' ? 'surgery' : 'aid';
+          else if (foot === '‡') sheetMedOption = 'surgery';
+          condStr = condStr.replace(/[*‡]$/, '').trim();
+          // Split name and rating
+          const match = condStr.match(/^(.+?)\s*(\d+)?$/);
+          if (!match) continue;
+          const type = match[1].toLowerCase().replace(/ /g, '');
+          const rating = match[2] ? parseInt(match[2]) : null;
+          conditions.push({ type, rating });
+        }
+        // Calculate treatment difficulty based on medical option and damage
+        let treatmentDifficulty = 1;
+        if (sheetMedOption === 'aid') treatmentDifficulty = Math.floor(damage / 2) || 1;
+        else if (sheetMedOption === 'surgery') treatmentDifficulty = damage;
+        // Derive the dropdown key from the specific location label
+        const locationKey = specificLocation.replace(/\s*\(.*\)/, "")
+          .split('/')[0]
+          .toLowerCase()
+          .replace(/\s+/g, "");
+        // Build the system data for the new injury item
+        const system = {
+          description: `Injury to the ${specificLocation} with ${damage} damage.`,
+          // Use the specific injury key so the dropdown selects the exact location
+          location: locationKey,
+          severity: { value: damage, label: damage < 4 ? "Minor" : damage < 7 ? "Major" : "Severe" },
+          effect: injuryEffect,
+          conditions,
+          medicalOption: sheetMedOption,
+          treatmentDifficulty,
+          treatmentNotes: "",
+          isStabilized: false
+        };
+        // Create the new injury item data
         const injuryData = {
-            name: injuryName,
-            type: "injury",
-            img: "icons/svg/blood.svg",
-            system: {
-                description: `Injury to the ${location} with ${damage} damage.`,
-                location: location,
-                severity: {
-                    value: damage, // Use the exact damage value
-                    label: damage < 4 ? "Minor" : damage < 7 ? "Major" : "Severe"
-                },
-                effect: injuryEffect
-            }
+          name: injuryName,
+          type: "injury",
+          img: "icons/svg/blood.svg",
+          system
         };
         
         // Create the injury on the defender
@@ -654,6 +705,35 @@ export class HitLocationSelector {
         }
         
         return `${severityLabel} ${location} Injury`;
+    }
+
+    /**
+     * Roll on a specific injury table for a detailed hit location
+     * @param {string} generalLocation The general hit location (head, torso, arm, leg)
+     * @param {number|null} roll Optional d10 roll (if null, a random roll will be made)
+     * @returns {Object} The detailed injury information
+     */
+    static rollDetailedHitLocation(generalLocation, roll = null) {
+        // Normalize the location name to match our table keys
+        const normalizedLocation = generalLocation.toLowerCase().replace(/\s+/g, '');
+        let baseLocation;
+        
+        // Map the general location to our table keys
+        if (normalizedLocation.includes('head')) {
+            baseLocation = 'head';
+        } else if (normalizedLocation.includes('torso')) {
+            baseLocation = 'torso';
+        } else if (normalizedLocation.includes('arm')) {
+            baseLocation = 'arm';
+        } else if (normalizedLocation.includes('leg')) {
+            baseLocation = 'leg';
+        } else {
+            // If we don't have a specific table, return null
+            return null;
+        }
+        
+        // Roll on the appropriate table
+        return rollOnInjuryTable(baseLocation, roll);
     }
 }
 
@@ -742,54 +822,173 @@ function onChatMessageRendered(message, html, data) {
 // Register the chat message hook with a named function
 Hooks.on("renderChatMessage", onChatMessageRendered);
 
-// Register a specific hook for injury message rendering
-Hooks.on("renderChatMessage", (message, html, data) => {
-    // Check if this is an injury message
-    const messageType = message.getFlag("witch-iron", "messageType");
-    if (messageType === "injury" || messageType === "deflection") {
-        console.log(`Detected injury message being rendered: ${message.id}`);
+// Socket event listener for battle wear updates
+Hooks.once("ready", () => {
+    // Set up socket event listener for completed battle wear updates
+    game.socket.on("system.witch-iron.battleWearUpdate", (data) => {
+        // This only handles completed updates from the GM
+        if (!data.completed) return;
         
-        // Short delay to ensure DOM is fully rendered
+        console.log("Received completed battle wear update via socket:", data);
+        
+        // Don't process our own updates if we're the GM who sent it
+        if (game.user.isGM && data.userId === game.user.id) {
+            console.log("Ignoring our own update");
+            return;
+        }
+        
+        // Find the message element in the DOM
+        const messageElement = document.querySelector(`.message[data-message-id="${data.messageId}"]`);
+        if (!messageElement) {
+            console.warn(`Could not find message element for ID ${data.messageId}`);
+            return;
+        }
+        
+        // Extra debug for battle wear updates with specific focus on 0 armor battle wear
+        if (data.attackerWear > 0 && data.defenderWear === 0) {
+            console.log("[DEBUG SOCKET] Processing a weapon-only battle wear update:", data);
+            
+            // Log injury content before update
+            const injuryElement = messageElement.querySelector('.injury-row .severity-col');
+            if (injuryElement) {
+                console.log(`[DEBUG SOCKET] Current injury severity before update: ${injuryElement.textContent}`);
+            }
+        }
+        
+        // Update the UI
+        updateBattleWearUI(messageElement, data.attackerWear, data.defenderWear);
+        
+        // Double-check the update was applied correctly
         setTimeout(() => {
-            // Attach event handlers
-            attachInjuryMessageHandlers(message.id);
-        }, 50);
-    }
+            const injuryElement = messageElement.querySelector('.injury-row .severity-col');
+            if (injuryElement) {
+                console.log(`[DEBUG SOCKET] Injury severity after update: ${injuryElement.textContent}`);
+            }
+        }, 100);
+    });
 });
+
+/**
+ * Updates the battle wear UI with new values
+ * @param {HTMLElement} messageElement - The message element to update
+ * @param {number} attackerWear - New attacker wear value
+ * @param {number} defenderWear - New defender wear value
+ */
+function updateBattleWearUI(messageElement, attackerWear, defenderWear) {
+    console.log(`Updating battle wear UI: Attacker: ${attackerWear}, Defender: ${defenderWear}`);
+    
+    // Update wear values in UI
+    const attackerWearEl = messageElement.querySelector('.attacker-wear .battle-wear-value');
+    const defenderWearEl = messageElement.querySelector('.defender-wear .battle-wear-value');
+    
+    if (attackerWearEl) attackerWearEl.textContent = attackerWear;
+    if (defenderWearEl) defenderWearEl.textContent = defenderWear;
+    
+    // Also update the displayed bonus values (the +# Damage / +#d6 Soak text)
+    const attackerBonusEl = messageElement.querySelector('.attacker-wear .battle-wear-bonus');
+    const defenderBonusEl = messageElement.querySelector('.defender-wear .battle-wear-bonus');
+    if (attackerBonusEl) attackerBonusEl.textContent = attackerWear;
+    if (defenderBonusEl) defenderBonusEl.textContent = defenderWear;
+    
+    // Show/hide tabs based on defender wear
+    const injuryHeader = messageElement.querySelector('.injury-header');
+    const damageTabs = messageElement.querySelector('.damage-calc-tabs');
+    
+    if (injuryHeader) {
+        if (defenderWear > 0 && !damageTabs) {
+            // Create tabs if needed
+            const tabsDiv = document.createElement('div');
+            tabsDiv.className = 'damage-calc-tabs';
+            tabsDiv.innerHTML = `
+                <button class="damage-tab" data-tab="min">Min</button>
+                <button class="damage-tab active" data-tab="avg">Avg</button>
+                <button class="damage-tab" data-tab="max">Max</button>
+            `;
+            injuryHeader.appendChild(tabsDiv);
+            
+            // Attach handlers to the new tabs
+            const newTabs = tabsDiv.querySelectorAll('.damage-tab');
+            newTabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const allTabs = messageElement.querySelectorAll('.damage-tab');
+                    allTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    updateInjuryDisplayForTab(messageElement, tab.dataset.tab);
+                });
+            });
+        } else if (defenderWear === 0 && damageTabs) {
+            // Remove tabs if needed
+            injuryHeader.removeChild(damageTabs);
+        }
+    }
+    
+    // Remove any processing indicators
+    const processingIndicator = messageElement.querySelector('.battle-wear-processing');
+    if (processingIndicator) {
+        processingIndicator.remove();
+    }
+    
+    // Update button states
+    updateBattleWearButtons(messageElement);
+    
+    // Always update the injury display, whether armor battle wear is present or not
+    // When defenderWear is 0, use 'avg' as the tab type (doesn't matter since there are no tabs)
+    updateInjuryDisplayForTab(messageElement, defenderWear > 0 ? 
+        (messageElement.querySelector('.damage-tab.active')?.dataset?.tab || 'avg') : 'avg');
+}
 
 /**
  * Apply battle wear to the attacker's weapon and defender's armor
  * @param {ChatMessage} message The chat message with battle wear
- * @param {number} attackerWear Amount of battle wear for attacker's weapon
- * @param {number} defenderWear Amount of battle wear for defender's armor
+ * @param {number} attackerWearToAdd Amount of battle wear *added* in this interaction (from card)
+ * @param {number} defenderWearToAdd Amount of battle wear *added* in this interaction (from card)
  */
-async function applyBattleWear(message, attackerWear, defenderWear) {
+async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd) {
     try {
-        // Log the battle wear application
-    console.log(`Applying battle wear: ${attackerWear} to attacker's weapon, ${defenderWear} to defender's armor`);
+        // Log the battle wear application request
+        console.log(`Applying battle wear ADDITION: Attacker +${attackerWearToAdd}, Defender +${defenderWearToAdd}`);
         console.log("Message object:", message);
-        
+
         // Input validation
         if (!message) {
             console.warn("No message provided to applyBattleWear");
             ui.notifications.warn("Could not apply battle wear: No message provided");
             return;
         }
-        
+
         // Convert wear values to numbers and ensure they're non-negative
-        attackerWear = Math.max(0, parseInt(attackerWear) || 0);
-        defenderWear = Math.max(0, parseInt(defenderWear) || 0);
-        
-        // If both wear values are 0, nothing to do
-        if (attackerWear === 0 && defenderWear === 0) {
-            console.log("No battle wear to apply");
-            return;
+        attackerWearToAdd = Math.max(0, parseInt(attackerWearToAdd) || 0);
+        defenderWearToAdd = Math.max(0, parseInt(defenderWearToAdd) || 0);
+
+        // If both wear values are 0, nothing to add
+        if (attackerWearToAdd === 0 && defenderWearToAdd === 0) {
+            console.log("No battle wear to add in this interaction");
+            // Still update the flag to store the '0' values for this interaction if needed
+            await message.update({
+                "flags.witch-iron.battleWear": {
+                    attacker: attackerWearToAdd, // Store the interaction's wear (0)
+                    defender: defenderWearToAdd  // Store the interaction's wear (0)
+                }
+            });
+            // Emit update so UI processing indicators are removed etc.
+            if (game.socket) {
+                game.socket.emit("system.witch-iron.battleWearUpdate", {
+                    messageId: message.id,
+                    attackerWear: attackerWearToAdd, // Send the interaction wear
+                    defenderWear: defenderWearToAdd, // Send the interaction wear
+                    userId: game.user.id,
+                    completed: true // Indicate processing is done for this interaction
+                });
+            }
+            return true; // Return true as technically nothing failed
         }
-        
+
         // Initialize variables for attacker and defender names
         let attackerName = "Attacker";
         let defenderName = "Defender";
-        
+
+        // ... (rest of the name finding logic remains the same) ...
         // Try to get the message element
         let messageElement = null;
         
@@ -928,110 +1127,64 @@ async function applyBattleWear(message, attackerWear, defenderWear) {
         if (!attackerActor) {
             console.warn(`Could not find attacker actor: ${attackerName}`);
         }
+        
         if (!defenderActor) {
             console.warn(`Could not find defender actor: ${defenderName}`);
         }
-        
-        // Apply battle wear to the attacker's weapon
-        if (attackerActor && attackerWear > 0) {
-            // Get the current battle wear value
-            const currentWear = attackerActor.system?.battleWear?.weapon?.value || 0;
-            console.log(`Attacker's current weapon wear: ${currentWear}`);
-            
-            // Calculate max wear value from actor's derived data
-            const maxWear = attackerActor.system?.derived?.weaponBonusMax || 0;
-            console.log(`Attacker's max weapon wear: ${maxWear}`);
-            
-            // Calculate new battle wear (don't exceed max value)
-            const newWear = Math.min(maxWear, Math.max(0, currentWear + attackerWear));
-            console.log(`Calculated new wear: ${newWear} (current ${currentWear} + increase ${attackerWear}, max ${maxWear})`);
-            
-            // Only update if there's an actual change
-            if (newWear !== currentWear) {
-                try {
-                    // Update the actor with the new battle wear value
-                    await attackerActor.update({
-                        'system.battleWear.weapon.value': newWear
-                    });
-                    
-                    console.log(`Updated attacker's weapon wear to ${newWear}`);
-                    ui.notifications.info(`Applied ${attackerWear} battle wear to ${attackerName}'s weapon (${currentWear} → ${newWear})`);
-                    
-                    // Make sure changes are reflected in UI
-                    attackerActor.render(false);
-                    if (attackerActor.sheet?.rendered) {
-                        attackerActor.sheet.render(true);
-                    }
-                } catch (error) {
-                    console.error("Error updating attacker battle wear:", error);
-                    ui.notifications.error(`Error applying battle wear to ${attackerName}: ${error.message}`);
-                }
-            } else {
-                console.log("No change to attacker's weapon wear needed");
+
+        // Store the battle wear ADDED in this interaction in the message flags
+        await message.update({
+            "flags.witch-iron.battleWear": {
+                attacker: attackerWearToAdd,
+                defender: defenderWearToAdd
             }
-        }
-        
-        // Apply battle wear to the defender's armor
-        if (defenderActor && defenderWear > 0) {
-            // Get the current battle wear value
-            const currentWear = defenderActor.system?.battleWear?.armor?.value || 0;
-            console.log(`Defender's current armor wear: ${currentWear}`);
-            
-            // Calculate max wear value from actor's derived data
-            const maxWear = defenderActor.system?.derived?.armorBonusMax || 0;
-            console.log(`Defender's max armor wear: ${maxWear}`);
-            
-            // Calculate new battle wear (don't exceed max value)
-            const newWear = Math.min(maxWear, Math.max(0, currentWear + defenderWear));
-            console.log(`Calculated new wear: ${newWear} (current ${currentWear} + increase ${defenderWear}, max ${maxWear})`);
-            
-            // Only update if there's an actual change
-            if (newWear !== currentWear) {
-                try {
-                    // Update the actor with the new battle wear value
-                    await defenderActor.update({
-                        'system.battleWear.armor.value': newWear
-                    });
-                    
-                    console.log(`Updated defender's armor wear to ${newWear}`);
-                    ui.notifications.info(`Applied ${defenderWear} battle wear to ${defenderName}'s armor (${currentWear} → ${newWear})`);
-                    
-                    // Make sure changes are reflected in UI
-                    defenderActor.render(false);
-                    if (defenderActor.sheet?.rendered) {
-                        defenderActor.sheet.render(true);
-                    }
-                } catch (error) {
-                    console.error("Error updating defender battle wear:", error);
-                    ui.notifications.error(`Error applying battle wear to ${defenderName}: ${error.message}`);
-                }
-            } else {
-                console.log("No change to defender's armor wear needed");
-            }
-        }
-        
-        // Disable the battle wear buttons after applying if we have the message element
-    if (messageElement) {
-        const battleWearButtons = messageElement.querySelectorAll('.battle-wear-plus, .battle-wear-minus');
-        battleWearButtons.forEach(button => {
-            button.disabled = true;
         });
-            
-            console.log(`Disabled ${battleWearButtons.length} battle wear buttons`);
-        
-        // Hide the create injury button
-        const createInjuryButton = messageElement.querySelector('.create-injury');
-        if (createInjuryButton) {
-            createInjuryButton.style.display = 'none';
-                console.log("Hidden create injury button");
-            }
+        console.log(`Stored interaction wear (+${attackerWearToAdd}, +${defenderWearToAdd}) in message flags.`);
+
+        // --- Calculate and Update Actor Data ---
+        let newTotalAttackerWear = 0;
+        let newTotalDefenderWear = 0;
+
+        if (attackerActor) {
+            const currentAttackerWear = attackerActor.system.battleWear?.weapon?.value || 0;
+            const attackerMaxWear = attackerActor.system.derived?.weaponBonusMax || 0;
+            newTotalAttackerWear = Math.min(currentAttackerWear + attackerWearToAdd, attackerMaxWear);
+
+            console.log(`Updating ${attackerName}'s weapon wear: ${currentAttackerWear} + ${attackerWearToAdd} -> ${newTotalAttackerWear} (Max: ${attackerMaxWear})`);
+            await attackerActor.update({
+                "system.battleWear.weapon.value": newTotalAttackerWear
+            });
         }
-        
-        return { attackerActor, defenderActor };
+
+        if (defenderActor) {
+            const currentDefenderWear = defenderActor.system.battleWear?.armor?.value || 0;
+            const defenderMaxWear = defenderActor.system.derived?.armorBonusMax || 0;
+            newTotalDefenderWear = Math.min(currentDefenderWear + defenderWearToAdd, defenderMaxWear);
+
+            console.log(`Updating ${defenderName}'s armor wear: ${currentDefenderWear} + ${defenderWearToAdd} -> ${newTotalDefenderWear} (Max: ${defenderMaxWear})`);
+            await defenderActor.update({
+                "system.battleWear.armor.value": newTotalDefenderWear
+            });
+        }
+
+        // Broadcast a custom socket message to notify all clients about the battle wear change *in this interaction*
+        // The UI update function will handle displaying these interaction values correctly on the card.
+        if (game.socket) {
+            game.socket.emit("system.witch-iron.battleWearUpdate", {
+                messageId: message.id,
+                attackerWear: attackerWearToAdd, // Send the interaction wear
+                defenderWear: defenderWearToAdd, // Send the interaction wear
+                userId: game.user.id,
+                completed: true // Indicate processing is done for this interaction
+            });
+            console.log(`Broadcast interaction wear update (+${attackerWearToAdd}, +${defenderWearToAdd})`);
+        }
+
+        return true;
     } catch (error) {
-        console.error("Error in applyBattleWear:", error);
-        ui.notifications.error(`Error applying battle wear: ${error.message}`);
-        return null;
+        console.error("Error applying battle wear:", error);
+        ui.notifications.error("Failed to apply battle wear: " + error.message);
+        return false;
     }
 }
 
@@ -1495,17 +1648,17 @@ function createInjuryButtons() {
  */
 async function createInjuryHandler(event) {
     event.preventDefault();
-    
+
     // Get the button and message element
     const button = event.currentTarget;
     const messageElement = button.closest('.message');
-    
+
     if (!messageElement) {
         console.error("Could not find message element for create injury button");
         ui.notifications.error("Could not find message element. Please try again.");
         return;
     }
-    
+
     // Get the message ID
     const messageId = messageElement.dataset.messageId;
     if (!messageId) {
@@ -1513,7 +1666,7 @@ async function createInjuryHandler(event) {
         ui.notifications.error("Could not find message ID. Please try again.");
         return;
     }
-    
+
     // Get the actual ChatMessage object
     const message = game.messages.get(messageId);
     if (!message) {
@@ -1521,9 +1674,9 @@ async function createInjuryHandler(event) {
         ui.notifications.error("Could not find message. Please try again.");
         return;
     }
-    
+
     console.log("Found message for create injury button:", message);
-    
+
     // Get the injury data
     const injuryData = message.getFlag("witch-iron", "injuryData");
     if (!injuryData) {
@@ -1531,26 +1684,32 @@ async function createInjuryHandler(event) {
         ui.notifications.error("Could not find injury data. Please try again.");
         return;
     }
-    
+
     // Get combat ID to track this workflow
     const combatId = injuryData.combatId || message.getFlag("witch-iron", "combatId");
     console.log(`Processing injury for combat ID: ${combatId}`);
-    
+
     const defenderName = injuryData.defender || "Defender";
     const location = injuryData.location || "Torso";
-    let damage = injuryData.damage || 1;
-    
+    let baseDamage = injuryData.damage || 1; // This is the initial calculated damage before BW adjustments
+
+    // Get specific location if available
+    const specificLocation = injuryData.specificLocation || button.dataset.specificLocation || null;
+    const locationRoll = injuryData.locationRoll || parseInt(button.dataset.locationRoll) || null;
+
+    console.log(`Injury location: ${location}${specificLocation ? ` (specific: ${specificLocation}, roll: ${locationRoll})` : ''}`);
+
     // Ensure net hits is a positive number and represents the REMAINING hits after location adjustments
     const netHits = Math.abs(injuryData.netHits || 0);
     console.log(`Using net hits value: ${netHits} (from injury data - this should be REMAINING hits after location moves)`);
-    
+
     const effect = injuryData.effect || "";
-    
-    console.log(`Injury data: damage=${damage}, netHits=${netHits}, location=${location}`);
-    
+
+    console.log(`Injury data: baseDamage=${baseDamage}, netHits=${netHits}, location=${location}`);
+
     // Get the defender actor
     let defenderActor = null;
-    
+
     // First try to find in tokens
     for (const token of canvas.tokens.placeables) {
         if (token.name === defenderName && token.actor) {
@@ -1559,87 +1718,85 @@ async function createInjuryHandler(event) {
             break;
         }
     }
-    
+
     // If not found in tokens, try actors directory
     if (!defenderActor) {
         defenderActor = game.actors.find(a => a.name === defenderName);
         console.log(`Found defender in actors directory: ${defenderActor?.name}`);
     }
-    
+
     if (!defenderActor) {
         console.error(`Could not find defender actor: ${defenderName}`);
         ui.notifications.error(`Could not find defender "${defenderName}". Please try again.`);
         return;
     }
-    
+
     try {
-        // Get battle wear data from the message
+        // Get battle wear values *from the card UI* - these represent the wear added *in this interaction*
         const attackerWearElement = messageElement.querySelector('.attacker-wear .battle-wear-value');
         const defenderWearElement = messageElement.querySelector('.defender-wear .battle-wear-value');
-        
-        let attackerWear = 0;
-        let defenderWear = 0;
-        
+
+        let attackerWearToAdd = 0; // Wear added via the card controls for this attack
+        let defenderWearToAdd = 0; // Wear added via the card controls for this attack
+
         if (attackerWearElement) {
-            attackerWear = parseInt(attackerWearElement.textContent) || 0;
+            attackerWearToAdd = parseInt(attackerWearElement.textContent) || 0;
         }
-        
+
         if (defenderWearElement) {
-            defenderWear = parseInt(defenderWearElement.textContent) || 0;
+            defenderWearToAdd = parseInt(defenderWearElement.textContent) || 0;
         }
-        
-        // Apply battle wear first to track equipment wear
-        console.log(`Applying battle wear after injury: Attacker ${attackerWear}, Defender ${defenderWear}`);
-        await applyBattleWear(message, attackerWear, defenderWear);
-        
-        // MODIFIED DAMAGE CALCULATION:
-        // Calculate the base damage using the formula, including remaining net hits
-        let baseDamage = damage;
-        
-        // Log the components of our damage calculation for clarity
-        const attackerDamage = injuryData.abilityDmg || 3;  // Ability damage
-        const weaponDamage = injuryData.weaponDmg || 0;     // Weapon damage
-        const defenderSoak = injuryData.soak || 0;          // Total soak
-        
-        console.log(`Damage components: Ability(${attackerDamage}) + Weapon(${weaponDamage}) + NetHits(${netHits}) - Soak(${defenderSoak})`);
-        
-        // 1. Add the attacker's weapon battle wear directly to the damage
-        const damageWithWeaponWear = baseDamage + attackerWear;
-        console.log(`Base damage ${baseDamage} + weapon wear ${attackerWear} = ${damageWithWeaponWear}`);
-        
-        // 2. Only roll armor dice if there's defender battle wear
+
+        // Apply battle wear *addition* first (updates actor sheets and stores interaction wear in flags)
+        console.log(`Passing interaction wear to applyBattleWear: Attacker +${attackerWearToAdd}, Defender +${defenderWearToAdd}`);
+        const applySuccess = await applyBattleWear(message, attackerWearToAdd, defenderWearToAdd);
+        if (!applySuccess) {
+            console.error("Failed to apply battle wear, aborting injury creation.");
+            // Potentially re-enable the button or show a more specific error
+             button.disabled = false; // Re-enable on failure
+             ui.notifications.error("Failed to update battle wear on actors.");
+            return;
+        }
+
+        // DAMAGE CALCULATION based on interaction wear:
+        // Start with the base damage calculated *before* any battle wear was involved
+        // This base damage already includes ability, weapon bonus, net hits, and soak.
+        console.log(`Base damage before interaction battle wear: ${baseDamage}`);
+
+        // 1. Add the attacker's weapon wear *from this interaction*
+        const damageWithWeaponWear = baseDamage + attackerWearToAdd;
+        console.log(`Damage after interaction weapon wear (+${attackerWearToAdd}): ${damageWithWeaponWear}`);
+
+        // 2. Only roll armor dice if there's defender wear *added in this interaction*
         let armorRollResult = 0;
         let finalDamage = damageWithWeaponWear;
         let armorRoll = null;
-        
-        if (defenderWear > 0) {
-            // Create a roll for armor battle wear dice
-            armorRoll = await new Roll(`${defenderWear}d6`).evaluate({async: true});
+
+        if (defenderWearToAdd > 0) {
+            // Create a roll for armor battle wear dice *added in this interaction*
+            armorRoll = await new Roll(`${defenderWearToAdd}d6`).evaluate(); // Use modern async evaluate
             armorRollResult = armorRoll.total;
-            
+
             // Subtract the armor roll from the damage (can't go below 0)
             finalDamage = Math.max(0, damageWithWeaponWear - armorRollResult);
-            
-            console.log(`Rolled ${defenderWear}d6 for armor and got ${armorRollResult}. Final damage: ${finalDamage}`);
-            
-            // Display the armor roll
+
+            console.log(`Rolled ${defenderWearToAdd}d6 for interaction armor wear and got ${armorRollResult}. Final damage: ${finalDamage}`);
+
+            // Display the armor roll using a standard dice roll chat message
             await armorRoll.toMessage({
-                flavor: `${defenderName}'s Armor Battle Wear Roll`,
-                speaker: ChatMessage.getSpeaker(),
-                content: `<div class="armor-roll-result">
-                    <div>Base Damage: ${baseDamage}</div>
-                    <div>After Weapon Wear (+${attackerWear}): ${damageWithWeaponWear}</div>
-                    <div>Armor Roll (${defenderWear}d6): ${armorRollResult}</div>
-                    <div>Final Damage: ${finalDamage}</div>
-                    <div class="small-note">Remaining Net Hits: ${netHits}</div>
-                </div>`
+                flavor: `${defenderName}'s Armor Battle Wear Roll (+${defenderWearToAdd}d6)`,
+                speaker: ChatMessage.getSpeaker()
             });
-            
+
             // Create a short follow-up injury card for the armor battle wear result
-            await createArmorBattleWearResultMessage(injuryData, finalDamage, armorRollResult, combatId);
+            // Pass the *original* injury data along with the final calculation results
+            await createArmorBattleWearResultMessage(injuryData, finalDamage, armorRollResult, combatId, damageWithWeaponWear, attackerWearToAdd, defenderWearToAdd);
+
+        } else {
+             console.log(`No interaction armor wear added (+${defenderWearToAdd}d6), final damage remains: ${finalDamage}`);
         }
-        
-        // Generate injury name based on location and severity
+
+        // Generate injury name based on location and severity of the *final damage*
         let severityLabel = "Minor";
         if (finalDamage >= 7) {
             severityLabel = "Severe";
@@ -1648,46 +1805,62 @@ async function createInjuryHandler(event) {
         } else if (finalDamage <= 0) {
             severityLabel = "Deflected";
         }
-        
-        const injuryName = finalDamage > 0 ? 
-            `${severityLabel} ${location} Injury` : 
-            `Attack Deflected by ${location}`;
-        
-        // Generate effect based on location and severity
+
+        // Use specific location in the injury name if available
+        const displayLocation = specificLocation || location;
+        const injuryName = finalDamage > 0 ?
+            `${severityLabel} ${displayLocation} Injury` :
+            `Attack Deflected by ${displayLocation}`;
+
+        // Generate effect based on location and *final damage*
         const injuryEffect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), finalDamage);
-        
-        // Only create the injury if damage > 0
+
+        // Only create the injury item if final damage > 0
         if (finalDamage > 0) {
-        // Create the injury item
-            await HitLocationSelector._createInjuryItem(defenderActor, injuryName, location, finalDamage, injuryEffect);
-        
-        console.log(`Created injury "${injuryName}" for ${defenderName}`);
-        ui.notifications.info(`Injury "${injuryName}" added to ${defenderName}.`);
+            // Create the injury item with specific location if available
+            await HitLocationSelector._createInjuryItem(defenderActor, injuryName, displayLocation, finalDamage, injuryEffect);
+
+            console.log(`Created injury "${injuryName}" for ${defenderName}`);
+            ui.notifications.info(`Injury "${injuryName}" added to ${defenderName}.`);
         } else {
-            console.log(`Attack deflected by ${defenderName}'s armor roll (${armorRollResult})`);
-            ui.notifications.info(`Attack deflected by ${defenderName}'s armor.`);
+            // If damage was 0 *before* the armor roll, it's deflected by soak/low damage
+            // If damage became 0 *after* the armor roll, it's deflected by armor wear
+            if (defenderWearToAdd > 0) {
+                 console.log(`Attack deflected by ${defenderName}'s armor roll (${armorRollResult})`);
+                 ui.notifications.info(`Attack deflected by ${defenderName}'s armor.`);
+            } else {
+                 console.log(`Attack resulted in 0 or less damage before armor wear roll.`);
+                 ui.notifications.info(`Attack failed to penetrate ${defenderName}'s defenses.`);
+            }
         }
-        
+
         // Disable the create injury button
         button.disabled = true;
-        button.innerHTML = finalDamage > 0 ? 
-            `<i class="fas fa-check-circle"></i> Injury Applied` : 
+        button.innerHTML = finalDamage > 0 ?
+            `<i class="fas fa-check-circle"></i> Injury Applied` :
             `<i class="fas fa-shield-alt"></i> Attack Deflected`;
         button.style.backgroundColor = "#555";
+
     } catch (error) {
         console.error(`Error creating injury for ${defenderName}:`, error);
         ui.notifications.error(`Error creating injury: ${error.message}`);
+        // Re-enable button on error
+         button.disabled = false;
+         button.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Error`;
     }
 }
 
 /**
  * Creates a simple follow-up message for armor battle wear rolls
- * @param {Object} injuryData The original injury data
+ * @param {Object} injuryData The original injury data from the main card
  * @param {number} finalDamage The final damage after armor roll
- * @param {number} armorRoll The armor roll result
+ * @param {number} armorRollResult The armor roll result
  * @param {string} combatId The combat workflow ID
+ * @param {number} damageBeforeArmorRoll Damage after weapon wear but before armor roll
+ * @param {number} attackerWearAdded Attacker wear added in this interaction
+ * @param {number} defenderWearAdded Defender wear added (dice rolled)
  */
-async function createArmorBattleWearResultMessage(injuryData, finalDamage, armorRoll, combatId) {
+async function createArmorBattleWearResultMessage(injuryData, finalDamage, armorRollResult, combatId, damageBeforeArmorRoll, attackerWearAdded, defenderWearAdded) {
     // Generate severity label based on final damage
     let severityLabel = "Minor";
     if (finalDamage >= 7) {
@@ -1697,41 +1870,45 @@ async function createArmorBattleWearResultMessage(injuryData, finalDamage, armor
     } else if (finalDamage <= 0) {
         severityLabel = "Deflected";
     }
-    
+
     // Generate appropriate flavor text
-    const flavor = finalDamage <= 0 ? "Attack Deflected by Armor" : "Armor Reduced Injury";
-    
+    const flavor = finalDamage <= 0 ? "Attack Deflected by Armor Wear" : "Armor Wear Reduced Injury";
+
     // Generate effect based on location and final damage
     const location = injuryData.location;
+    const specificLocation = injuryData.specificLocation || location; // Use specific if available
     const effect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), finalDamage);
-    
-    // Create HTML content for the message
+
+    // Create HTML content for the message, REMOVING the collapsible damage details section
     const content = `
-    <div class="witch-iron chat-card armor-result-card ${finalDamage <= 0 ? 'deflected' : ''}">
+    <div class="witch-iron chat-card armor-result-card injury-card ${finalDamage <= 0 ? 'deflected' : ''}">
         <div class="card-header">
             <i class="fas ${finalDamage <= 0 ? 'fa-shield-alt' : 'fa-tint'}"></i>
-            <h3>${finalDamage <= 0 ? 'Attack Deflected!' : 'Final Injury'}</h3>
+            <h3>${finalDamage <= 0 ? 'Attack Deflected by Armor!' : 'Final Injury Result'}</h3>
         </div>
         <div class="card-content">
-            <div class="armor-roll-result">
-                <div class="armor-roll-row">
-                    <span class="armor-label">Original Damage:</span>
-                    <span class="armor-value">${injuryData.damage}</span>
+            <!-- REMOVED Collapsible Damage Details Section -->
+            <!--
+            <div class="collapsible-section" style="display: none;"> // Hide instead of removing if preferred
+                <div class="section-header combat-toggle">
+                    <i class="fas fa-chevron-down"></i>
+                    <h4>Calculation Details</h4>
                 </div>
-                <div class="armor-roll-row">
-                    <span class="armor-label">Armor Roll:</span>
-                    <span class="armor-value">${armorRoll}</span>
-                </div>
-                <div class="armor-roll-row final-damage">
-                    <span class="armor-label">Final Damage:</span>
-                    <span class="armor-value">${finalDamage}</span>
+                <div class="section-content combat-details hidden">
+                    <div class="detail-grid">
+                        <div class="detail-item"><span class="label">Damage before Armor Roll:</span> <span class="value">${damageBeforeArmorRoll}</span></div>
+                        <div class="detail-item"><span class="label">(Base Damage: ${injuryData.damage}, +Weapon Wear: ${attackerWearAdded})</span></div>
+                        <div class="detail-item"><span class="label">Armor Roll (${defenderWearAdded}d6):</span> <span class="value">${armorRollResult}</span></div>
+                        <div class="detail-item"><span class="label">Final Damage:</span> <span class="value">${finalDamage}</span></div>
+                    </div>
                 </div>
             </div>
-            
+            -->
+
             ${finalDamage <= 0 ? `
             <div class="deflected-message">
                 <div class="deflected-text">Deflected!</div>
-                <div class="deflected-location">Attack deflected by ${injuryData.defender}'s armor</div>
+                <div class="deflected-location">Attack deflected by ${injuryData.defender}'s armor wear roll (${armorRollResult})</div>
             </div>
             ` : `
             <div class="injury-container">
@@ -1740,44 +1917,51 @@ async function createArmorBattleWearResultMessage(injuryData, finalDamage, armor
                 </div>
                 <div class="injury-row">
                     <div class="severity-col">${finalDamage}</div>
-                    <div class="location-col">${location}</div>
-                    <div class="effect-col">${effect}</div>
+                    <div class="location-col">${specificLocation}: ${effect}</div>
+                    <!-- Removed effect-col as it's combined -->
                 </div>
                 <div class="injury-description">
-                    ${severityLabel} ${location} Injury
+                    ${severityLabel} ${specificLocation} Injury
                 </div>
             </div>
             `}
         </div>
     </div>
     `;
-    
+
     // Create the chat message
     const message = await ChatMessage.create({
         user: game.user.id,
         content: content,
-        speaker: ChatMessage.getSpeaker({alias: `${injuryData.defender}'s Armor Result`}),
+        speaker: ChatMessage.getSpeaker({alias: `${injuryData.defender}'s Armor Wear Result`}),
         flavor: flavor,
         flags: {
             "witch-iron": {
                 messageType: finalDamage <= 0 ? "deflection" : "injury",
                 combatId: combatId,
-                isArmorResult: true,
+                isArmorResult: true, // Mark this as a result card
+                // Store relevant final data for this result card
                 injuryData: {
                     attacker: injuryData.attacker,
                     defender: injuryData.defender,
-                    location: location,
-                    damage: finalDamage,
+                    location: location, // General location
+                    specificLocation: specificLocation, // Specific location
+                    damage: finalDamage, // Final damage after armor roll
                     effect: effect,
                     combatId: combatId,
-                    originalDamage: injuryData.damage,
-                    armorRoll: armorRoll
+                    originalBaseDamage: injuryData.damage, // Store the initial base damage pre-wear
+                    damageBeforeArmorRoll: damageBeforeArmorRoll,
+                    armorRoll: armorRollResult,
+                    attackerWearAdded: attackerWearAdded,
+                    defenderWearAdded: defenderWearAdded
                 }
             }
         }
     });
-    
+
     console.log(`Created armor battle wear result message (${message.id}) for combat ID: ${combatId}`);
+    // Ensure handlers are attached for the toggle (though toggle is removed now)
+     // setTimeout(() => attachInjuryMessageHandlers(message.id), 50); // May not be needed if toggle is gone
     return message;
 }
 
@@ -1964,91 +2148,38 @@ function updatePotentialInjury(cardElement) {
 function updateInjuryDisplay(cardElement, damage, location, effect, severityLabel) {
     // Find the injury container or create it if not found
     let injuryContainer = cardElement.querySelector('.injury-container');
-    let deflectedMessage = cardElement.querySelector('.deflected-message');
     
-    // If we have 0 damage, show deflected
-    if (damage <= 0) {
-        // Create or show deflected message
-        if (!deflectedMessage) {
-            if (injuryContainer) {
-                // Replace injury container with deflected message
-                deflectedMessage = document.createElement('div');
-                deflectedMessage.className = 'deflected-message';
-                injuryContainer.parentNode.replaceChild(deflectedMessage, injuryContainer);
-            } else {
-                // Create new deflected message
-                deflectedMessage = document.createElement('div');
-                deflectedMessage.className = 'deflected-message';
-                
-                // Find where to insert it
-                const injuryButton = cardElement.querySelector('.create-injury');
-                if (injuryButton) {
-                    injuryButton.parentNode.insertBefore(deflectedMessage, injuryButton);
-                } else {
-                    const cardContent = cardElement.querySelector('.card-content');
-                    if (cardContent) {
-                        cardContent.appendChild(deflectedMessage);
-                    }
-                }
+    // Create or show injury container
+    if (!injuryContainer) {
+        injuryContainer = document.createElement('div');
+        injuryContainer.className = 'injury-container';
+        
+        // Find where to insert it
+        const injuryButton = cardElement.querySelector('.create-injury');
+        if (injuryButton) {
+            injuryButton.parentNode.insertBefore(injuryContainer, injuryButton);
+        } else {
+            const cardContent = cardElement.querySelector('.card-content');
+            if (cardContent) {
+                cardContent.appendChild(injuryContainer);
             }
-        }
-        
-        // Update deflected message content
-        deflectedMessage.innerHTML = `
-            <div class="deflected-text">Deflected!</div>
-            <div class="deflected-location">0 Damage to the ${location}</div>
-        `;
-        
-        // Hide injury container if it exists
-        if (injuryContainer) {
-            injuryContainer.style.display = 'none';
-        }
-    } else {
-        // We have damage, show injury
-        if (!injuryContainer) {
-            if (deflectedMessage) {
-                // Replace deflected with injury container
-                injuryContainer = document.createElement('div');
-                injuryContainer.className = 'injury-container';
-                deflectedMessage.parentNode.replaceChild(injuryContainer, deflectedMessage);
-            } else {
-                // Create new injury container
-                injuryContainer = document.createElement('div');
-                injuryContainer.className = 'injury-container';
-                
-                // Find where to insert it
-                const injuryButton = cardElement.querySelector('.create-injury');
-                if (injuryButton) {
-                    injuryButton.parentNode.insertBefore(injuryContainer, injuryButton);
-                } else {
-                    const cardContent = cardElement.querySelector('.card-content');
-                    if (cardContent) {
-                        cardContent.appendChild(injuryContainer);
-                    }
-                }
-            }
-        }
-        
-        // Show injury container
-        injuryContainer.style.display = '';
-        
-        // Update injury content
-        injuryContainer.innerHTML = `
-            <div class="injury-header">
-                <h4>Injury</h4>
-            </div>
-            <div class="injury-row">
-                <div class="severity-col">${damage}</div>
-                <div class="location-col">${location}</div>
-                <div class="effect-col">${effect}</div>
-            </div>
-        `;
-        
-        // Hide deflected message if it exists
-        if (deflectedMessage) {
-            deflectedMessage.style.display = 'none';
         }
     }
+    
+    // Show injury container
+    injuryContainer.style.display = '';
+    
+    // Update injury content
+    injuryContainer.innerHTML = `
+        <div class="injury-header">
+            <h4>Injury</h4>
+        </div>
+        <div class="injury-row">
+            <div class="severity-col">${damage}</div>
+            <div class="location-col">${location}</div>
+            <div class="effect-col">${effect}</div>
+        </div>
+    `;
 }
 
 /**
@@ -2108,6 +2239,33 @@ function attachInjuryMessageHandlers(messageId) {
         });
     }
     
+    // Attach handlers to damage calculation tabs
+    const damageTabs = messageElement.querySelectorAll('.damage-tab');
+    if (damageTabs.length > 0) {
+        console.log("Found damage calculation tabs, attaching handlers");
+        damageTabs.forEach(tab => {
+            // Clone to remove any existing handlers
+            const newTab = tab.cloneNode(true);
+            tab.parentNode.replaceChild(newTab, tab);
+            
+            // Attach new handler
+            newTab.addEventListener('click', (event) => {
+                event.preventDefault();
+                
+                // Remove active class from all tabs
+                const allTabs = messageElement.querySelectorAll('.damage-tab');
+                allTabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to the clicked tab
+                newTab.classList.add('active');
+                
+                // Update the injury display based on the selected tab
+                const tabType = newTab.dataset.tab;
+                updateInjuryDisplayForTab(messageElement, tabType);
+            });
+        });
+    }
+    
     // Attach handlers to injury button
     const createInjuryBtn = messageElement.querySelector('.create-injury');
     if (createInjuryBtn) {
@@ -2129,7 +2287,7 @@ function attachInjuryMessageHandlers(messageId) {
         button.parentNode.replaceChild(newBtn, button);
         
         // Attach new handler
-        newBtn.addEventListener('click', (event) => {
+        newBtn.addEventListener('click', async (event) => {
             event.preventDefault();
             console.log("Battle wear button clicked");
             
@@ -2148,16 +2306,153 @@ function attachInjuryMessageHandlers(messageId) {
             if (isAttacker) {
                 attackerWear = isPlus ? attackerWear + 1 : Math.max(0, attackerWear - 1);
                 if (attackerWearEl) attackerWearEl.textContent = attackerWear;
+                const attackerBonusEl = messageElement.querySelector('.attacker-wear .battle-wear-bonus');
+                if (attackerBonusEl) attackerBonusEl.textContent = attackerWear;
             } else {
                 defenderWear = isPlus ? defenderWear + 1 : Math.max(0, defenderWear - 1);
                 if (defenderWearEl) defenderWearEl.textContent = defenderWear;
+                const defenderBonusEl = messageElement.querySelector('.defender-wear .battle-wear-bonus');
+                if (defenderBonusEl) defenderBonusEl.textContent = defenderWear;
+                
+                // Show/hide tabs based on defender wear
+                const injuryHeader = messageElement.querySelector('.injury-header');
+                const damageTabs = messageElement.querySelector('.damage-calc-tabs');
+                
+                if (injuryHeader) {
+                    // If tabs don't exist and defender wear > 0, create them
+                    if (!damageTabs && defenderWear > 0) {
+                        const tabsDiv = document.createElement('div');
+                        tabsDiv.className = 'damage-calc-tabs';
+                        tabsDiv.innerHTML = `
+                            <button class="damage-tab" data-tab="min">Min</button>
+                            <button class="damage-tab active" data-tab="avg">Avg</button>
+                            <button class="damage-tab" data-tab="max">Max</button>
+                        `;
+                        injuryHeader.appendChild(tabsDiv);
+                        
+                        // Attach handlers to the new tabs
+                        const newTabs = tabsDiv.querySelectorAll('.damage-tab');
+                        newTabs.forEach(tab => {
+                            tab.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                const allTabs = messageElement.querySelectorAll('.damage-tab');
+                                allTabs.forEach(t => t.classList.remove('active'));
+                                tab.classList.add('active');
+                                updateInjuryDisplayForTab(messageElement, tab.dataset.tab);
+                            });
+                        });
+                    } 
+                    // If tabs exist and defender wear is 0, remove them
+                    else if (damageTabs && defenderWear === 0) {
+                        injuryHeader.removeChild(damageTabs);
+                    }
+                }
             }
             
-            // Update injury display based on new wear values
-            updatePotentialInjury(messageElement);
+            // Update injury display based on new wear values and active tab
+            const activeTab = messageElement.querySelector('.damage-tab.active');
+            const tabType = activeTab ? activeTab.dataset.tab : 'avg';
+            
+            updateInjuryDisplayForTab(messageElement, tabType);
             
             // Enable/disable buttons based on current values
             updateBattleWearButtons(messageElement);
+            
+            // Get the message ID to update the server-side data
+            const messageId = messageElement.closest('.message')?.dataset.messageId;
+            if (messageId) {
+                const message = game.messages.get(messageId);
+                if (message) {
+                    // Get the current attacker and defender wear values from the UI
+                    const currentAttackerWear = parseInt(messageElement.querySelector('.attacker-wear .battle-wear-value').textContent) || 0;
+                    const currentDefenderWear = parseInt(messageElement.querySelector('.defender-wear .battle-wear-value').textContent) || 0;
+                    
+                    console.log(`Preparing battle wear update: Attacker: ${currentAttackerWear}, Defender: ${currentDefenderWear}`);
+                    
+                    // Add a processing indicator
+                    const battleWearContainer = messageElement.querySelector('.battle-wear-container');
+                    let processingIndicator = messageElement.querySelector('.battle-wear-processing');
+                    
+                    if (!processingIndicator && battleWearContainer) {
+                        processingIndicator = document.createElement('div');
+                        processingIndicator.className = 'battle-wear-processing';
+                        processingIndicator.innerHTML = `
+                            <i class="fas fa-sync fa-spin"></i>
+                            <span>Updating battle wear...</span>
+                        `;
+                        battleWearContainer.appendChild(processingIndicator);
+                    }
+                    
+                    // Temporarily disable all battle wear buttons
+                    const allButtons = messageElement.querySelectorAll('.battle-wear-plus, .battle-wear-minus');
+                    allButtons.forEach(btn => btn.disabled = true);
+                    
+                    try {
+                        if (game.user.isGM) {
+                            // GM users can update directly
+                            console.log("User is GM - updating battle wear directly");
+                            
+                            // Update message flags and actors
+                            await message.update({
+                                "flags.witch-iron.battleWear": {
+                                    attacker: currentAttackerWear,
+                                    defender: currentDefenderWear
+                                }
+                            });
+                            
+                            await updateActorBattleWear(message, currentAttackerWear, currentDefenderWear);
+                            
+                            // Broadcast to all clients that the update is complete
+                            game.socket.emit("system.witch-iron.battleWearUpdate", {
+                                messageId: message.id,
+                                attackerWear: currentAttackerWear,
+                                defenderWear: currentDefenderWear,
+                                userId: game.user.id,
+                                completed: true
+                            });
+                        } else {
+                            // Regular users send a request to the GM via invisible chat message
+                            console.log("User is not GM - sending battle wear update request via chat message");
+                            
+                            // Create a data object with all necessary info
+                            const updateData = {
+                                messageId: messageId,
+                                attackerWear: currentAttackerWear,
+                                defenderWear: currentDefenderWear,
+                                requesterId: game.user.id,
+                                timestamp: Date.now()
+                            };
+                            
+                            // Send the request to the GM
+                            await sendBattleWearUpdateRequest(updateData);
+                            
+                            
+                            // Set a timeout to restore buttons if no response received
+                            setTimeout(() => {
+                                if (messageElement.querySelector('.battle-wear-processing')) {
+                                    // Remove processing indicator
+                                    messageElement.querySelector('.battle-wear-processing').remove();
+                                    
+                                    // Re-enable buttons
+                                    updateBattleWearButtons(messageElement);
+                                    
+                                }
+                            }, 10000); // 10 second timeout
+                        }
+                    } catch (error) {
+                        console.error("Error updating battle wear:", error);
+                        ui.notifications.error("Failed to update battle wear");
+                        
+                        // Remove processing indicator
+                        if (processingIndicator) {
+                            processingIndicator.remove();
+                        }
+                        
+                        // Re-enable buttons
+                        updateBattleWearButtons(messageElement);
+                    }
+                }
+            }
         });
     });
 }
@@ -2194,4 +2489,577 @@ function updateBattleWearButtons(messageElement) {
         if (defenderPlusBtn) defenderPlusBtn.disabled = defenderWear >= defenderMax;
         if (defenderMinusBtn) defenderMinusBtn.disabled = defenderWear <= 0;
     }
+}
+
+/**
+ * Updates the injury display based on the selected damage calculation tab
+ * @param {HTMLElement} messageElement The message element
+ * @param {string} tabType The type of tab ('min', 'avg', 'max')
+ */
+function updateInjuryDisplayForTab(messageElement, tabType = 'avg') {
+    if (!messageElement) return;
+    
+    const messageId = messageElement.closest('.message')?.dataset.messageId;
+    if (!messageId) {
+        console.error("Could not find message ID");
+        return;
+    }
+    
+    const message = game.messages.get(messageId);
+    if (!message) {
+        console.error(`Could not find message with ID ${messageId}`);
+        return;
+    }
+    
+    const injuryData = message.getFlag("witch-iron", "injuryData");
+    if (!injuryData) {
+        console.error("Could not find injury data in message");
+        return;
+    }
+
+    console.log("[DEBUG updateInjuryDisplayForTab] Raw injuryData:", injuryData); // Log raw data
+
+    const combatId = injuryData.combatId || message.getFlag("witch-iron", "combatId");
+    console.log(`Updating potential injury for combat ID: ${combatId} with tab: ${tabType}`);
+    
+    const location = injuryData.location || "Torso";
+    const specificLocation = injuryData.specificLocation || null;
+    const locationRoll = injuryData.locationRoll || null;
+    
+    // --- Get Base Ability Bonuses (should be reliable) ---
+    const abilityDmg = injuryData.abilityDmg ?? 3; // Use nullish coalescing for default
+    const abilitySoak = injuryData.abilitySoak ?? 3; // Use nullish coalescing for default
+
+    // --- Get EFFECTIVE Bonuses (Add checks and defaults) ---
+    const effectiveWeaponBonus = injuryData.weaponDmg ?? 0; // Default to 0 if null/undefined
+    const effectiveArmorBonus = injuryData.armorSoak ?? 0; // Default to 0 if null/undefined
+
+    console.log(`[DEBUG updateInjuryDisplayForTab] Effective Bonuses - Weapon: ${effectiveWeaponBonus}, Armor: ${effectiveArmorBonus}`);
+
+    // --- Get Remaining Net Hits ---
+    const netHits = Math.abs(injuryData.netHits || 0); // Use remaining net hits
+
+    // --- Get Interaction Wear from UI ---
+    const attackerWearElement = messageElement.querySelector('.attacker-wear .battle-wear-value');
+    const defenderWearElement = messageElement.querySelector('.defender-wear .battle-wear-value');
+    
+    let attackerInteractionWear = attackerWearElement ? parseInt(attackerWearElement.textContent) || 0 : 0;
+    let defenderInteractionWear = defenderWearElement ? parseInt(defenderWearElement.textContent) || 0 : 0;
+
+    console.log(`[DEBUG] Interaction wear values from card - Attacker: ${attackerInteractionWear}, Defender: ${defenderInteractionWear}`);
+
+    // --- REVISED DAMAGE CALCULATION ---
+    // 1. Calculate base damage using EFFECTIVE bonuses and NET HITS
+    const baseAttackerDamage = abilityDmg + effectiveWeaponBonus + netHits;
+    const baseDefenderSoak = abilitySoak + effectiveArmorBonus;
+    const baseDamageWithEffectiveBonuses = Math.max(0, baseAttackerDamage - baseDefenderSoak);
+    console.log(`Base damage calc (using effective bonuses): (${abilityDmg} + ${effectiveWeaponBonus} eff Wpn + ${netHits} net hits) - (${abilitySoak} + ${effectiveArmorBonus} eff Arm) = ${baseDamageWithEffectiveBonuses}`);
+
+    // 2. Add the INTERACTION attacker wear from the card controls
+    const damageWithInteractionWeaponWear = baseDamageWithEffectiveBonuses + attackerInteractionWear;
+    console.log(`Damage after INTERACTION weapon wear (+${attackerInteractionWear}): ${damageWithInteractionWeaponWear}`);
+
+    // 3. Calculate final damage based on the selected tab and INTERACTION defender wear (dice)
+    let finalDamage;
+    let armorDiceValue;
+    
+    if (defenderInteractionWear > 0) {
+        switch (tabType) {
+            case 'min': // Min damage means MAX reduction
+                armorDiceValue = defenderInteractionWear * 6;
+                finalDamage = Math.max(0, damageWithInteractionWeaponWear - armorDiceValue);
+                break;
+            case 'max': // Max damage means MIN reduction
+                armorDiceValue = defenderInteractionWear * 1;
+                finalDamage = Math.max(0, damageWithInteractionWeaponWear - armorDiceValue);
+                break;
+            case 'avg':
+            default:
+                armorDiceValue = Math.floor(defenderInteractionWear * 3.5);
+                finalDamage = Math.max(0, damageWithInteractionWeaponWear - armorDiceValue);
+                break;
+        }
+        console.log(`${tabType.toUpperCase()} armor calc: ${defenderInteractionWear}d6 ≈ ${armorDiceValue} reduction`);
+    } else {
+        armorDiceValue = 0;
+        finalDamage = damageWithInteractionWeaponWear;
+        console.log(`[DEBUG] No interaction armor wear - final damage set to ${finalDamage}`);
+    }
+    
+    console.log(`Final potential damage (${tabType.toUpperCase()}): ${finalDamage}`);
+
+    // --- Determine Effect and Location Display ---
+    let effect = "Pain 1";
+    let displayLocation = location; 
+    // ... (effect calculation logic remains the same) ...
+     if (specificLocation && locationRoll !== null) {
+        // We have a stored specific location and roll, use them!
+        displayLocation = specificLocation; // Use the stored specific name
+        
+        // Get the base location key (head, torso, etc.)
+        let baseLocationKey = null;
+        const normalizedLocation = location.toLowerCase().replace(/\s+/g, '');
+        if (normalizedLocation.includes('head')) baseLocationKey = 'head';
+        else if (normalizedLocation.includes('torso')) baseLocationKey = 'torso';
+        else if (normalizedLocation.includes('arm')) baseLocationKey = 'arm';
+        else if (normalizedLocation.includes('leg')) baseLocationKey = 'leg';
+
+        if (baseLocationKey) {
+            // Get the injury details from the table using the STORED roll
+            const injury = rollOnInjuryTable(baseLocationKey, locationRoll);
+            if (injury) {
+                effect = getInjuryEffect(injury, finalDamage); // Calculate effect based on final damage
+            } else {
+                console.warn(`Could not find injury in table '${baseLocationKey}' for roll ${locationRoll}`);
+            }
+        } else {
+            console.warn(`Could not determine base location key for: ${location}`);
+        }
+    } else {
+        // Fallback: If no specific location stored, use the generic effect generation
+        console.warn("Missing specific location or roll in flags, falling back to generic effect generation");
+        effect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), finalDamage);
+    }
+
+    const severityLabel = getPotentialInjurySeverity(finalDamage);
+
+    // --- Update UI Displays ---
+    // Update the main injury row (Severity, Location: Effect)
+    const injuryRow = messageElement.querySelector('.injury-row');
+    if (injuryRow) {
+        const severityCol = injuryRow.querySelector('.severity-col');
+        const locationCol = injuryRow.querySelector('.location-col'); // Combined location/effect column
+        
+        if (severityCol) severityCol.textContent = finalDamage;
+        
+        if (locationCol) {
+            if (finalDamage <= 0) {
+                 locationCol.innerHTML = `<span class="deflected">Deflected!</span>`;
+            } else {
+                 locationCol.textContent = `${displayLocation}: ${effect}`; // Combine location and effect
+            }
+        }
+         console.log(`[DEBUG Update Effect] Final Damage: ${finalDamage}, Specific Loc: ${displayLocation}, Calculated Effect: ${effect}`);
+    } else {
+        console.warn(`[DEBUG] Could not find injury row in message ${messageId}`);
+    }
+
+    // Update the create injury button data attributes (optional but good practice)
+    const injuryButton = messageElement.querySelector('.create-injury');
+     if (injuryButton && injuryData.defender) {
+         // Update the severity attribute to use the calculated damage
+         injuryButton.dataset.severity = finalDamage.toString();
+         injuryButton.dataset.description = finalDamage <= 0 ? "Deflected" : `${severityLabel} ${displayLocation} Injury`;
+         injuryButton.dataset.effect = effect;
+         injuryButton.dataset.combatId = combatId;
+
+         // Update button text based on interaction armor wear
+         if (defenderInteractionWear > 0) {
+             injuryButton.innerHTML = `<i class="fas fa-dice"></i> Roll Armor Dice & Apply Injury`;
+         } else {
+             injuryButton.innerHTML = `<i class="fas fa-plus-circle"></i> Add Injury to ${injuryData.defender}`;
+         }
+         // Re-enable button if damage is possible (it might have been disabled if previous calculation was 0)
+         injuryButton.disabled = false;
+     }
+
+    // --- Pass verified data to details display function ---
+    updateDamageCalculationDetails(messageElement, {
+        abilityDmg,
+        effectiveWeaponBonus: effectiveWeaponBonus, // Pass verified effective bonus
+        netHits,
+        abilitySoak,
+        effectiveArmorBonus: effectiveArmorBonus, // Pass verified effective bonus
+        baseDamageWithEffectiveBonuses,
+        attackerInteractionWear,
+        defenderInteractionWear,
+        armorDiceValue,
+        finalDamage,
+        tabType
+    });
+}
+
+/**
+ * Updates the damage calculation details in the combat details section
+ * (Now modified to *not* display the section)
+ */
+function updateDamageCalculationDetails(messageElement, calcData) {
+    // Find the section - if it exists, ensure it's hidden or remove it.
+    const detailsSection = messageElement.querySelector('.combat-details');
+    if (!detailsSection) return; // If the main details section isn't there, do nothing.
+
+    const bwCalcSection = detailsSection.querySelector('.battle-wear-calculations');
+    if (bwCalcSection) {
+        // Option 1: Remove the section entirely
+        // bwCalcSection.remove();
+
+        // Option 2: Hide the section (might be safer if other logic depends on it)
+        bwCalcSection.style.display = 'none';
+        console.log("Hiding damage calculation details section.");
+    }
+
+    // Also hide the toggle button for this section if it exists within the main combat details header
+    const combatToggle = messageElement.querySelector('.combat-toggle');
+    const headerTextElement = combatToggle?.querySelector('h4');
+    // Check if the header text is 'Calculation Details' to be specific
+    if (combatToggle && headerTextElement && headerTextElement.textContent.trim() === 'Calculation Details') {
+        combatToggle.style.display = 'none';
+         console.log("Hiding damage calculation toggle button.");
+         // Ensure the parent section (.collapsible-section) is also hidden
+         const collapsibleSection = combatToggle.closest('.collapsible-section');
+         if (collapsibleSection) {
+             collapsibleSection.style.display = 'none';
+         }
+    }
+
+
+    // --- Original code is now commented out or removed ---
+    /*
+    // Create or get the battle wear calculation container
+    let bwCalcSection = detailsSection.querySelector('.battle-wear-calculations');
+    if (!bwCalcSection) {
+        // Don't create it if it doesn't exist
+        // bwCalcSection = document.createElement('div');
+        // bwCalcSection.className = 'battle-wear-calculations';
+        // const detailGrid = detailsSection.querySelector('.detail-grid');
+        // if (detailGrid) {
+        //      detailGrid.insertAdjacentElement('afterend', bwCalcSection);
+        // } else {
+        //      detailsSection.appendChild(bwCalcSection); // Fallback
+        // }
+        return; // If section doesn't exist, do nothing further
+    }
+
+    // Clear existing content instead of adding new content
+    bwCalcSection.innerHTML = '';
+    bwCalcSection.style.display = 'none'; // Ensure it's hidden
+
+    console.log("Damage calculation details section hidden.");
+    */
+}
+
+/**
+ * Updates the battle wear values for actors
+ * @param {ChatMessage} message The chat message with attacker/defender info
+ * @param {number} attackerWear Amount of battle wear for attacker's weapon
+ * @param {number} defenderWear Amount of battle wear for defender's armor
+ * @returns {Promise} Promise that resolves when updates are complete
+ */
+async function updateActorBattleWear(message, attackerWear, defenderWear) {
+    // Get attacker and defender names from the message
+    let attackerName = "Attacker";
+    let defenderName = "Defender";
+    
+    // Try to get names from message flags first (most reliable)
+    const messageData = message?.getFlag?.("witch-iron", "injuryData");
+    if (messageData) {
+        if (messageData.attacker) attackerName = messageData.attacker;
+        if (messageData.defender) defenderName = messageData.defender;
+        console.log(`Found names in message flags - Attacker: "${attackerName}", Defender: "${defenderName}"`);
+    } else {
+        // Try to extract names from HTML content
+        const messageElement = document.querySelector(`.message[data-message-id="${message.id}"]`);
+        if (messageElement) {
+            const attackerEl = messageElement.querySelector('.combatant.attacker .token-name');
+            const defenderEl = messageElement.querySelector('.combatant.defender .token-name');
+            
+            if (attackerEl && defenderEl) {
+                attackerName = attackerEl.textContent.trim();
+                defenderName = defenderEl.textContent.trim();
+                console.log(`Found names in message element - Attacker: "${attackerName}", Defender: "${defenderName}"`);
+            }
+        }
+    }
+    
+    console.log(`Updating battle wear for - Attacker: "${attackerName}", Defender: "${defenderName}"`);
+    
+    // Find the attacker and defender actors
+    let attackerActor = null;
+    let defenderActor = null;
+    
+    // Function to find an actor by name
+    const findActor = (name) => {
+        // First check tokens
+        let actor = null;
+        for (const token of canvas.tokens.placeables) {
+            if (token.name === name && token.actor) {
+                actor = token.actor;
+                console.log(`Found actor in tokens: ${token.name}`);
+                break;
+            }
+        }
+        
+        // If not found in tokens, check actors directory
+        if (!actor) {
+            actor = game.actors.find(a => a.name === name);
+            if (actor) {
+                console.log(`Found actor in directory: ${actor.name}`);
+            }
+        }
+        
+        return actor;
+    };
+    
+    // Find the actors
+    attackerActor = findActor(attackerName);
+    defenderActor = findActor(defenderName);
+    
+    const updatePromises = [];
+    
+    // Update attacker
+    if (attackerActor) {
+        console.log(`Updating ${attackerName}'s weapon battle wear to ${attackerWear}`);
+        
+        // Ensure the system is initialized
+        if (!attackerActor.system.battleWear) {
+            updatePromises.push(
+                attackerActor.update({
+                    "system.battleWear": {
+                        weapon: { value: 0, max: 4 },
+                        armor: { value: 0, max: 4 }
+                    }
+                })
+            );
+        }
+        
+        // Update the weapon battle wear
+        updatePromises.push(
+            attackerActor.update({
+                "system.battleWear.weapon.value": attackerWear
+            })
+        );
+    } else {
+        console.warn(`Could not find attacker actor: ${attackerName}`);
+    }
+    
+    // Update defender
+    if (defenderActor) {
+        console.log(`Updating ${defenderName}'s armor battle wear to ${defenderWear}`);
+        
+        // Ensure the system is initialized
+        if (!defenderActor.system.battleWear) {
+            updatePromises.push(
+                defenderActor.update({
+                    "system.battleWear": {
+                        weapon: { value: 0, max: 4 },
+                        armor: { value: 0, max: 4 }
+                    }
+                })
+            );
+        }
+        
+        // Update the armor battle wear
+        updatePromises.push(
+            defenderActor.update({
+                "system.battleWear.armor.value": defenderWear
+            })
+        );
+    } else {
+        console.warn(`Could not find defender actor: ${defenderName}`);
+    }
+    
+    // Wait for all updates to complete
+    await Promise.all(updatePromises);
+    
+    // Return success
+    return true;
+}
+
+// Register a specific hook for injury message rendering
+Hooks.on("renderChatMessage", (message, html, data) => {
+    // Check if this is an injury message
+    const messageType = message.getFlag("witch-iron", "messageType");
+    if (messageType === "injury" || messageType === "deflection") {
+        console.log(`Detected injury message being rendered: ${message.id}`);
+        
+        // Short delay to ensure DOM is fully rendered
+        setTimeout(() => {
+            // Get the message element
+            const messageElement = html[0].closest('.message');
+            if (messageElement) {
+                // Check if we have stored battle wear values in the message flags
+                const storedBattleWear = message.getFlag("witch-iron", "battleWear");
+                
+                // Initialize UI with stored values if present (first render)
+                if (storedBattleWear && !messageElement.classList.contains('bw-initialized')) {
+                    console.log("Found stored battle wear values, initializing UI:", storedBattleWear);
+                    
+                    const attackerWearEl = messageElement.querySelector('.attacker-wear .battle-wear-value');
+                    const defenderWearEl = messageElement.querySelector('.defender-wear .battle-wear-value');
+                    
+                    if (attackerWearEl && typeof storedBattleWear.attacker === 'number') {
+                        attackerWearEl.textContent = storedBattleWear.attacker;
+                        const attackerBonusEl = messageElement.querySelector('.attacker-wear .battle-wear-bonus');
+                        if (attackerBonusEl) attackerBonusEl.textContent = storedBattleWear.attacker;
+                    }
+                    
+                    if (defenderWearEl && typeof storedBattleWear.defender === 'number') {
+                        defenderWearEl.textContent = storedBattleWear.defender;
+                        const defenderBonusEl = messageElement.querySelector('.defender-wear .battle-wear-bonus');
+                        if (defenderBonusEl) defenderBonusEl.textContent = storedBattleWear.defender;
+                    }
+                    
+                    // Show/hide damage calculation tabs based on defender wear
+                    const injuryHeader = messageElement.querySelector('.injury-header');
+                    const damageTabs = messageElement.querySelector('.damage-calc-tabs');
+                    
+                    if (injuryHeader) {
+                        if (storedBattleWear.defender > 0 && !damageTabs) {
+                            const tabsDiv = document.createElement('div');
+                            tabsDiv.className = 'damage-calc-tabs';
+                            tabsDiv.innerHTML = `
+                                <button class="damage-tab" data-tab="min">Min</button>
+                                <button class="damage-tab active" data-tab="avg">Avg</button>
+                                <button class="damage-tab" data-tab="max">Max</button>
+                            `;
+                            injuryHeader.appendChild(tabsDiv);
+                        } else if (storedBattleWear.defender === 0 && damageTabs) {
+                            injuryHeader.removeChild(damageTabs);
+                        }
+                    }
+                    
+                    // Update button states based on initialized values
+                    updateBattleWearButtons(messageElement);
+                    
+                    // Update the display based on the initialized values and default tab
+                    // We call this ONCE on initial render with flags to set the correct baseline effect
+                    updateInjuryDisplayForTab(messageElement, 
+                        (messageElement.querySelector('.damage-tab.active')?.dataset?.tab || 'avg'));
+
+                    // Mark as initialized to prevent re-running this block on subsequent renders
+                    messageElement.classList.add('bw-initialized'); 
+                }
+
+                // Always attach event handlers to ensure they work after re-renders
+                attachInjuryMessageHandlers(message.id);
+                
+            }
+        }, 50);
+    }
+});
+
+// When the game is ready, set up our message listeners
+Hooks.once("ready", () => {
+    // Listen for system messages that are meant only for GMs
+    Hooks.on("createChatMessage", (message) => {
+        // Only GMs should process these requests
+        if (!game.user.isGM) return;
+        
+        // Check if this is a battle wear update request
+        const messageType = message.getFlag("witch-iron", "messageType");
+        if (messageType === "battle-wear-update-request") {
+            console.log("GM received battle wear update request via chat message");
+            
+            // Extract the data from the message
+            const data = message.getFlag("witch-iron", "data");
+            if (!data) {
+                console.error("Missing data in battle wear update request");
+                return;
+            }
+            
+            // Process the battle wear update
+            processBattleWearUpdateRequest(data)
+                .then(() => {
+                    console.log("Battle wear update request processed successfully");
+                    // Delete the request message to keep chat clean
+                    message.delete();
+                })
+                .catch(error => {
+                    console.error("Error processing battle wear update:", error);
+                    // Delete the request message even if there was an error
+                    message.delete();
+                });
+        }
+    });
+});
+
+/**
+ * Sends a battle wear update request to the GM via an invisible chat message
+ * @param {Object} data - The data to send to the GM
+ * @returns {Promise<ChatMessage>} - The created message
+ */
+async function sendBattleWearUpdateRequest(data) {
+    console.log("Sending battle wear update request to GM:", data);
+    
+    // Create the message data - only visible to GM
+    const messageData = {
+        content: `<div class="witch-iron-system-message">System: Battle Wear Update Request</div>`,
+        whisper: ChatMessage.getWhisperRecipients("GM"),
+        speaker: ChatMessage.getSpeaker({ alias: "System" }),
+        flags: {
+            "witch-iron": {
+                messageType: "battle-wear-update-request",
+                data: data
+            }
+        }
+    };
+    
+    // Create the message
+    try {
+        return await ChatMessage.create(messageData);
+    } catch (error) {
+        console.error("Error sending battle wear update request:", error);
+        ui.notifications.error("Failed to send battle wear update request");
+        return null;
+    }
+}
+
+/**
+ * Process a battle wear update request (GM only)
+ * @param {Object} data - The battle wear update data
+ * @returns {Promise} - Resolves when the update is complete
+ */
+async function processBattleWearUpdateRequest(data) {
+    console.log("Processing battle wear update request:", data);
+    
+    // Get the message that needs updating
+    const message = game.messages.get(data.messageId);
+    if (!message) {
+        console.error(`Message ${data.messageId} not found`);
+        return;
+    }
+    
+    // Extra debug for weapon-only updates
+    if (data.attackerWear > 0 && data.defenderWear === 0) {
+        console.log(`[DEBUG GM] Processing weapon-only battle wear update for message ${data.messageId}`);
+        
+        // Get existing flags for comparison
+        const existingBattleWear = message.getFlag("witch-iron", "battleWear") || { attacker: 0, defender: 0 };
+        console.log(`[DEBUG GM] Existing battle wear: ${JSON.stringify(existingBattleWear)}`);
+        console.log(`[DEBUG GM] New battle wear: Attacker: ${data.attackerWear}, Defender: ${data.defenderWear}`);
+        
+        // Get injury data for reference
+        const injuryData = message.getFlag("witch-iron", "injuryData");
+        if (injuryData) {
+            console.log(`[DEBUG GM] Current injury base damage: ${injuryData.damage}`);
+        }
+    }
+    
+    // Update the message flags with the new battle wear values
+    await message.update({
+        "flags.witch-iron.battleWear": {
+            attacker: data.attackerWear,
+            defender: data.defenderWear
+        }
+    });
+    
+    console.log(`[DEBUG GM] Message flags updated for message ${data.messageId}`);
+    
+    // Update the actors
+    await updateActorBattleWear(message, data.attackerWear, data.defenderWear);
+    
+    console.log(`[DEBUG GM] Actor battle wear updated`);
+    
+    // Broadcast to all clients that the update is complete
+    game.socket.emit("system.witch-iron.battleWearUpdate", {
+        messageId: data.messageId,
+        attackerWear: data.attackerWear,
+        defenderWear: data.defenderWear,
+        userId: game.user.id,
+        completed: true
+    });
+    
+    console.log(`[DEBUG GM] Battle wear update completed and broadcast to clients`);
+    
+    return true;
 }

@@ -1,0 +1,192 @@
+{
+  "name": "Head Injury, Eye",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Eye: Black Eye, Blind 1",
+      "documentId": "tRPuvrPNsoUsf4y4",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "jAKRk27LIYWAqkak",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Eye: Sliced Brow, Bleed 1",
+      "documentId": "ARkT0QZiK4qeHeRM",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "N9n6IYnQm3i4sHIG",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Eye: Double-Vision, Blind 2",
+      "documentId": "nVkR85pVpFH0vFSr",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "Fpnjd7tuMdD14YJ9",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Eye: Cut Orbit, Bleed 2",
+      "documentId": "3MvilMsTUe1y8Q0m",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "4J3J2NaoVs5o6GNr",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Eye: Swollen Shut, Blind 3",
+      "documentId": "qTqzcxNIx9dfCvgL",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "SLu9IzJNLqv1vab9",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Eye: Lid Removed, Pain 2*",
+      "documentId": "TQw5C8Xk7UVU7yyg",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "0ZPZEmNRV03zAny2",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Eye: Severe Injury, Blind 3*",
+      "documentId": "idRtOMtvQnHxvexm",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "mg7HNldiZOFFrsUw",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Eye: Popped Out, Lost Eye‡",
+      "documentId": "TTkJV8pZEhnX4XGw",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "8kOaqoJ000uRZJcF",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Eye: Destroyed, Lost Eye|Bleed 4",
+      "documentId": "SZpdUNVTv4MhbNUe",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "vNXJAk6hVRH0hyOZ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        99
+      ],
+      "drawn": false,
+      "text": "Eye: Run Through, Brain Dead",
+      "documentId": "kXT7jXXeIAFcg9d6",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "6XPuVisFFKFWl3g4",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "KcURYqNUbJkPoe9o",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "folder": "ImprijtblvPR0Na6",
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697848119149,
+    "modifiedTime": 1697900687959,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

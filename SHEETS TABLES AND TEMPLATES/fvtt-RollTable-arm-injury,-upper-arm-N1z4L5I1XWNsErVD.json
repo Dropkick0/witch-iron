@@ -1,0 +1,192 @@
+{
+  "folder": "Q6FG1J9hZ0EKsfOQ",
+  "name": "Arm Injury, Upper Arm",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "<p><em>Non-Living Limbs: Do not suffer Bleed or Pain Conditions.</em></p>",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Bruised, Pain 1",
+      "documentId": "dWA4ZyJtSt7MnPhJ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "6MlXMJIzk2To09wo",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Beaten, Disarmed",
+      "documentId": "siAJCgS3Tj32mAWj",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "6CiyOLBH9pUYj7Tm",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Tendon Sprain, Trauma 1",
+      "documentId": "zWh7o67C8BBlMhyb",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "5uNe37Ulp3xIO6aZ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Nerve Struck, Pain 2",
+      "documentId": "3s9y7eKSQTBNWJxE",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "Tq6YNuVaopJpog4A",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Hairline Fracture, Trauma 2",
+      "documentId": "zsReLcgUduEGsLsz",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "yj4PAwpgEC7kNygx",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Transfixed, Pain 1|Bleed 2",
+      "documentId": "Dnd2LcpXtTgQkIed",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "gwAHIzgZOdMxpDDT",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Broken Humerus, Trauma 3",
+      "documentId": "KQBe9t4k5RCYxTb8",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "xQRxxd1W1X15g6XO",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Ripped Artery, Bleed 4",
+      "documentId": "8LBnyVPPAbNhdhwK",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "CVFilsPmBpEqHtWt",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Maimed, Lost Arm‡|Bleed 4",
+      "documentId": "lF8MsX4n9cBWVJFp",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "nS8JLC8hHU2QESnr",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Upper Arm: Severed, Lost Arm|Bleed 5",
+      "documentId": "Pt1vjYzHgbaqGoJA",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "QSwaID3ITobe7H0M",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "6eI9UPQzh6IJDYJz",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697896833038,
+    "modifiedTime": 1697916647556,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

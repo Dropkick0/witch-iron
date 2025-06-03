@@ -1,0 +1,192 @@
+{
+  "name": "Head Injury, Neck",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Neck: Bruised Neck, Pain 1",
+      "documentId": "KKf6BS5XF4PxlWQ5",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "Hz18RiWMlTkugfEP",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Neck: Nicked Throat, Bleed 2",
+      "documentId": "E9m2xq0qgeESNwCQ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "oBkc2h4DlhKa00iQ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Neck: Whiplash, Pain 2",
+      "documentId": "9ggI9P4gneFd66ZE",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "LjcDUvxhiEkmK9ef",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Neck: Gashed Neck, Bleed 3",
+      "documentId": "jv9aSS7DrfRi9AvE",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "G2flb2usCagNoxPR",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Neck: Gasping, Stun 1",
+      "documentId": "TzFERtulgFsHXL7a",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "2lLrgf9avCBZhsyw",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Neck: Open Wound, Bleed 4",
+      "documentId": "JxhORAeW0vKe1dAX",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "XEtrdOcLlsbPnuU7",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Neck: Larynx Shut, Speechless‡",
+      "documentId": "UZDCdsJGj52CR8b8",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "5OansQMd0kq07H24",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Neck: Broken Neck, Helpless 5‡",
+      "documentId": "3Uo5L3hCB10m0bjs",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "PHBRjjcc1NSZJ6Pc",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Neck: Head Torn Off, Dead",
+      "documentId": "F0KQ7KDOPPRg8RmI",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "PeGMO8ovDNhKFc2L",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Neck: Trachea Injury, Suffocate*",
+      "documentId": "yAdHAKVC7Q3nDqtH",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "TLPyAYBsXF1vkw3L",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "XPMMWa9jYW4JPas3",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "folder": "ImprijtblvPR0Na6",
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697848267455,
+    "modifiedTime": 1697900710483,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

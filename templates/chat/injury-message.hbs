@@ -1,7 +1,7 @@
-<div class="witch-iron chat-card injury-card {{#if isDeflected}}deflected{{/if}}">
+<div class="witch-iron chat-card injury-card">
     <div class="card-header">
-        <i class="fas {{#if isDeflected}}fa-shield-alt{{else}}fa-tint{{/if}}"></i>
-        <h3>{{#if isDeflected}}Deflected!{{else}}Combat Results{{/if}}</h3>
+        <i class="fas fa-tint"></i>
+        <h3>Combat Results</h3>
     </div>
     <div class="card-content">
         <!-- Top Row: Attacker -> Arrow -> Defender -->
@@ -31,12 +31,16 @@
                     <div class="detail-item"><span class="label">Soak:</span> <span class="value">{{soakText}}</span></div>
                     <div class="detail-item"><span class="label">Net Hits:</span> <span class="value">{{netHits}}</span></div>
                     <div class="detail-item"><span class="label">Net Dmg:</span> <span class="value">{{severity}}</span></div>
-                    <div class="detail-item wide-item"><span class="label">Location:</span> <span class="value">{{location}}</span></div>
+                    <div class="detail-item wide-item"><span class="label">Hit the...</span> <span class="value">{{location}}</span></div>
+                    {{#if specificLocation}}
+                    <div class="detail-item wide-item"><span class="label">In the...</span> <span class="value">{{specificLocation}}</span></div>
+                    <div class="detail-item wide-item"><span class="label">Location Roll:</span> <span class="value">{{locationRoll}}</span></div>
+                    {{/if}}
                 </div>
             </div>
         </div>
         
-        {{#unless isDeflected}}
+
         <!-- Battle Wear Controls -->
         <div class="battle-wear-container">
             <div class="battle-wear-header">
@@ -53,7 +57,7 @@
                     </div>
                     <div class="battle-wear-box">
                         <span class="battle-wear-value">{{battleWear.attacker.currentWear}}</span>/<span class="battle-wear-max">{{battleWear.attacker.maxWear}}</span>
-                        <span class="battle-wear-effect">+<span class="battle-wear-bonus">{{battleWear.attacker.weaponBonus}}</span> Damage</span>
+                        <span class="battle-wear-effect">+<span class="battle-wear-bonus">{{battleWear.attacker.currentWear}}</span> Damage</span>
                     </div>
                     <div class="battle-wear-buttons">
                         <button class="battle-wear-minus" data-actor="attacker" data-type="weapon" {{#if (gt battleWear.attacker.currentWear 0)}}{{else}}disabled{{/if}}><i class="fas fa-minus"></i></button>
@@ -71,7 +75,7 @@
                     </div>
                     <div class="battle-wear-box">
                         <span class="battle-wear-value">{{battleWear.defender.currentWear}}</span>/<span class="battle-wear-max">{{battleWear.defender.maxWear}}</span>
-                        <span class="battle-wear-effect">+<span class="battle-wear-bonus">{{battleWear.defender.armorBonus}}</span>d6 Soak</span>
+                        <span class="battle-wear-effect">+<span class="battle-wear-bonus">{{battleWear.defender.currentWear}}</span>d6 Soak</span>
                     </div>
                     <div class="battle-wear-buttons">
                         <button class="battle-wear-minus" data-actor="defender" data-type="armor" {{#if (gt battleWear.defender.currentWear 0)}}{{else}}disabled{{/if}}><i class="fas fa-minus"></i></button>
@@ -86,37 +90,30 @@
             Armor Battle Wear is rolled &amp; added to soak
         </div>
         
-        <!-- Injury Section -->
-        {{#if (le severity 0)}}
-        <div class="deflected-message">
-            <div class="deflected-text">Deflected!</div>
-            <div class="deflected-location">0 Damage to the {{location}}</div>
-        </div>
-        {{else}}
+
         <div class="injury-container">
             <div class="injury-header">
                 <h4>Injury</h4>
+                {{#if (gt battleWear.defender.currentWear 0)}}
+                <div class="damage-calc-tabs">
+                    <button class="damage-tab" data-tab="min">Min</button>
+                    <button class="damage-tab active" data-tab="avg">Avg</button>
+                    <button class="damage-tab" data-tab="max">Max</button>
+                </div>
+                {{/if}}
             </div>
-            <div class="injury-row">
+            <div class="injury-row" data-severity="{{severity}}" data-location="{{location}}" data-effect="{{effect}}">
                 <div class="severity-col">{{severity}}</div>
-                <div class="location-col">{{location}}</div>
-                <div class="effect-col">{{effect}}</div>
+                <div class="location-col" title="{{tooltipText}}">{{#if specificLocation}}{{specificLocation}}{{else}}{{location}}{{/if}}: {{effect}}</div>
             </div>
         </div>
-        {{/if}}
-        
-        {{#if (gt severity 0)}}
+
         <div class="injury-actions">
-            <button type="button" class="create-injury" data-location="{{location}}" data-severity="{{severity}}" data-defender="{{defender}}" data-description="{{description}}" data-effect="{{effect}}">
+            <button type="button" class="create-injury" data-location="{{location}}" data-severity="{{severity}}" data-defender="{{defender}}" data-description="{{description}}" data-effect="{{effect}}" {{#if specificLocation}}data-specific-location="{{specificLocation}}" data-location-roll="{{locationRoll}}"{{/if}}>
                 <i class="fas fa-plus-circle"></i> Add Injury to {{defender}}
             </button>
         </div>
-        {{/if}}
-        {{else}}
-        <div class="deflected-message">
-            <div class="deflected-text">Deflected!</div>
-            <div class="deflected-location">0 Damage to the {{location}}.</div>
-        </div>
-        {{/unless}}
+
+    
     </div>
 </div> 

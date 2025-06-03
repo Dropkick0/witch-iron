@@ -1,0 +1,192 @@
+{
+  "folder": "jcV0AWibiTpMic6G",
+  "name": "Torso Injury, Pelvis",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Pelvis: Bruised, Pain 1",
+      "documentId": "q5pw0ZGJDqN9IhYA",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "XR1sgdqdoAGdRpFm",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Pelvis: Checked, Fall Prone",
+      "documentId": "ZDzTWVBjwOHQbyJJ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "0YgoycEio42iWhrq",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Pelvis: Chipped, Trauma 1",
+      "documentId": "K5nDALawpRrqYDbT",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "yigae3h67x7tqZuq",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Pelvis: Nerve Struck, Stun 1",
+      "documentId": "ERo0esq1E70jGhOH",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "EalPXc3DyTbndXU9",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Pelvis: Hairline Fracture, Trauma 2",
+      "documentId": "asGYzPlMnT3vfIvQ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "5y6HkNKCjdshlUMD",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Pelvis: Smashed Groin, Stun 2",
+      "documentId": "PntLDlCONuIrxy6h",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "PP2FV3vqsx4nRnQi",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Pelvis: Major Break, Trauma 3",
+      "documentId": "3mRPwldctoymLFmS",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "S3Ss08sOvzawji9C",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Pelvis: Torn Artery, Bleed 3",
+      "documentId": "XheOVC3ITMDicfAk",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "L2skMqjDbFbbAniD",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Pelvis: Shattered, Lost Legs‡ Pain 5",
+      "documentId": "6YBkPZBVgqpcsn3m",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "NDeRDUyzKljAO1tA",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Pelvis: Cut Abdominal Aorta, Dead",
+      "documentId": "StVReAb926aADiki",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "sxsA6OUEWkemutgg",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "fSBEFv5Hn74u29Ip",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697850411968,
+    "modifiedTime": 1697915683301,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

@@ -11,8 +11,9 @@ import { WitchIronMonsterSheet } from "./monster-sheet.js";
 import { WitchIronActor } from "./actor.js";
 import { WitchIronItem } from "./item.js";
 import { WitchIronInjurySheet } from "./injury-sheet.js";
-import { initQuarrel } from "./quarrel.js";
+import { initQuarrel, manualQuarrel } from "./quarrel.js";
 import { HitLocationSelector } from "./hit-location.js";
+import { InjuryTables } from "./injury-tables.js";
 
 // Define the system configuration object
 CONFIG.WITCH_IRON = {
@@ -198,6 +199,16 @@ Hooks.once("init", function() {
     }
   });
 
+  // Register hidden world setting for injury sheet default values
+  game.settings.register("witch-iron", "injurySheetDefaults", {
+    name: "Injury Sheet Default Values",
+    hint: "Internal storage for the last-saved values of the injury sheet.",
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {}
+  });
+
   // Register custom Document classes
   CONFIG.Actor.documentClass = WitchIronActor;
   CONFIG.Item.documentClass = WitchIronItem;
@@ -209,19 +220,19 @@ Hooks.once("init", function() {
   // Debug: Log all registered actor types
   console.log("Witch Iron | Available Actor Types:", Object.keys(CONFIG.Actor.dataModels));
   
-  // Register actor sheets - make them apply to all actor types again
+  // Register actor sheets - only for descendant type
   Actors.registerSheet("witch-iron", WitchIronDescendantSheet, { 
-    types: [], // Empty array means apply to ALL actor types
-    makeDefault: false, // Not default so we can choose
+    types: ["descendant"], // Only apply to descendant actor type
+    makeDefault: true, // Make default for descendant type
     label: "Witch Iron Descendant",
     classes: ["witch-iron"]
   });
   console.log("Witch Iron | Descendant Sheet Registered");
   
-  // Register Monster sheet for all types
+  // Register Monster sheet only for monster type
   Actors.registerSheet("witch-iron", WitchIronMonsterSheet, {
-    types: [], // Empty array means apply to ALL actor types
-    makeDefault: true, // Make default so it's selected by default
+    types: ["monster"], // Only apply to monster actor type
+    makeDefault: true, // Make default for monster type
     label: "Witch Iron Monster",
     classes: ["witch-iron"]
   });
@@ -236,6 +247,8 @@ Hooks.once("init", function() {
   
   // Initialize the Quarrel system
   initQuarrel();
+  // Expose manualQuarrel API for sheets to use
+  game.witchIron = { manualQuarrel };
   
   // TODO: Register other sheet classes (InjurySheet, etc.)
 });
@@ -372,4 +385,4 @@ Hooks.on("renderDialog", (dialog, html, data) => {
 });
 
 // Export classes for module use
-export { WitchIronActor, WitchIronItem, WitchIronDescendantSheet, WitchIronMonsterSheet, WitchIronInjurySheet }; import './debugger.js';
+export { WitchIronActor, WitchIronItem, WitchIronDescendantSheet, WitchIronMonsterSheet, WitchIronInjurySheet };

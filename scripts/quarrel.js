@@ -1,7 +1,39 @@
 /**
  * Quarrel system for Witch Iron
  * Implements contested checks with Net Hits results
+ *
+ * CONDITION QUARRELS
+ * ------------------
+ * - Any sourceCheckData containing a `condition` field triggers a custom, non-combat quarrel.
+ * - Optional properties allow full customization:
+ *     • customName:       String header title (e.g. "Aflame Quarrel")
+ *     • customIcon:       URL for the chat header icon
+ *     • skill:            Skill label (e.g. "Hardship" for conditions Aflame/Bleed/Poison or "Steel" for Stress/Corruption)
+ *     • resultMessages:   { success, failure, cost } follow-up texts:
+ *         – success: Message shown when the CONDITION wins (monster fails)
+ *         – failure: Message shown when the monster overcomes the CONDITION (condition removed)
+ *         – cost:    Message shown on a tie (no net wins)
+ * - For Aflame/Bleed/Poison, all three condition values are summed as the Hardship check rating.
+ * - For Stress/Corruption, the single condition value is used as the Steel check rating.
+ *
+ * Flow:
+ *   1. onChatMessageCreated short-circuits if `pendingQuarrel.condition` exists, building a quarrelObj
+ *      with isCombatCheck=false and all custom_* fields, then resolves immediately using hits from
+ *      both the monster's normal roll (including derived +Hits) and the condition rating.
+ *   2. resolveQuarrel detects `quarrel.condition` and force-sets isCombatCheck=false,
+ *      preventing any monster/melee combat overrides.
+ *   3. createQuarrelResultMessage hides combat badges/buttons for condition quarrels
+ *      and renders the provided resultMessages based on the outcome.
  */
+
+// Icon mapping for condition quarrels
+const CONDITION_ICONS = {
+  aflame: "icons/svg/fire.svg",
+  bleed: "icons/svg/blood.svg",
+  poison: "icons/svg/poison.svg",
+  stress: "icons/svg/burst.svg",
+  corruption: "icons/svg/bone-black.svg"
+};
 
 class QuarrelTracker {
     constructor() {
@@ -255,8 +287,9 @@ class QuarrelTracker {
     }
 
     async resolveQuarrel(quarrelId, rollMode = "roll") {
-        // Get the quarrel data
+        // Get the quarrel data and debug log it
         const quarrel = this.pendingQuarrels.get(quarrelId);
+        console.log("Witch Iron | resolveQuarrel received quarrel data:", quarrel);
         
         // Validate quarrel exists
         if (!quarrel) {
@@ -294,8 +327,88 @@ class QuarrelTracker {
         
         console.log(`Using existing hits - Initiator: ${initiatorHits}, Responder: ${responderHits}, Net: ${netHits}`);
 
-        // Check if this is a combat check (for injury)
-        let isCombatCheck = this.hasCombatCheckEnabled(initiatorActor) || this.hasCombatCheckEnabled(responderActor);
+        // If actor wins a relevant condition quarrel, clear all related physical conditions
+        if (quarrel.condition && ['aflame', 'bleed', 'poison'].includes(quarrel.condition)) {
+            if (netHits < 0) { // Responder (the monster/actor) won
+                if (responderActor) { // Ensure responderActor is defined
+                    console.log(`Witch Iron | Actor ${responderActor.name} won against ${quarrel.condition}. Clearing Aflame, Bleed, and Poison conditions.`);
+                    const updates = {
+                        'system.conditions.aflame.value': 0,
+                        'system.conditions.bleed.value': 0,
+                        'system.conditions.poison.value': 0
+                    };
+                    await responderActor.update(updates);
+                    console.log(`WITCH IRON (quarrel.js) | actor.update() call completed.`);
+
+                    // ---- START DATA VERIFICATION ----
+                    const freshActor = game.actors.get(responderActor.id);
+                    if (freshActor) {
+                        console.log(`WITCH IRON (quarrel.js) | Data Verification - Post-update from freshActor:`);
+                        console.log(`WITCH IRON (quarrel.js) |   Aflame: ${freshActor.system.conditions.aflame.value}`);
+                        console.log(`WITCH IRON (quarrel.js) |   Bleed: ${freshActor.system.conditions.bleed.value}`);
+                        console.log(`WITCH IRON (quarrel.js) |   Poison: ${freshActor.system.conditions.poison.value}`);
+                        
+                        // Also log from the original responderActor instance for comparison
+                        console.log(`WITCH IRON (quarrel.js) | Data Verification - Post-update from original responderActor instance:`);
+                        console.log(`WITCH IRON (quarrel.js) |   Aflame (original): ${responderActor.system.conditions.aflame.value}`);
+                        console.log(`WITCH IRON (quarrel.js) |   Bleed (original): ${responderActor.system.conditions.bleed.value}`);
+                        console.log(`WITCH IRON (quarrel.js) |   Poison (original): ${responderActor.system.conditions.poison.value}`);
+
+                    } else {
+                        console.error(`WITCH IRON (quarrel.js) | Data Verification - FAILED to re-fetch actor ${responderActor.id}`);
+                    }
+                    // ---- END DATA VERIFICATION ----
+                    
+                    ui.notifications.info(`${responderActor.name} has overcome their physical afflictions!`);
+
+                    // ---- START MANUAL HOOK TRIGGER ----
+                    if (freshActor) { // Use freshActor for the hook call
+                        const changesForHook = { system: { conditions: updates } }; // Construct a changes object similar to what the hook expects
+                        console.log(`WITCH IRON (quarrel.js) | Manually calling updateActor hook for ${freshActor.name} with changes:`, changesForHook);
+                        Hooks.callAll('updateActor', freshActor, changesForHook, {diff: true, render: true}, game.user.id);
+                    } else {
+                        console.warn("WITCH IRON (quarrel.js) | freshActor not available, cannot manually call updateActor hook.");
+                    }
+                    // ---- END MANUAL HOOK TRIGGER ----
+
+                    // ---- START DIAGNOSTIC RE-RENDER ----
+                    const actorSheet = Object.values(ui.windows).find(w => w instanceof ActorSheet && w.actor?.id === responderActor.id);
+                    if (actorSheet?.rendered) {
+                        console.log(`WITCH IRON (quarrel.js) | Found rendered sheet for ${responderActor.name} via ui.windows. Forcing re-render.`);
+                        actorSheet.render(true);
+                    } else {
+                        console.log(`WITCH IRON (quarrel.js) | Could not find rendered sheet for ${responderActor.name} via ui.windows (or responderActor.sheet was not rendered).`);
+                        // Fallback to try the original method, just in case, and log its state
+                        if (responderActor.sheet?.rendered) {
+                            console.log(`WITCH IRON (quarrel.js) | Fallback: responderActor.sheet IS rendered. Forcing re-render.`);
+                            responderActor.sheet.render(true);
+                        } else {
+                            console.log(`WITCH IRON (quarrel.js) | Fallback: responderActor.sheet also not rendered or found.`);
+                        }
+                    }
+                    // ---- END DIAGNOSTIC RE-RENDER ----
+
+                } else {
+                    console.warn(`Witch Iron | Condition quarrel won by responder, but responderActor is undefined. Cannot clear conditions.`);
+                }
+            }
+        }
+
+        // --- FORCE NON-COMBAT FOR CONDITION QUARRELS ---
+        // If `quarrel.condition` is set, treat this as a custom condition quarrel (non-combat).
+        // This prevents any monster or melee overrides from re-classifying it as combat.
+        // Determine if this is a combat check
+        let isCombatCheck;
+        if (quarrel.condition) {
+            console.log(`Condition quarrel detected (condition: ${quarrel.condition}), forcing non-combat`);
+            isCombatCheck = false;
+        } else if (typeof quarrel.isCombatCheck === 'boolean') {
+            // Use the explicit flag from the quarrel data
+            isCombatCheck = quarrel.isCombatCheck;
+        } else {
+            // Default: use actor combat flags
+            isCombatCheck = this.hasCombatCheckEnabled(initiatorActor) || this.hasCombatCheckEnabled(responderActor);
+        }
         
         // Special handling for monster actors - if either actor is a monster and the message contains melee attack, 
         // force this to be a combat check
@@ -317,24 +430,46 @@ class QuarrelTracker {
             (initiatorMessage && initiatorMessage.content && initiatorMessage.content.includes('Melee Attack')) ||
             (responderMessage && responderMessage.content && responderMessage.content.includes('Melee Attack'));
             
-        // If this is a monster involved in a melee attack, it's definitely a combat check
-        if (isMonsterQuarrel && isAttackQuarrel) {
+        // If this is a monster involved in a melee attack, it's definitely a combat check (unless it's a condition quarrel)
+        if (!quarrel.condition && !isCombatCheck && isMonsterQuarrel && isAttackQuarrel) {
             console.log(`Monster quarrel with melee attack detected - forcing combat check flag to true`);
             isCombatCheck = true;
             
             // Update the combat check flags on the actors for future reference
             if (initiatorActor.type === 'monster' && initiatorActor.system?.flags) {
                 console.log(`Setting combat check flag for initiator monster ${initiatorActor.name}`);
-                initiatorActor.update({'system.flags.isCombatCheck': true});
+                
+                // We can't use update() here because we need an immediate value change
+                initiatorActor.system.flags.isCombatCheck = true;
+                
+                // Try to persist this change 
+                try {
+                    initiatorActor.update({'system.flags.isCombatCheck': true});
+                    console.log(`Updated monster ${initiatorActor.name} with combat check flag`);
+                } catch (err) {
+                    console.warn(`Could not persist combat flag update: ${err.message}`);
+                }
+                return true;
             }
             
             if (responderActor.type === 'monster' && responderActor.system?.flags) {
                 console.log(`Setting combat check flag for responder monster ${responderActor.name}`);
-                responderActor.update({'system.flags.isCombatCheck': true});
+                
+                // We can't use update() here because we need an immediate value change
+                responderActor.system.flags.isCombatCheck = true;
+                
+                // Try to persist this change 
+                try {
+                    responderActor.update({'system.flags.isCombatCheck': true});
+                    console.log(`Updated monster ${responderActor.name} with combat check flag`);
+                } catch (err) {
+                    console.warn(`Could not persist combat flag update: ${err.message}`);
+                }
+                return true;
             }
         }
         
-        console.log(`Is combat check: ${isCombatCheck} (standard: ${this.hasCombatCheckEnabled(initiatorActor) || this.hasCombatCheckEnabled(responderActor)}, monster override: ${isMonsterQuarrel && isAttackQuarrel})`);
+        console.log(`Is combat check: ${isCombatCheck} (override: ${quarrel.isCombatCheck ?? 'none'}, standard: ${this.hasCombatCheckEnabled(initiatorActor) || this.hasCombatCheckEnabled(responderActor)}, monster override: ${isMonsterQuarrel && isAttackQuarrel})`);
 
         // Create the result object
         const result = {
@@ -360,6 +495,21 @@ class QuarrelTracker {
             responderImg: getActorImage(responderActor)
         };
         
+        // Attach custom quarrel parameters if provided
+        result.condition = quarrel.condition || null;
+        result.headerTitle = quarrel.customName || null;
+        result.headerIcon = quarrel.customIcon || null;
+        result.skill = quarrel.skill || null;
+        result.resultMessages = quarrel.resultMessages || null;
+        
+        // --- CONDITION QUARREL RESULT FALLBACK ---
+        // Ensure a condition quarrel result never shows combat UI: hide badges/buttons.
+        // Safety: force non-combat display for condition quarrels
+        if (quarrel.condition) {
+            result.isCombatCheck = false;
+            result.nonCombat = true;
+        }
+
         // Determine outcome based on netHits
         if (netHits > 0) {
             result.outcome = "Victory";
@@ -437,7 +587,32 @@ class QuarrelTracker {
 
         // Remove the quarrel from the pending list
         this.pendingQuarrels.delete(quarrelId);
-
+        
+        // --- APPLY CONDITION QUARREL EFFECTS ---
+        if (result.condition) {
+            const actor = initiatorActor;
+            // Character 'dies' if condition wins (initiatorOutcome is 'Victory'); mark token as dead
+            if (result.initiatorOutcome === 'Victory') {
+                // Mark all tokens of this actor with the standard 'Dead' status effect
+                canvas.tokens.placeables
+                  .filter(t => t.actor?.id === actor.id)
+                  .forEach(t => t.actor?.toggleStatusEffect("dead", {active: true, overlay: true}));
+            }
+            // Remove all conditions if actor wins (initiatorOutcome is 'Defeat')
+            else if (result.initiatorOutcome === 'Defeat') {
+                const cond = result.condition;
+                const updateData = {};
+                if (['aflame','bleed','poison'].includes(cond)) {
+                    updateData['system.conditions.aflame.value'] = 0;
+                    updateData['system.conditions.bleed.value'] = 0;
+                    updateData['system.conditions.poison.value'] = 0;
+                } else {
+                    updateData[`system.conditions.${cond}.value`] = 0;
+                }
+                actor.update(updateData);
+            }
+            // Tie (VictoryAtACost) -> no automatic changes
+        }
         // Create the chat message
         await createQuarrelResultMessage(result);
 
@@ -569,6 +744,9 @@ class QuarrelTracker {
     }
 }
 
+// Attach the condition icons mapping to the QuarrelTracker class
+QuarrelTracker.CONDITION_ICONS = CONDITION_ICONS;
+
 // Create a singleton instance
 const quarrelTracker = new QuarrelTracker();
 
@@ -646,42 +824,7 @@ export function initQuarrel() {
             });
             
             // Create injury
-            html.find('.create-injury').click(evt => {
-                const button = evt.currentTarget;
-                const injuryData = JSON.parse(button.dataset.injuryData);
-                
-                console.log("Creating injury with data:", injuryData);
-                
-                // Get the defender actor
-                const defender = game.actors.find(a => a.name === injuryData.defender);
-                if (!defender) {
-                    ui.notifications.error(`Could not find actor "${injuryData.defender}"`);
-                    return;
-                }
-                
-                // Create the injury item
-                const itemData = {
-                    name: `${injuryData.location} - ${injuryData.description}`,
-                    type: "injury",
-                    img: "icons/svg/blood.svg",
-                    system: {
-                        description: injuryData.effect,
-                        location: injuryData.location,
-                        severity: injuryData.severity,
-                        conditions: injuryData.conditions,
-                        requiresMedicalAid: injuryData.requiresMedicalAid,
-                        requiresSurgery: injuryData.requiresSurgery
-                    }
-                };
-                
-                // Create the item on the actor
-                defender.createEmbeddedDocuments("Item", [itemData]).then(() => {
-                    ui.notifications.info(`Created injury on ${defender.name}`);
-                }).catch(err => {
-                    ui.notifications.error(`Failed to create injury: ${err}`);
-                    console.error("Error creating injury:", err);
-                });
-            });
+            html.find('.create-injury').click(onCreateInjuryClick);
         }
         
         // Legacy flip button for old template
@@ -876,6 +1019,10 @@ async function onChatMessageCreated(message) {
         
         console.log("Witch Iron | Check data created:", checkData);
         
+        // --- CONDITION QUARREL SHORT-CIRCUIT ---
+        // If a pending quarrel has `condition`, this is a pure condition check.
+        // We bypass all normal combat logic/UI and resolve it as a custom non-combat quarrel:
+        // building a quarrelObj with isCombatCheck=false plus customName/icon/skill/resultMessages.
         // Try to find the actor's token
         let actorToken = null;
         const tokens = canvas.tokens.placeables.filter(t => t.actor && t.actor.id === actorId);
@@ -885,49 +1032,40 @@ async function onChatMessageCreated(message) {
             console.log(`Witch Iron | Found token for actor ${actorId}: ${actorToken.id}`);
         }
 
-        // If there's a selected check, this message is the second check in the quarrel
-        if (quarrelTracker.selectedCheck) {
-            console.log("Witch Iron | Found selected check, using it as the first check in the quarrel");
-            
-            // Create a unique quarrel ID
-            const quarrelId = `${quarrelTracker.selectedCheck.messageId}-${message.id}`;
-            
-            // Prepare the quarrel with initiator and responder data
+        // If this is a pending condition quarrel, resolve it here (non-combat)
+        let pendingCond = quarrelTracker.getPendingQuarrelForActor(actorId, actorToken?.id) || quarrelTracker.getPendingQuarrelForActor(actorId);
+        if (pendingCond?.condition) {
+            console.log("Witch Iron | Pending condition quarrel detected, resolving non-combat condition quarrel");
+            const quarrelId = `${pendingCond.messageId}-${message.id}`;
             const initiatorData = {
-                actorId: quarrelTracker.selectedCheck.actorId,
-                checkId: quarrelTracker.selectedCheck.messageId,
+                actorId: pendingCond.actorId ?? pendingCond.initiator?.actorId,
+                checkId: pendingCond.messageId ?? pendingCond.initiator?.checkId,
                 tokenId: null,
-                hits: quarrelTracker.selectedCheck.hits
+                hits: pendingCond.hits ?? pendingCond.initiator?.hits
             };
-            
             const responderData = {
                 actorId: checkData.actorId,
                 checkId: checkData.messageId,
                 tokenId: actorToken?.id,
                 hits: checkData.hits
             };
-            
-            // Create the quarrel object
-            const quarrel = {
+            const quarrelObj = {
                 id: quarrelId,
                 initiator: initiatorData,
-                responder: responderData
+                responder: responderData,
+                isCombatCheck: false,
+                condition: pendingCond.condition,
+                customName: pendingCond.customName,
+                customIcon: pendingCond.customIcon,
+                skill: pendingCond.skill,
+                resultMessages: pendingCond.resultMessages
             };
-            
-            // Add to pending quarrels temporarily
-            quarrelTracker.pendingQuarrels.set(quarrelId, quarrel);
-            
-            // Clear the selected check before resolving
-            quarrelTracker.clearSelectedCheck();
-            
-            // Resolve the quarrel using the class method
+            quarrelTracker.pendingQuarrels.set(quarrelId, quarrelObj);
+            // Clear original pending quarrel
+            if (actorToken) quarrelTracker.clearPendingQuarrel(actorId, actorToken.id);
+            else quarrelTracker.clearPendingQuarrel(actorId);
             const result = await quarrelTracker.resolveQuarrel(quarrelId);
-            
-            // Show notification
-            if (result) {
-                ui.notifications.info(`Quarrel resolved: ${result.outcome}`);
-            }
-            
+            if (result) ui.notifications.info(`Condition quarrel resolved: ${result.outcome}`);
             return;
         }
 
@@ -971,11 +1109,18 @@ async function onChatMessageCreated(message) {
                     hits: checkData.hits
                 };
                 
-                // Create the quarrel object
+                // Create the quarrel object, including any custom quarrel parameters from the pending check
+                const { isCombatCheck: pendingCombatFlag, condition, customName, customIcon, skill, resultMessages } = pendingQuarrel;
                 const quarrel = {
                     id: quarrelId,
                     initiator: initiatorData,
-                    responder: responderData
+                    responder: responderData,
+                    isCombatCheck: pendingCombatFlag,
+                    condition,
+                    customName,
+                    customIcon,
+                    skill,
+                    resultMessages
                 };
                 
                 // Add to pending quarrels
@@ -1063,15 +1208,15 @@ async function automaticQuarrel(checkData) {
         console.log(`Witch Iron | Using ${controlledTokens.length} controlled tokens for automatic quarrel`);
         
         // Process each controlled token for targets
-        let initiatedQuarrel = false;
+        let initiatedAny = false;
         for (const token of controlledTokens) {
             if (await processTokenTargetsForQuarrel(token, checkData)) {
-                initiatedQuarrel = true;
+                initiatedAny = true;
             }
         }
         
         // No warning if no targets - user may just be making a regular check
-        if (!initiatedQuarrel) {
+        if (!initiatedAny) {
             console.log("Witch Iron | No targets found for controlled tokens");
         }
         
@@ -1240,14 +1385,19 @@ async function processTokenTargetsForQuarrel(token, checkData) {
 async function createQuarrelResultMessage(result) {
     // Handle null or incomplete results
     if (!result) {
-      console.error("Cannot create quarrel result message: result is null or undefined");
-      ui.notifications.error("Failed to create quarrel result message: missing data");
-      return null;
+        console.error("Cannot create quarrel result message: result is null or undefined");
+        ui.notifications.error("Failed to create quarrel result message: missing data");
+        return null;
     }
     
     // Ensure required properties exist with default values if needed
     result.initiator = result.initiator || {};
     result.responder = result.responder || {};
+    // Safety: force non-combat display for condition quarrels
+    if (result.condition) {
+        result.isCombatCheck = false;
+        result.nonCombat = true;
+    }
     result.netHits = result.netHits || 0;
     result.isCombatCheck = result.isCombatCheck || false;
     
@@ -1263,31 +1413,31 @@ async function createQuarrelResultMessage(result) {
     
     // Log combat check details if applicable
     if (result.isCombatCheck && result.injuryData) {
-      console.log("This is a combat check. Injury data:", result.injuryData);
+        console.log("This is a combat check. Injury data:", result.injuryData);
     }
     
     // Render the chat message template
     const html = await renderTemplate("systems/witch-iron/templates/chat/quarrel-result.hbs", {
-      result: result,
-      i18n: {
-        victory: game.i18n.localize("WITCHIRON.Victory"),
-        defeat: game.i18n.localize("WITCHIRON.Defeat")
-      }
+        result: result,
+        i18n: {
+            victory: game.i18n.localize("WITCHIRON.Victory"),
+            defeat: game.i18n.localize("WITCHIRON.Defeat")
+        }
     });
 
     // Create the message data
     const messageData = {
-      user: game.user.id,
-      speaker: {
-        alias: "Quarrel Result"
-      },
-      content: html,
-      flags: {
-        "witch-iron": {
-          quarrelData: result,
-          injuryData: result.injuryData || null
+        user: game.user.id,
+        speaker: {
+            alias: "Quarrel Result"
+        },
+        content: html,
+        flags: {
+            "witch-iron": {
+                quarrelData: result,
+                injuryData: result.injuryData || null
+            }
         }
-      }
     };
 
     let message = await ChatMessage.create(messageData);
@@ -1465,22 +1615,26 @@ async function onCreateInjuryClick(event) {
 /**
  * Get a severity label based on the numeric value
  * @param {number} value The severity value
- * @returns {string} The severity label
+ * @returns {string} The severity value as a string
  */
 function getSeverityLabel(value) {
-    if (value >= 5) return "Severe";
-    if (value >= 3) return "Moderate";
-    return "Minor";
+    return value.toString();
 }
 
 /**
- * Allow users to manually initiate a quarrel against a token
- * @param {Object} sourceCheckData - The check data to use as the source
- * @param {Token} targetToken - The token to quarrel against
+ * Allow users to manually initiate a quarrel against a token.
+ * @param {Object} sourceCheckData - The check data, with optional custom quarrel settings:
+ *   @property {string} customName - Custom header title.
+ *   @property {string} customIcon - Custom icon URL.
+ *   @property {string} skill - Skill name (e.g. "Hardship" or "Steel").
+ *   @property {Object} resultMessages - Follow-up messages { success, failure, cost }.
+ * @param {Token} targetToken - The token to quarrel against.
  */
 async function manualQuarrel(sourceCheckData, targetToken) {
     try {
         console.log(`Witch Iron | Manually initiating quarrel against token ${targetToken.id}`);
+        // Clear any previously selected check to ensure condition quarrels use custom pathway
+        quarrelTracker.clearSelectedCheck();
         console.log(`Witch Iron | Target token:`, targetToken);
         console.log(`Witch Iron | Source check data:`, sourceCheckData);
         
@@ -1517,7 +1671,87 @@ async function manualQuarrel(sourceCheckData, targetToken) {
         // Check if either actor is already in an active quarrel
         if (quarrelTracker.isActorInActiveQuarrel(targetActorId)) {
             console.log(`Witch Iron | Target actor ${targetActorId} is already in an active quarrel`);
-            // Use the existing quarrel - no need to create a new one
+            
+            // Check for pending quarrels targeting this actor/token
+            let pendingQuarrel = null;
+            
+            // First check by token ID if available
+            if (targetTokenId) {
+                pendingQuarrel = quarrelTracker.getPendingQuarrelForActor(targetActorId, targetTokenId);
+                console.log(`Witch Iron | Token quarrel check: ${pendingQuarrel ? "Found" : "No"} pending quarrel for token ${targetTokenId}`);
+            }
+            
+            // If no token quarrel found, check by actor ID
+            if (!pendingQuarrel) {
+                pendingQuarrel = quarrelTracker.getPendingQuarrelForActor(targetActorId);
+                console.log(`Witch Iron | Actor quarrel check: ${pendingQuarrel ? "Found" : "No"} pending quarrel for actor ${targetActorId}`);
+            }
+            
+            if (pendingQuarrel) {
+                console.log("Witch Iron | Pending quarrel found for this actor, resolving");
+                
+                // Create a unique quarrel ID
+                const quarrelId = `${pendingQuarrel.messageId}-${sourceCheckData.messageId}`;
+                
+                // Prepare the quarrel with initiator and responder data
+                const initiatorData = {
+                    actorId: pendingQuarrel.actorId,
+                    checkId: pendingQuarrel.messageId,
+                    tokenId: null,
+                    hits: pendingQuarrel.hits
+                };
+                
+                const responderData = {
+                    actorId: sourceCheckData.actorId,
+                    checkId: sourceCheckData.messageId,
+                    tokenId: targetTokenId,
+                    hits: sourceCheckData.hits
+                };
+                
+                // Create the quarrel object, including any custom quarrel parameters from the pending check
+                const { isCombatCheck: pendingCombatFlag, condition, customName, customIcon, skill, resultMessages } = pendingQuarrel;
+                const quarrel = {
+                    id: quarrelId,
+                    initiator: initiatorData,
+                    responder: responderData,
+                    isCombatCheck: pendingCombatFlag,
+                    condition,
+                    customName,
+                    customIcon,
+                    skill,
+                    resultMessages
+                };
+                
+                // Add to pending quarrels
+                quarrelTracker.pendingQuarrels.set(quarrelId, quarrel);
+                
+                // Resolve using the tracker instance
+                const result = await quarrelTracker.resolveQuarrel(quarrelId);
+                
+                // After resolution, clear any pending quarrels
+                if (targetTokenId) {
+                    quarrelTracker.clearPendingQuarrel(targetActorId, targetTokenId);
+                } else {
+                    quarrelTracker.clearPendingQuarrel(targetActorId);
+                }
+                
+                // Clear initiator actor from active quarrels
+                if (pendingQuarrel.actorId) {
+                    quarrelTracker.clearAllQuarrelsForActor(pendingQuarrel.actorId);
+                }
+                
+                // Clear responder actor from active quarrels
+                quarrelTracker.clearAllQuarrelsForActor(targetActorId);
+                
+                // Show notification
+                if (result) {
+                    ui.notifications.info(`Quarrel resolved: ${result.outcome}`);
+                }
+                
+                return;
+            }
+            
+            return;
         } else if (sourceCheckData.actorId && quarrelTracker.isActorInActiveQuarrel(sourceCheckData.actorId)) {
             console.log(`Witch Iron | Source actor ${sourceCheckData.actorId} is already in an active quarrel`);
             // Use the existing quarrel - no need to create a new one
@@ -1529,17 +1763,38 @@ async function manualQuarrel(sourceCheckData, targetToken) {
                 quarrelTracker.clearPendingQuarrel(targetActorId, targetTokenId);
             }
             
-            // Register the quarrel with both actor ID and token ID
-            quarrelTracker.registerPendingQuarrel(sourceCheckData, targetActorId, targetTokenId);
+            // Compute custom quarrel parameters (fallbacks for legacy condition quarrels)
+            const capitalize = s => typeof s === 'string' ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+            const headerTitle = sourceCheckData.customName
+                ?? (sourceCheckData.condition ? `${capitalize(sourceCheckData.condition)} Quarrel` : 'Quarrel');
+            const headerIcon = sourceCheckData.customIcon
+                ?? (sourceCheckData.condition ? CONDITION_ICONS[sourceCheckData.condition] : null);
+            const skill = sourceCheckData.skill
+                ?? (sourceCheckData.condition
+                    ? (['aflame','bleed','poison'].includes(sourceCheckData.condition) ? 'Hardship' : 'Steel')
+                    : null);
+            const additionalData = {
+                customName: headerTitle,
+                customIcon: headerIcon,
+                skill,
+                resultMessages: sourceCheckData.resultMessages || null
+            };
+            // Register the quarrel with custom parameters
+            quarrelTracker.registerPendingQuarrel(sourceCheckData, targetActorId, targetTokenId, additionalData);
             
             // Create a chat message for the initiation
             const responderName = getDisplayName(actor);
             console.log(`Witch Iron | Responder name resolution: actor.name=${actor.name}, getDisplayName=${responderName}`);
             
+            // Prepare template data for the initiation, using the module-scoped constant directly
             const templateData = {
-                initiator: sourceCheckData.actorName,
+                initiator: headerTitle,
                 responder: responderName,
-                hits: sourceCheckData.hits
+                hits: sourceCheckData.hits,
+                headerIcon,
+                headerTitle,
+                skill,
+                resultMessages: sourceCheckData.resultMessages || null
             };
             
             console.log(`Witch Iron | Creating quarrel initiation message with template data:`, templateData);
@@ -1621,16 +1876,13 @@ function determineInjury(locationRoll, netDamage) {
     default: location = "Torso"; // Fallback
   }
   
-  // Determine severity based on net damage
-  let severity, description, effect, conditions;
+  let description, effect, conditions;
   let requiresMedicalAid = false;
   let requiresSurgery = false;
 
   if (netDamage <= 0) {
     return null; // No injury
   } else if (netDamage <= 2) {
-    severity = "Minor";
-    
     // Different descriptions based on location
     if (location === "Head") {
       description = "Minor Concussion";
@@ -1641,15 +1893,14 @@ function determineInjury(locationRoll, netDamage) {
       effect = "Difficult to speak clearly";
       conditions = "Light Wound 1";
     } else {
-      description = `Minor ${location} Injury`;
+      description = `${location} Injury`;
       effect = "Painful but not debilitating";
       conditions = "Light Wound 1";
     }
     
     requiresMedicalAid = true;
   } else if (netDamage <= 4) {
-    severity = "Moderate";
-    
+    // Different descriptions based on location
     if (location === "Head") {
       description = "Concussion";
       effect = "Disoriented, -1 to all mental actions";
@@ -1659,15 +1910,14 @@ function determineInjury(locationRoll, netDamage) {
       effect = "Cannot speak properly, difficult to eat";
       conditions = "Medium Wound 1";
     } else {
-      description = `Moderate ${location} Injury`;
+      description = `${location} Injury`;
       effect = "Significantly impairs function";
       conditions = "Medium Wound 1";
     }
     
     requiresMedicalAid = true;
   } else {
-    severity = "Severe";
-    
+    // Different descriptions based on location
     if (location === "Head") {
       description = "Severe Head Trauma";
       effect = "Unconscious for 1d6 hours, possible long-term effects";
@@ -1677,7 +1927,7 @@ function determineInjury(locationRoll, netDamage) {
       effect = "Cannot speak or eat solid food";
       conditions = "Heavy Wound 2";
     } else {
-      description = `Severe ${location} Injury`;
+      description = `${location} Injury`;
       effect = "Critical damage, may be permanent";
       conditions = "Heavy Wound 2";
     }
@@ -1689,7 +1939,7 @@ function determineInjury(locationRoll, netDamage) {
   return {
     location,
     locationRoll,
-    severity,
+    severity: getSeverityLabel(Math.max(0, Math.min(5, Math.round(netDamage / 2)))),
     description,
     effect,
     conditions,
@@ -1745,6 +1995,12 @@ function initQuarrelHandlebarHelpers() {
         
         return localized;
     });
+    
+    // Helper to capitalize the first letter of a string
+    Handlebars.registerHelper('capitalize', function(text) {
+        if (typeof text !== 'string') return text || '';
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    });
 }
 
 /**
@@ -1768,4 +2024,4 @@ function getActorImage(actor) {
 }
 
 // Export the QuarrelTracker for potential use in other modules
-export { quarrelTracker }; 
+export { quarrelTracker, manualQuarrel }; 

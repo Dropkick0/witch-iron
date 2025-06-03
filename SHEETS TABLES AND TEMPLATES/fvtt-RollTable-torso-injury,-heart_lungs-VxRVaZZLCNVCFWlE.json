@@ -1,0 +1,192 @@
+{
+  "folder": "jcV0AWibiTpMic6G",
+  "name": "Torso Injury, Heart/Lungs",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Knocked out Wind, Stun 1",
+      "documentId": "yaUYTSnoqQ3lcd6b",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "jNJhfBgn08ni2gon",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Heart Bounce, Fall Prone",
+      "documentId": "tmDoojcStIIihzLY",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "4zwv1v6VG9xWj7mm",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Interrupt Breathing, Stun 2",
+      "documentId": "VWqxY32pRA0uaZhw",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "hSySM7LMrgmINv0R",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Bruised Heart, Trauma 1",
+      "documentId": "iBmu93uOS4Kx3mZv",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "E183IVZnVMaSxDpy",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Paralyzed Diaphragm, Stun 3",
+      "documentId": "MW0nQZlMk7aORP8y",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "CCUmPsPPvhhgjWwD",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Heart Damage, Trauma 2",
+      "documentId": "DTvSnix7pJKUP50i",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "8gOMwiUN8H5S0GDM",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Bleeding Lung, Bleed 5",
+      "documentId": "vxvlbn1kHh74r4UF",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "ow8GKchaQuVbRlJB",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Nicked Heart, Bleed 7",
+      "documentId": "6Fa0AoeM5rYA6cSP",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "4fvWyEKpBYkBjemD",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Punctured Lung, Suffocate*",
+      "documentId": "aqF3teQgfWYy5Sfv",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "umSJIbnrYXGW4Yd5",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Heart/Lung: Heart Ripped Out, Dead",
+      "documentId": "3BptippfQTSdFhDP",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "MNC3kAfEjWz6dcyO",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "RSSuRDgB9LjTKI6D",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697850665176,
+    "modifiedTime": 1697915542837,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

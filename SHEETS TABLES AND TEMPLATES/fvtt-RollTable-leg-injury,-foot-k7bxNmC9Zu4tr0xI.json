@@ -1,0 +1,192 @@
+{
+  "folder": "B3ReyhCV2DYOhOkx",
+  "name": "Leg Injury, Foot",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "<p><em>Non-Living Limbs: Do not suffer Bleed or Pain Conditions.</em></p>",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Foot: Bruised, Pain 1",
+      "documentId": "gHhoS7LDM8n0Xkna",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "icZy8VqiSPhKPM4o",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Foot: Bashed, Fall Prone",
+      "documentId": "vA4ZO5jiRe4LxfyR",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "yu9VFeC54GmEMZPI",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Foot: Twisted Ankle, Trauma 1",
+      "documentId": "LA1DtYTU9lv5rSIQ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "vHn2zU28Glb8cz9j",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Foot: Nerve Struck, Pain 2",
+      "documentId": "f6bWXMADI7PX0oAD",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "xq9p9d89MXukFQYk",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Foot: Hairline Fracture, Trauma 2",
+      "documentId": "eGSK2oxEHqV94GTV",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "e26M22X2wTFXJubv",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Foot: Transfixed, Pain 1|Bleed 1",
+      "documentId": "HioXNxleUAEseEyK",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "WJdPHncm0gCOECYh",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Foot: Broken Tarsal, Trauma 3",
+      "documentId": "JGReA1mIwXS4FLN1",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "d4YyB3W3MUo8Ur0Y",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Foot: Hacked, d4 Lost Toes|Bleed 1",
+      "documentId": "hW8bhNNJ3Gcu8I8m",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "V2CFbdqifzjfw19h",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Foot: Mangled, Lost Foot‡|Bleed 2",
+      "documentId": "otEafhjm7mX4XITK",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "rSgTR1htXeuGVHYO",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Foot: Severed, Lost Foot|Bleed 3",
+      "documentId": "eOrLvLsUtpWRH022",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "aVWTP0ntGrE1G0Vq",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "F06ziZLGkDj7KzjC",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697896937680,
+    "modifiedTime": 1697916662669,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

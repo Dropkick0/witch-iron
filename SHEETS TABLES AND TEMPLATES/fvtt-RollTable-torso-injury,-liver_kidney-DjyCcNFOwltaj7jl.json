@@ -1,0 +1,192 @@
+{
+  "folder": "jcV0AWibiTpMic6G",
+  "name": "Torso Injury, Liver/Kidney",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Bruised, Pain 1",
+      "documentId": "CtWiVeDjt1Arb3gU",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "mWcc4S7aiX12SHyV",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Shocked, Fall Prone",
+      "documentId": "KYmfB3eh4nQqQJkw",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "oyiLZ8XwF2rH5Mbj",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Nick, Bleed 1",
+      "documentId": "W0xfr9flH15jcLoo",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "ZnrAbk3868TKj1LY",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Spasmed, Stun 1",
+      "documentId": "L0rsp2DBMijdUwi0",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "1xEdLYk86ZEPE48G",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Profuse Bleeding, Bleed 2",
+      "documentId": "MEJ7GyAyyCdwxhge",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "Z6vnLctY0dqFA4bd",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Organ Leak, Poison 2",
+      "documentId": "gccyeXTdLuvjhhsn",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "ebJxbL4Rmhc4zcs7",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Rupture, Bleed 3",
+      "documentId": "WNVolksm0dof6yHT",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "J4uc37uXhaz5gbwy",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Toxic Shock, Poison 4",
+      "documentId": "O9nPkXqBshpmQUhi",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "zemtt0JSLN3DgwIK",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Extraction, Bleed 5",
+      "documentId": "LgOLK4m1qdj5ye0B",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "5tYe6gUV8r1zKYAp",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Liver/Kidney: Lacerated Vena Cava, Dead",
+      "documentId": "HSejqlRBfVxxykX4",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "fBD8A5MN4mjrxInM",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "NNYAo1UV1K4dVQ4V",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697850578328,
+    "modifiedTime": 1697915570435,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

@@ -1,3 +1,9 @@
+// Suppress console.log override for debugging; remove this line to restore logging
+// console.log = () => {};
+
+// Import the quarrel API for non-combat condition checks
+import { manualQuarrel } from "./quarrel.js";
+
 /**
  * Monster sheet class for the Witch Iron system
  * @extends {ActorSheet}
@@ -15,6 +21,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
+      // Prevent automatic sheet re-render on actor updates to avoid input blinking
+      reRenderOnUpdate: false,
       classes: ["witch-iron", "sheet", "monster"],
       template: "systems/witch-iron/templates/actors/monster-sheet.hbs",
       width: 720,
@@ -39,16 +47,16 @@ export class WitchIronMonsterSheet extends ActorSheet {
           debugElements.forEach(el => {
             if (el.style.display === 'none') {
               el.style.display = 'block';
-              console.log('Witch Iron | Debug info shown');
+//////               console.log('Witch Iron | Debug info shown');
             } else {
               el.style.display = 'none';
-              console.log('Witch Iron | Debug info hidden');
+//////               console.log('Witch Iron | Debug info hidden');
             }
           });
           return `Toggled ${debugElements.length} debug elements`;
         }
       };
-      console.log('Witch Iron | Debug utilities registered! Use game.witchIronDebug.toggleDebugInfo() to show debug info');
+//////       console.log('Witch Iron | Debug utilities registered! Use game.witchIronDebug.toggleDebugInfo() to show debug info');
     }
   }
 
@@ -58,7 +66,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // If the actor type isn't set to monster, fix it
     if (this.actor.type !== 'monster') {
-      console.log(`Fixing actor type for ${this.actor.name}: "${this.actor.type}" => "monster"`);
+//////       console.log(`Fixing actor type for ${this.actor.name}: "${this.actor.type}" => "monster"`);
       await this.actor.update({ 'type': 'monster' });
     }
     
@@ -69,14 +77,14 @@ export class WitchIronMonsterSheet extends ActorSheet {
       
       // Force actor to recalculate derived data
       if (!system.derived) {
-        console.log(`_render: No derived data for actor ${this.actor.name}`);
+//////         console.log(`_render: No derived data for actor ${this.actor.name}`);
         await this.actor.update({});
       }
       
-      console.log('Actor data:', this.actor);
-      console.log('Actor custom:', this.actor.system.custom);
-      console.log('Actor derived:', this.actor.system.derived);
-      console.log('Actor battle wear:', this.actor.system.battleWear);
+//////       console.log('Actor data:', this.actor);
+//////       console.log('Actor custom:', this.actor.system.custom);
+//////       console.log('Actor derived:', this.actor.system.derived);
+//////       console.log('Actor battle wear:', this.actor.system.battleWear);
       
       // Helper function to safely set select values
       const safeSetSelectValue = (selector, value) => {
@@ -96,7 +104,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
       const weaponWear = system.battleWear?.weapon?.value || 0;
       const armorWear = system.battleWear?.armor?.value || 0;
       
-      console.log(`Monster Sheet: Setting battle wear - Weapon: ${weaponWear}, Armor: ${armorWear}`);
+//////       console.log(`Monster Sheet: Setting battle wear - Weapon: ${weaponWear}, Armor: ${armorWear}`);
       
       // Set the battle wear value displays
       html.find('.battle-wear-value').each((i, el) => {
@@ -104,14 +112,14 @@ export class WitchIronMonsterSheet extends ActorSheet {
         const parent = valueElement.closest('.battle-wear-control');
         const type = parent.find('button').data('type');
         
-        console.log(`Found battle wear element #${i}, type: ${type}, current text: '${valueElement.text()}'`);
+//////         console.log(`Found battle wear element #${i}, type: ${type}, current text: '${valueElement.text()}'`);
         
         if (type === 'weapon') {
           valueElement.text(weaponWear);
-          console.log(`Set weapon wear to: ${weaponWear}`);
+//////           console.log(`Set weapon wear to: ${weaponWear}`);
         } else if (type === 'armor') {
           valueElement.text(armorWear);
-          console.log(`Set armor wear to: ${armorWear}`);
+//////           console.log(`Set armor wear to: ${armorWear}`);
         }
       });
       
@@ -120,7 +128,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
       this._updateDerivedDisplay(html);
       
       // Make sure battle wear displays are up-to-date
-      this._updateBattleWearDisplays();
+      this._updateBattleWearDisplays(html);
     }
     
     return result;
@@ -128,109 +136,71 @@ export class WitchIronMonsterSheet extends ActorSheet {
 
   /** @override */
   getData() {
-    // Get the base data from the parent class
-    const data = super.getData();
-    const actorData = data.actor;
+    const context = super.getData();
+    const actorData = this.actor.toObject(false);
+    context.system = actorData.system;
+    context.flags = actorData.flags;
     
-    // Ensure hit dice value is a number
-    if (actorData.system?.stats?.hitDice) {
-      actorData.system.stats.hitDice.value = Number(actorData.system.stats.hitDice.value) || 1;
-      console.log("getData - Current HD value:", actorData.system.stats.hitDice.value);
-    }
-    
-    // Initialize battleWear if needed
-    if (!actorData.system.battleWear) {
-      actorData.system.battleWear = {
-        weapon: { value: 0 },
-        armor: { value: 0 }
+    // Ensure CONFIG.WitchIron and its properties are accessed safely
+    const witchIronConfig = CONFIG.WitchIron || {};
+    context.config = witchIronConfig;
+
+    // Prepare conditions for the #each helper
+    context.conditions = {};
+    const conditionsData = actorData.system.conditions || {};
+    for (const condKey in conditionsData) {
+      context.conditions[condKey] = {
+        label: this.capitalize(condKey),
+        value: conditionsData[condKey].value
       };
     }
 
-    // Calculate weapon and armor max bonuses based on type
-    const weaponBonusTable = {
-      "unarmed": 2,
-      "light": 4,
-      "medium": 6,
-      "heavy": 8,
-      "superheavy": 10
-    };
+    // Prepare armor types for select
+    const armorTypesConfig = witchIronConfig.armorTypes || {};
+    context.armorTypes = Object.entries(armorTypesConfig).map(([key, label]) => ({ key, label }));
 
-    const armorBonusTable = {
-      "none": 0,
-      "light": 2,
-      "medium": 4,
-      "heavy": 6,
-      "superheavy": 8
-    };
+    // Prepare weapon types for select
+    const weaponTypesConfig = witchIronConfig.weaponTypes || {};
+    context.weaponTypes = Object.entries(weaponTypesConfig).map(([key, label]) => ({ key, label }));
 
-    // Get the current weapon and armor types
-    const weaponType = actorData.system.stats.weaponType?.value || "unarmed";
-    const armorType = actorData.system.stats.armorType?.value || "none";
+    // Prepare sizes for select
+    const sizesConfig = witchIronConfig.sizes || {};
+    context.sizes = Object.entries(sizesConfig).map(([key, label]) => ({ key, label }));
 
-    // Calculate max bonuses
-    actorData.system.derived.weaponBonusMax = weaponBonusTable[weaponType] || 0;
-    actorData.system.derived.armorBonusMax = armorBonusTable[armorType] || 0;
+    // Add actor's items to the context
+    context.items = actorData.items;
+    // Add derived data to the context
+    context.derived = this.actor.system.derived;
+    // Add custom attributes to the context
+    context.customAttributes = this.actor.system.customAttributes;
 
-    // Calculate effective bonuses after battle wear
-    actorData.system.derived.weaponBonusEffective = Math.max(0, actorData.system.derived.weaponBonusMax - (actorData.system.battleWear?.weapon?.value || 0));
-    actorData.system.derived.armorBonusEffective = Math.max(0, actorData.system.derived.armorBonusMax - (actorData.system.battleWear?.armor?.value || 0));
-    
-    // Ensure system.flags exists and initialize combat check if needed
-    if (!actorData.system.flags) {
-      console.log(`Monster Sheet: Initializing system.flags for actor ${actorData.name}`);
-      actorData.system.flags = {};
-    }
-    
-    // Initialize combat check flag if it doesn't exist
-    if (actorData.system.flags.isCombatCheck === undefined) {
-      console.log(`Monster Sheet: Initializing combat check flag for actor ${actorData.name}`);
-      actorData.system.flags.isCombatCheck = false;
-    }
-    
-    console.log(`Monster Sheet: Combat check flag status: ${actorData.system.flags.isCombatCheck}`);
-    
-    // Add dropdown options for monster properties
-    data.sizes = {
-      "tiny": "Tiny (-5)",
-      "small": "Small (-2)", 
-      "medium": "Medium (+0)", 
-      "large": "Large (+5)", 
-      "huge": "Huge (+10)", 
-      "gigantic": "Gigantic (+20)"
-    };
-    
-    data.weaponTypes = {
-      "unarmed": "Unarmed (+2)",
-      "light": "Light (+4)",
-      "medium": "Medium (+6)",
-      "heavy": "Heavy (+8)",
-      "superheavy": "Super Heavy (+10)"
-    };
-    
-    data.armorTypes = {
-      "none": "None (+0)",
-      "light": "Light (+2)",
-      "medium": "Medium (+4)",
-      "heavy": "Heavy (+6)",
-      "superheavy": "Super Heavy (+8)"
+    // Set the isGM flag for template
+    context.isGM = game.user.isGM;
+
+    // Debugging information for derived data
+    context.debugInfo = {
+      derivedData: JSON.stringify(this.actor.system.derived, null, 2),
+      battleWear: JSON.stringify(this.actor.system.battleWear, null, 2)
     };
     
     // Add hit dice options
-    data.hitDiceOptions = {};
+    context.hitDiceOptions = {};
     for (let i = 1; i <= 20; i++) {
-      data.hitDiceOptions[i] = i;
+      context.hitDiceOptions[i] = i;
     }
     
     // Add items categorized by type
-    data.injuries = actorData.items.filter(item => item.type === 'injury');
+    context.injuries = actorData.items.filter(item => item.type === 'injury');
     
-    return data;
+    return context;
   }
 
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
 
+    // Bind condition quarrel click even when sheet is not editable
+    html.find('.cond-quarrel').click(this._onConditionQuarrel.bind(this));
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
@@ -264,11 +234,6 @@ export class WitchIronMonsterSheet extends ActorSheet {
     // Add listener for Hit Dice changes - only use the change event
     const hitDiceSelect = html.find('select[name="system.stats.hitDice.value"]');
     
-    // Log the current value for debugging
-    console.log("Hit Dice Select Initial Value:", hitDiceSelect.val());
-    console.log("Actor's Hit Dice Value:", this.actor.system.stats.hitDice.value);
-    
-    // Only use the change event (not mouseup which causes too many updates)
     hitDiceSelect.change(this._onHitDiceChange.bind(this));
     
     // Add listeners for other dropdowns
@@ -280,6 +245,28 @@ export class WitchIronMonsterSheet extends ActorSheet {
     html.find('.item-create').click(this._onItemCreate.bind(this));
     html.find('.item-edit').click(this._onItemEdit.bind(this));
     html.find('.item-delete').click(this._onItemDelete.bind(this));
+
+    // Condition increment/decrement and quarrel click handlers
+    html.find('.cond-plus').click(this._onConditionPlus.bind(this));
+    html.find('.cond-minus').click(this._onConditionMinus.bind(this));
+    html.find('.cond-value').change(this._onConditionInput.bind(this));
+
+    // Listener for flaw input
+    const flawInput = html.find('textarea[name="system.details.flaw"]');
+    flawInput.on('change', async (event) => {
+      const newFlaw = event.currentTarget.value;
+      await this.actor.update({ 'system.details.flaw': newFlaw });
+    });
+
+    // Listener for notes input
+    const notesInput = html.find('textarea[name="system.details.notes"]');
+    notesInput.on('change', async (event) => {
+      const newNotes = event.currentTarget.value;
+      await this.actor.update({ 'system.details.notes': newNotes });
+    });
+
+    // Initialize battle wear displays
+    this._updateBattleWearDisplays(html);
   }
   
   /**
@@ -296,11 +283,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const attributeKey = circle.dataset.attribute;
     
     // Get current attribute data
-    const attributeData = this.actor.system.customAttributes?.[attributeKey] || {
-      label: "Custom",
-      value: 0,
-      hits: 0
-    };
+    const attributeData = this.actor.system.customAttributes?.[attributeKey];
+    if (!attributeData) return;
     
     // Create dialog content
     const content = `
@@ -410,9 +394,9 @@ export class WitchIronMonsterSheet extends ActorSheet {
    */
   _setupAttributeCircles(html) {
     // Log the actor's system data to check derived values
-    console.log("Setting up Monster attribute circles for:", this.actor.name);
-    console.log("Actor system data:", this.actor.system);
-    console.log("Derived ability score:", this.actor.system.derived?.abilityScore);
+//////     console.log("Setting up Monster attribute circles for:", this.actor.name);
+//////     console.log("Actor system data:", this.actor.system);
+//////     console.log("Derived ability score:", this.actor.system.derived?.abilityScore);
     
     // For each attribute circle, update the styling based on the value
     html.find('.attribute-circle').each((i, el) => {
@@ -556,8 +540,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
    */
   async _onDeleteQuality(event) {
     event.preventDefault();
-    const element = event.currentTarget;
-    const li = element.closest(".quality");
+    const li = event.currentTarget.closest(".quality");
     const index = Number(li.dataset.index);
     
     // Get current special qualities
@@ -580,15 +563,15 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const select = event.currentTarget;
     const newHD = parseInt(select.value) || 1;
     
-    console.log(`Hit Dice changed to ${newHD}`);
+//////     console.log(`Hit Dice changed to ${newHD}`);
     
     try {
       // Update the actor with the new HD value
       await this.actor.update({ 'system.stats.hitDice.value': newHD });
-      console.log("Updated actor with new HD:", newHD);
+//////       console.log("Updated actor with new HD:", newHD);
       
       // Verify the update was successful
-      console.log("Current HD value after update:", this.actor.system.stats.hitDice.value);
+//////       console.log("Current HD value after update:", this.actor.system.stats.hitDice.value);
       
       // Get the current HTML and force a refresh of all derived displays
       const html = $(this.element);
@@ -612,8 +595,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     this.actor.prepareData();
     
     // Log the current derived values
-    console.log("Updating derived display for:", this.actor.name);
-    console.log("Current derived stats:", this.actor.system.derived);
+//////     console.log("Updating derived display for:", this.actor.name);
+//////     console.log("Current derived stats:", this.actor.system.derived);
     
     // Update each derived stat field
     if (html) {
@@ -632,7 +615,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
         
         // Update the value if we found a match
         if (value !== null && valueSpan.length) {
-          console.log(`Updating ${label} to ${value}`);
+//////           console.log(`Updating ${label} to ${value}`);
           valueSpan.text(value);
         }
       });
@@ -648,12 +631,12 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const select = event.currentTarget;
     const newSize = select.value;
     
-    console.log(`Size changed to ${newSize}`);
+//////     console.log(`Size changed to ${newSize}`);
     
     try {
       // Update the actor with the new size value
       await this.actor.update({ 'system.stats.size.value': newSize });
-      console.log("Updated actor with new size:", newSize);
+//////       console.log("Updated actor with new size:", newSize);
       
       // Force update for all derived stats
       const html = $(this.element);
@@ -672,12 +655,12 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const select = event.currentTarget;
     const newWeaponType = select.value;
     
-    console.log(`Weapon type changed to ${newWeaponType}`);
+//////     console.log(`Weapon type changed to ${newWeaponType}`);
     
     try {
       // Update the actor with the new weapon type value
       await this.actor.update({ 'system.stats.weaponType.value': newWeaponType });
-      console.log("Updated actor with new weapon type:", newWeaponType);
+//////       console.log("Updated actor with new weapon type:", newWeaponType);
       
       // Force update for all derived stats
       const html = $(this.element);
@@ -696,12 +679,12 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const select = event.currentTarget;
     const newArmorType = select.value;
     
-    console.log(`Armor type changed to ${newArmorType}`);
+//////     console.log(`Armor type changed to ${newArmorType}`);
     
     try {
       // Update the actor with the new armor type value
       await this.actor.update({ 'system.stats.armorType.value': newArmorType });
-      console.log("Updated actor with new armor type:", newArmorType);
+//////       console.log("Updated actor with new armor type:", newArmorType);
       
       // Force update for all derived stats
       const html = $(this.element);
@@ -719,12 +702,12 @@ export class WitchIronMonsterSheet extends ActorSheet {
   _onMeleeAttack(event) {
     event.preventDefault();
     
-    console.log(`Witch Iron | Performing melee attack for monster ${this.actor.name}`);
+//////     console.log(`Witch Iron | Performing melee attack for monster ${this.actor.name}`);
     
     // Ensure the actor's combat check flag is set to true before rolling
     // This is crucial because the quarrel system checks this flag on the actor itself
     if (this.actor.system.flags && (this.actor.system.flags.isCombatCheck === undefined || this.actor.system.flags.isCombatCheck === false)) {
-      console.log(`Witch Iron | Setting isCombatCheck flag to true for ${this.actor.name}`);
+//////       console.log(`Witch Iron | Setting isCombatCheck flag to true for ${this.actor.name}`);
       this.actor.update({'system.flags.isCombatCheck': true});
     }
     
@@ -737,7 +720,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
         additionalHits: this.actor.system.derived?.plusHits || 0
       };
       
-      console.log(`Witch Iron | Combat options for melee attack:`, combatOptions);
+//////       console.log(`Witch Iron | Combat options for melee attack:`, combatOptions);
       
       // Perform the roll with combat flag
       this.actor.rollMonsterCheck(combatOptions);
@@ -767,14 +750,18 @@ export class WitchIronMonsterSheet extends ActorSheet {
     if (type === "injury") {
       itemData.name = "New Injury";
       itemData.img = "icons/svg/blood.svg";
+      // Base system data for a new injury
       itemData.system = {
         description: "",
         effect: "",
         location: "",
-        severity: {
-          value: 1
-        }
+        severity: { value: 1 }
       };
+      // Merge in any saved defaults so new injuries start with all saved fields
+      const savedDefaults = game.settings.get("witch-iron", "injurySheetDefaults") || {};
+      foundry.utils.mergeObject(itemData.system, savedDefaults, { inplace: true });
+      // Override the name if a default is stored
+      if (savedDefaults.name !== undefined) itemData.name = savedDefaults.name;
     }
     
     // Create the item
@@ -800,7 +787,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
    * @param {Event} event The originating click event
    * @private
    */
-  _onItemDelete(event) {
+  async _onItemDelete(event) {
     event.preventDefault();
     const li = event.currentTarget.closest(".item");
     
@@ -841,13 +828,13 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Don't exceed maximum
     if (currentWear >= maxWear) {
-      console.log(`${type} wear is already at maximum (${maxWear})`);
+//////       console.log(`${type} wear is already at maximum (${maxWear})`);
       return;
     }
     
     // Calculate new wear value
     const newWear = Math.min(maxWear, currentWear + 1);
-    console.log(`Increasing ${type} wear from ${currentWear} to ${newWear}`);
+//////     console.log(`Increasing ${type} wear from ${currentWear} to ${newWear}`);
     
     // Prepare update data
     const updateData = {};
@@ -875,13 +862,13 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Don't go below zero
     if (currentWear <= 0) {
-      console.log(`${type} wear is already at minimum (0)`);
+//////       console.log(`${type} wear is already at minimum (0)`);
       return;
     }
     
     // Calculate new wear value
     const newWear = Math.max(0, currentWear - 1);
-    console.log(`Decreasing ${type} wear from ${currentWear} to ${newWear}`);
+//////     console.log(`Decreasing ${type} wear from ${currentWear} to ${newWear}`);
     
     // Prepare update data
     const updateData = {};
@@ -909,7 +896,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Only do something if wear > 0
     if (currentWear <= 0) {
-      console.log(`${type} wear is already at 0`);
+//////       console.log(`${type} wear is already at 0`);
       return;
     }
     
@@ -919,7 +906,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Update the actor
     await this.actor.update(updateData);
-    console.log(`Reset ${type} wear from ${currentWear} to 0`);
+//////     console.log(`Reset ${type} wear from ${currentWear} to 0`);
     
     // Force refresh
     this._updateBattleWearDisplays();
@@ -927,17 +914,25 @@ export class WitchIronMonsterSheet extends ActorSheet {
 
   /**
    * Update the battle wear displays with current values
+   * @param {jQuery} html - The HTML element of the sheet, or null to use this.element.
    * @private
    */
-  _updateBattleWearDisplays() {
-    console.log("Updating battle wear displays - Weapon: " + (this.actor.system.battleWear?.weapon?.value || 0) + 
-                ", Armor: " + (this.actor.system.battleWear?.armor?.value || 0));
-    console.log("Actor's full battleWear data:", this.actor.system.battleWear);
+  _updateBattleWearDisplays(html) {
+    html = html || this.element;
+    if (!html || html.length === 0) {
+        console.warn("Witch Iron | _updateBattleWearDisplays called with no HTML element available.");
+        return;
+    }
+
+    const actorData = this.actor.system;
+    console.log("Updating battle wear displays - Weapon: " + (actorData.battleWear?.weapon?.value || 0) + 
+                ", Armor: " + (actorData.battleWear?.armor?.value || 0));
+    console.log("Actor's full battleWear data:", actorData.battleWear);
     
     // Force actor to recalculate derived data
     this.actor.prepareData();
     
-    const battleWearElements = this.element.find('.battle-wear-value');
+    const battleWearElements = html.find('.battle-wear-value');
     console.log(`Found ${battleWearElements.length} battle wear value elements`);
     
     if (battleWearElements.length === 0) {
@@ -947,55 +942,55 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Get fresh battle wear values from the actor
     // Force default to 0 for both weapon and armor wear
-    let weaponWear = this.actor.system.battleWear?.weapon?.value;
-    let armorWear = this.actor.system.battleWear?.armor?.value;
+    let weaponWear = actorData.battleWear?.weapon?.value;
+    let armorWear = actorData.battleWear?.armor?.value;
     
     // Ensure values are numbers and default to 0
     weaponWear = Number(weaponWear) || 0;
     armorWear = Number(armorWear) || 0;
     
     // Get the current weapon and armor types
-    const weaponType = this.actor.system.stats.weaponType?.value || "unarmed";
-    const armorType = this.actor.system.stats.armorType?.value || "none";
+    const weaponType = actorData.stats.weaponType?.value || "unarmed";
+    const armorType = actorData.stats.armorType?.value || "none";
     
     // If armor type is "none", force armor wear to 0
     if (armorType === "none" && armorWear !== 0) {
-        console.log(`Armor type is "none", forcing armor wear from ${armorWear} to 0`);
+//////         console.log(`Armor type is "none", forcing armor wear from ${armorWear} to 0`);
         armorWear = 0;
         this.actor.update({"system.battleWear.armor.value": 0});
     }
     
     // If values are unexpectedly high for a new monster, reset them to 0
-    if (weaponWear > 0 && !this.actor.system.derived?.weaponBonusMax) {
-        console.log(`Resetting unexpected weapon wear value of ${weaponWear} to 0`);
+    if (weaponWear > 0 && !actorData.derived?.weaponBonusMax) {
+//////         console.log(`Resetting unexpected weapon wear value of ${weaponWear} to 0`);
         weaponWear = 0;
         this.actor.update({"system.battleWear.weapon.value": 0});
     }
     
-    if (armorWear > 0 && !this.actor.system.derived?.armorBonusMax) {
-        console.log(`Resetting unexpected armor wear value of ${armorWear} to 0`);
+    if (armorWear > 0 && !actorData.derived?.armorBonusMax) {
+//////         console.log(`Resetting unexpected armor wear value of ${armorWear} to 0`);
         armorWear = 0;
         this.actor.update({"system.battleWear.armor.value": 0});
     }
     
-    console.log(`Using weapon wear: ${weaponWear}, armor wear: ${armorWear}`);
+//////     console.log(`Using weapon wear: ${weaponWear}, armor wear: ${armorWear}`);
     
     // Process each battle wear element
     battleWearElements.each((i, el) => {
         const element = $(el);
         const type = element.data('type');
         const currentText = element.text();
-        console.log(`Processing element #${i}, type: ${type}, current text: '${currentText}'`);
+//////         console.log(`Processing element #${i}, type: ${type}, current text: '${currentText}'`);
         
         if (type === 'weapon') {
             // Update weapon wear display
             const newText = `${weaponWear}`;
-            console.log(`Set weapon wear display to: ${newText} (was: ${currentText})`);
+//////             console.log(`Set weapon wear display to: ${newText} (was: ${currentText})`);
             element.text(newText);
         } else if (type === 'armor') {
             // Update armor wear display
             const newText = `${armorWear}`;
-            console.log(`Set armor wear display to: ${newText} (was: ${currentText})`);
+//////             console.log(`Set armor wear display to: ${newText} (was: ${currentText})`);
             element.text(newText);
         }
     });
@@ -1003,7 +998,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     // Update button states based on current values
     this._updateBattleWearButtonStates();
     
-    console.log("Battle wear displays updated successfully");
+//////     console.log("Battle wear displays updated successfully");
   }
 
   // Add a new method to update battle wear button states
@@ -1042,7 +1037,128 @@ export class WitchIronMonsterSheet extends ActorSheet {
         armorMinusBtn.prop('disabled', armorWear <= 0);
     }
     
-    console.log("Battle wear button states updated");
+//////     console.log("Battle wear button states updated");
+  }
+
+  /**
+   * Initiate a condition quarrel: show description, then register as non-combat quarrel
+   * @param {Event} event
+   */
+  async _onConditionQuarrel(event) {
+    event.preventDefault();
+    const actor = this.actor;
+    const conditionName = event.currentTarget.closest('.condition-row').dataset.condition;
+
+    let rating = 0;
+    let skillName = "";
+    let resultMessages = {};
+
+    if (["aflame", "bleed", "poison"].includes(conditionName)) {
+      skillName = "Hardship";
+      rating = ["aflame", "bleed", "poison"].reduce((sum, c) => sum + (actor.system.conditions[c]?.value || 0), 0);
+      resultMessages = {
+        success: "The afflictions consume the monster!",
+        failure: "The monster overcomes its afflictions.",
+        cost: "The monster survives, but at great cost."
+      };
+    } else if (conditionName === "stress") {
+      skillName = "Steel";
+      rating = actor.system.conditions.stress?.value || 0;
+      resultMessages = {
+        success: "The monster's mind breaks! It gains a Madness.",
+        failure: "The monster steels its mind, avoiding Madness.",
+        cost: "The monster holds on, but something snaps."
+      };
+    } else if (conditionName === "corruption") {
+      skillName = "Steel";
+      rating = actor.system.conditions.corruption?.value || 0;
+      resultMessages = {
+        success: "Corruption takes hold! The monster gains a Mutation.",
+        failure: "The monster purges the corruption, avoiding Mutation.",
+        cost: "The monster pushes back the corruption, but at a price."
+      };
+    }
+
+    if (!skillName) {
+      console.error(`Witch Iron | Unknown condition for quarrel: ${conditionName}`);
+      return;
+    }
+
+    // Log the parameters being sent to manualQuarrel
+    console.log(`Witch Iron | Initiating Condition Quarrel: Condition=${conditionName}, Skill=${skillName}, Rating=${rating}`);
+    console.log(`Witch Iron | Result Messages:`, resultMessages);
+
+    // Setup the condition's side of the quarrel
+    const monsterToken = this.actor.getActiveTokens()[0] || null; // Get the first active token, or null
+
+    const customParameters = {
+        actorId: this.actor.id,   // Add the source actor's ID
+        hits: rating,             // The 'roll' or power level of the condition
+        skill: skillName,         // The skill the condition tests (e.g., Hardship), also for sourceCheckData
+        resultMessages: resultMessages,
+        isConditionQuarrel: true, // Flag this as a condition-initiated quarrel
+        condition: conditionName  // Specific condition (e.g., aflame, stress) to trigger condition quarrel logic
+    };
+
+    // Correctly call manualQuarrel with sourceCheckData (customParameters) and targetToken (monsterToken)
+    await manualQuarrel(customParameters, monsterToken);
+
+    // Now, make the monster roll its Specialized check against the condition
+    // The quarrel system should pick up this roll and resolve it against the pending condition quarrel.
+    console.log(`Witch Iron | Rolling Specialized Check for actor ${actor.name} against condition ${conditionName}`);
+    this._rollSpecializedCheck(); 
+
+  }
+
+  /**
+   * Increase a condition value.
+   * @param {Event} event
+   * @private
+   */
+  async _onConditionPlus(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const row = event.currentTarget.closest('.condition-row');
+    const cond = row.dataset.condition;
+    const input = row.querySelector('input.cond-value');
+    let current = parseInt(input?.value) || this.actor.system.conditions?.[cond]?.value || 0;
+    const value = current + 1;
+    if (input) input.value = value;
+    await this.actor.update({ [`system.conditions.${cond}.value`]: value });
+  }
+
+  /**
+   * Decrease a condition value.
+   * @param {Event} event
+   * @private
+   */
+  async _onConditionMinus(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const row = event.currentTarget.closest('.condition-row');
+    const cond = row.dataset.condition;
+    const input = row.querySelector('input.cond-value');
+    let current = parseInt(input?.value) || this.actor.system.conditions?.[cond]?.value || 0;
+    const value = Math.max(0, current - 1);
+    if (input) input.value = value;
+    await this.actor.update({ [`system.conditions.${cond}.value`]: value });
+  }
+
+  /**
+   * Handle manual input change for a condition value.
+   * @param {Event} event
+   * @private
+   */
+  async _onConditionInput(event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const input = event.currentTarget;
+    const row = input.closest('.condition-row');
+    const cond = row.dataset.condition;
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value);
+    input.value = value; // Ensure the input field reflects the sanitized value
+    await this.actor.update({ [`system.conditions.${cond}.value`]: value });
   }
 }
 
@@ -1050,62 +1166,57 @@ export class WitchIronMonsterSheet extends ActorSheet {
  * Add a hook to update battle wear displays when actor data changes
  */
 Hooks.on("updateActor", (actor, changes, options, userId) => {
+    console.log(`WITCH IRON | updateActor hook fired for actor: ${actor.name}. UserID: ${userId}. Game User ID: ${game.user.id}`);
+    console.log("WITCH IRON | updateActor hook - All changes:", changes);
+
     // Only process if this is our client's update
-    if (game.user.id !== userId) return;
+    if (game.user.id !== userId) {
+        console.log("WITCH IRON | updateActor hook: Update was for a different user. Skipping.");
+        return;
+    }
     
-    // Check if battle wear values have changed
-    const hasBattleWearChanges = changes.system?.battleWear || 
-                               (changes.system?.derived?.weaponBonusEffective !== undefined) ||
-                               (changes.system?.derived?.armorBonusEffective !== undefined);
-    
-    // Log the update for debugging
-    console.log(`Actor ${actor.name} updated. Changes:`, changes);
-    console.log(`Has battle wear changes: ${hasBattleWearChanges}`);
-    
-    if (hasBattleWearChanges) {
-        console.log(`Detected battle wear changes for ${actor.name}, refreshing sheet display`);
-        
-        // Force the actor to recalculate derived data
-        actor.prepareData();
-        
-        // See if the actor has an open sheet
-        const sheet = actor.sheet;
-        if (sheet?.rendered) {
-            // If it's a WitchIronMonsterSheet, update battle wear displays
-            if (sheet._updateBattleWearDisplays && typeof sheet._updateBattleWearDisplays === 'function') {
-                console.log(`Updating battle wear displays for ${actor.name}`);
-                
-                // Add debug information
-                const weaponWear = actor.system.battleWear?.weapon?.value || 0;
-                const armorWear = actor.system.battleWear?.armor?.value || 0;
-                console.log(`Current battle wear values - Weapon: ${weaponWear}, Armor: ${armorWear}`);
-                
-                // Update the displays
-                sheet._updateBattleWearDisplays();
-                
-                // Extra step: Directly set the values in HTML elements
-                const html = sheet.element;
-                if (html) {
-                    const weaponWearElement = html.find('.battle-wear-value[data-type="weapon"]');
-                    const armorWearElement = html.find('.battle-wear-value[data-type="armor"]');
-                    
-                    if (weaponWearElement.length) {
-                        console.log(`Setting weapon wear element text to: ${weaponWear}`);
-                        weaponWearElement.text(weaponWear);
-                    }
-                    
-                    if (armorWearElement.length) {
-                        console.log(`Setting armor wear element text to: ${armorWear}`);
-                        armorWearElement.text(armorWear);
+    const sheet = actor.sheet;
+    if (sheet?.rendered) { // Ensure sheet exists and is rendered
+        console.log(`WITCH IRON | updateActor hook: Sheet for ${actor.name} is rendered.`);
+        const html = sheet.element;
+
+        // Refresh condition inputs if condition values changed
+        if (changes.system?.conditions) {
+            console.log("WITCH IRON | updateActor hook: Condition changes detected in changes object:", changes.system.conditions);
+            for (const [cond, detail] of Object.entries(changes.system.conditions)) {
+                if (detail?.value !== undefined) {
+                    console.log(`WITCH IRON | updateActor hook: Attempting to update ${cond} to ${detail.value}`);
+                    const displayElement = html.find(`.condition-row[data-condition="${cond}"] .cond-value`);
+                    if (displayElement.length) {
+                        displayElement.text(detail.value); // Changed from .val() to .text()
+                        console.log(`WITCH IRON | updateActor hook: ${cond} display element found and text set.`);
+                    } else {
+                        console.log(`WITCH IRON | updateActor hook: ${cond} display element NOT found.`);
                     }
                 }
-            } else {
-                // Otherwise do a full render
-                console.log(`Full render for ${actor.name} sheet`);
-                sheet.render(true);
             }
         } else {
-            console.log(`No open sheet found for ${actor.name}`);
+            console.log("WITCH IRON | updateActor hook: No 'changes.system.conditions' found in the changes object.");
         }
+        
+        // Check if battle wear values have changed
+        const hasBattleWearChanges = changes.system?.battleWear || 
+                                (changes.system?.derived?.weaponBonusEffective !== undefined) ||
+                                (changes.system?.derived?.armorBonusEffective !== undefined);
+        
+        if (hasBattleWearChanges) {
+            console.log(`WITCH IRON | updateActor hook: Battle wear changes detected for ${actor.name}.`);
+            // Force the actor to recalculate derived data
+            actor.prepareData();
+            
+            // See if the actor has an open sheet
+            // const sheet = actor.sheet; // already defined
+            if (sheet._updateBattleWearDisplays && typeof sheet._updateBattleWearDisplays === 'function') {
+                sheet._updateBattleWearDisplays();
+            }
+        }
+
+    } else {
+        console.log(`WITCH IRON | updateActor hook: Sheet for ${actor.name} is NOT rendered or 'sheet' is undefined.`);
     }
 }); 

@@ -1,0 +1,192 @@
+{
+  "folder": "Q6FG1J9hZ0EKsfOQ",
+  "name": "Arm Injury, Hand",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "<p><em>Non-Living Limbs: Do not suffer Bleed or Pain Conditions.</em></p>",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Hand: Bruised, Pain 1",
+      "documentId": "qaqygrmXhz40koVS",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "5WCAXijbTxkuQSws",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Hand: Bashed, Disarmed",
+      "documentId": "hUfzkixitbbAfdHL",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "qmx0g4EMHoz8mVck",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Hand: Twisted Wrist, Trauma 1",
+      "documentId": "1qQHAHTyFxCZRxlT",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "TfpQXUkOKekfJ7w9",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Hand: Nerve Struck, Pain 2",
+      "documentId": "dc7CS7fKJQPdx53F",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "4xln61WiD97F0595",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Hand: Hairline Fracture, Trauma 2",
+      "documentId": "scGQwKaKalZVF4LK",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "TeLLAQQKA9Z9g6vB",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Hand: Transfixed, Pain 1|Bleed 1",
+      "documentId": "p8k4foZfE1yVrWWk",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "MXWMObDYvZToyJ2h",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Hand: Broken Carpal, Trauma 3",
+      "documentId": "FEBJQyUckphSH68a",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "pNYkfg0gOCl6FRHf",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Hand: Cut, d4 Lost Fingers|Bleed 1",
+      "documentId": "Ip8Z2BBLrVChkbj7",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "XVsyeMzvOvZli2Ww",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Hand: Mangled, Lost Hand‡|Bleed 2",
+      "documentId": "pH5ggQB8DkDEBLfJ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "SpySrQ46QffvJ4UG",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Hand: Severed, Lost Hand|Bleed 3",
+      "documentId": "gJUU0DqIgVj64DBE",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "cHOxFaz6hSPMDlSn",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "h46KkOn6qQEU8F6R",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697896721111,
+    "modifiedTime": 1697916623940,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

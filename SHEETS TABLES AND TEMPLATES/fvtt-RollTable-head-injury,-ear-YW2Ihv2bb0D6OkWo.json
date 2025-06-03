@@ -1,0 +1,192 @@
+{
+  "name": "Head Injury, Ear",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Ear: Tenderized Ear, Deaf 2",
+      "documentId": "mwcIMvJVicrEBl3j",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "mz3sza5dmYeDaXXQ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Ear: Ear Infection, Pain 1",
+      "documentId": "PHVJbKfW4AsTlWx1",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "OLWwEf1XVQ76zMOC",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Ear: Cauliflower Ear, Deaf 3",
+      "documentId": "gFEulwpMfnXR4cDj",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "qgHUWB9dcy7htOF0",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Ear: Discombobulated, Stun 1",
+      "documentId": "h6GI6Rk4BGXa9Scu",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "vgc6a7DIqX0a1tEv",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Ear: Tinnitus, Deaf 2‡",
+      "documentId": "CYrsDmqnwFS8DGP5",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "YO1y6vEZAN9aWqJX",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Ear: Half-Severed, Bleed 2",
+      "documentId": "NxfHr6DqxAnBuyv7",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "NuEJ8ypYrRbWAHqy",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Ear: Ear Drum Burst, Stun 2",
+      "documentId": "9RfLoHnHJqiL2pSj",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "8KYepqXd1lsFmTEi",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Ear: Ripped Off, Lost Ear|Bleed 2",
+      "documentId": "bxv7ug34oHq3ZUJD",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "YQ0xDWYanKklUqWJ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Ear: Hearing Loss, Deaf 4‡",
+      "documentId": "bS4DSy8eXekPNw3i",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "N1FjGmfDnCgWhMIm",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Ear: …And Out the Other, Dead",
+      "documentId": "vXysubLKWgxq6cYw",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "4S2KDpAwVsxqNC6i",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "yejTB8801UNtQFG6",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "folder": "ImprijtblvPR0Na6",
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697848357644,
+    "modifiedTime": 1697900698344,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

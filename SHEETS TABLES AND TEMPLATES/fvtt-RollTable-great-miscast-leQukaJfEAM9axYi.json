@@ -1,0 +1,167 @@
+{
+  "folder": "anIgpH887iKKtr3t",
+  "name": "Great Miscast",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "_id": "zfc2MEpuCCYKjx3S",
+      "text": "<strong>Corrupt Magick</strong>, for your next Spell, take [[4d6]] damage to an arm &amp; gain +2 Magick",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "_id": "HjzsL3kLmCab5R5T",
+      "text": "<strong>Anguish</strong>, you are racked by Domain, suffer 2 Pain.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "_id": "KgHgAHXllhmlqyBw",
+      "text": "<strong>Shatter</strong>, break anything you’re holding.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "_id": "qBO4QFusjZRQ0An2",
+      "text": "<strong>Horrors</strong>, your mind is filled with Domain gain 1 Stress.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_id": "qmziFA41hSYayWdQ",
+      "text": "<strong>Reversed</strong>, the Winds control your Spell and use it least beneficially (i.e., benefits an enemy).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "_id": "3c7nEHiH6BTGB0ff",
+      "text": "<strong>Seized</strong>, a mischievous Demon controls you for a min and will be actively disruptive without the intent to kill.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "_id": "4mB6eGfSp6qCXBlm",
+      "text": "<strong>Vent</strong>, you suffer a violent venting of Domain, suffer [[1d6]] Conditions (Whatever’s Appropriate).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "_id": "NNYf6W6oLj2HbgRG",
+      "text": "<strong>The Dark Gods Intercept</strong>, [[1d6]] 5 Hit Dice Demons are summoned",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "_id": "sLerKQtkI3EdfuIo",
+      "text": "<strong>Cut Off</strong>, lose 2 Magick until you cultivate for one day.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "_id": "H5i90cifXTVb1NHU",
+      "text": "<strong>It’s Even Worse</strong>, roll Cataclysmic Miscast",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1698278304325,
+    "modifiedTime": 1698410024863,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

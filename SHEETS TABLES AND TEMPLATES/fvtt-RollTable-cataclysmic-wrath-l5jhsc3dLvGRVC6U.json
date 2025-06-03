@@ -1,0 +1,167 @@
+{
+  "folder": "UyQRf60gzZ1jNnTH",
+  "name": "Cataclysmic Wrath",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "_id": "tiTTd7wnt9BnMtkE",
+      "text": "<strong>Evaluated</strong>, for your next Miracle, take [[6d6]] damage to an arm &amp; gain +3 Faith",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "_id": "Klg5aSOItRsZWNzN",
+      "text": "<strong>Overwhelming Torment</strong>, you are flooded with visions of Presence, suffer [[1d6]] Helpless Conditions.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "_id": "7maQoMDpaH0WTQff",
+      "text": "<strong>Maddening</strong>, apocalyptic messages of Presence replace your thoughts, gain [[d6]] Stress.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "_id": "mT9IX731DxIOSTgG",
+      "text": "<strong>Narcissistic</strong>, you are bathed in Presence and lose all items on your person. Any magick items you had on you can be found at the nearest holy location related to your God.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_id": "KvdYxxnl18M2ZS8I",
+      "text": "<strong>Punishment</strong>, lose 3 Faith until you repent for one month.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "_id": "9EqvtY0Hsqz7nlV5",
+      "text": "<strong>Fade Away</strong>, a Limb is slowly amputated by Presence. Roll [[d6]] <br />1-3: Arm <br />4-6: Leg<br /><i>Even= left, Odd= right</i>",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "_id": "iNGZP1sy83rBxfSN",
+      "text": "<strong>Allotted Suffering</strong>, roll Great Wrath all within short range 30ft, yourself included, suffer from it, or take [[5d6]] damage to the head if no one is within short range.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "_id": "Z6gYsrPvMycr1InO",
+      "text": "<strong>Divine Eruption</strong>, your body erupts with a Presence for [[1d6]] rounds, you suffer Stun for that time. During this time all within short range suffer [[2d6]] damage or [[d6]] Conditions from this Presence, each round.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "_id": "4Ft9s8yMl3v1Tv7e",
+      "text": "<strong>Feel My Wrath</strong>, A Presence storm is summoned, causing destruction and hysteria for [[d6]] hours in the local area.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "_id": "IpnOM2Yok0lxxxKC",
+      "text": "<strong>The Dark Gods Answer</strong>, a Gigantic Sized 15 Hit Dice Demon is summoned.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1698278764716,
+    "modifiedTime": 1698410593282,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

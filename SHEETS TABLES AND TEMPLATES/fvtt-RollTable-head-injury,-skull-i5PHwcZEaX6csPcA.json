@@ -1,0 +1,192 @@
+{
+  "name": "Head Injury, Skull",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Skull: Vision Blurred, Blind 1",
+      "documentId": "nDT4Ptmh5wexKFs6",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "8dedJu3u1MrxLqBN",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Skull: Shocked, Stun 1",
+      "documentId": "5cLFkITtvPWvXxIy",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "2l5y1SPKZaVgxTQS",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Skull: Brain Bruised, Pain 2",
+      "documentId": "anIHsZBMQlA3Gxz4",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "VdZb1rfZl65FcG7G",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Skull: Amnesia, Stun 2|Forget d6 min",
+      "documentId": "QRwO3h8I5bfc9k67",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "9ifEvRcESouMt6Yx",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Skull: Black Out, Helpless 1",
+      "documentId": "v4sy0t858rArKj92",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "bGk4hLY46p0oFbB6",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Skull: Concussion, Stun 3",
+      "documentId": "IAxNKRoBko5nePkU",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "hcY6fjE7rtD6AeMp",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Skull: Out Cold, Helpless 2",
+      "documentId": "oucDrTsfWd5uvbTh",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "YbhDQPVGCEZ0Flyi",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Skull: Brain Damage, Pain 5‡",
+      "documentId": "Ow8M7Sk0WWGFGfTQ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "aiFFJhXHUDYFlUBh",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Skull: Skull Fracture, Helpless 5‡",
+      "documentId": "pA3M32D9BwUn9oop",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "cuAnvyoKDhYBUTDc",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Skull: Brain Destroyed, Dead",
+      "documentId": "JzcQvJqRqDMGf6ql",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "sEecdp6WDvm3AJyu",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "cLU05dsaSlDeS8bk",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "folder": "ImprijtblvPR0Na6",
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697848426952,
+    "modifiedTime": 1697900731891,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

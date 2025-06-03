@@ -60,13 +60,7 @@ export class WitchIronItemSheet extends ItemSheet {
     
     // Add additional info for specific item types
     if (context.item.type === 'injury') {
-      // Add dropdown options for severity
-      context.severityOptions = {
-        "1": "Minor",
-        "3": "Moderate",
-        "5": "Severe"
-      };
-      
+      // Remove dropdown options for severity - it's now a numeric input
       // Add dropdown options for locations
       context.locationOptions = {
         "head": "Head",
@@ -100,15 +94,6 @@ export class WitchIronItemSheet extends ItemSheet {
     // Ensure severity is within range
     const severity = context.system.severity?.value || 1;
     context.system.severity.value = Math.max(1, Math.min(10, severity));
-    
-    // Set severity class for styling
-    // 1-3: Minor, 4-7: Major, 8-10: Severe
-    let severityClass;
-    if (severity <= 3) severityClass = "severity-minor";
-    else if (severity <= 7) severityClass = "severity-major";
-    else severityClass = "severity-severe";
-    
-    context.severityClass = severityClass;
     
     // Ensure medical option is set
     if (!context.system.medicalOption) context.system.medicalOption = "none";
@@ -207,24 +192,12 @@ export class WitchIronItemSheet extends ItemSheet {
     
     // Handle specific injury interactions
     if (this.item.type === "injury") {
-      // Handle severity changes to update color class
+      // Handle severity changes to update label text only (no color classes)
       html.find('input[name="system.severity.value"]').change(ev => {
         const severity = parseInt(ev.currentTarget.value);
         
-        // Update the severity color class
-        const labelElement = html.find('.severity-label');
-        labelElement.removeClass('severity-minor severity-major severity-severe');
-        
-        // Apply appropriate class based on severity range
-        if (severity <= 3) {
-          labelElement.addClass('severity-minor');
-        } else if (severity <= 7) {
-          labelElement.addClass('severity-major');
-        } else {
-          labelElement.addClass('severity-severe');
-        }
-        
         // Update the display label text
+        const labelElement = html.find('.severity-label');
         labelElement.text(`Severity ${severity}`);
       });
       

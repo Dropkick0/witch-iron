@@ -1,3 +1,6 @@
+// Suppress console.log override for debugging; remove this line to restore logging
+// console.log = () => {};
+
 /**
  * Extends the base Actor class for Witch Iron actors.
  * @extends {Actor}
@@ -14,7 +17,7 @@ export class WitchIronActor extends Actor {
     
     // Initialize flags if not present
     if (!systemData.flags) {
-      console.log(`Initializing system.flags for actor ${this.name}`);
+//////       console.log(`Initializing system.flags for actor ${this.name}`);
       systemData.flags = {};
     }
     
@@ -22,11 +25,11 @@ export class WitchIronActor extends Actor {
     this._prepareSkillsData(actorData);
     
     // Log actor type for debugging
-    console.log(`Preparing data for actor ${this.name} with type: ${this.type}`);
+//////     console.log(`Preparing data for actor ${this.name} with type: ${this.type}`);
     
     // Prepare specific actor type data
     if (this.type === 'monster') {
-      console.log(`Preparing monster data for ${this.name}`);
+//////       console.log(`Preparing monster data for ${this.name}`);
       this._prepareMonsterData(actorData);
     } else if (this.type === 'descendant') {
       this._prepareDescendantData(actorData);
@@ -246,8 +249,8 @@ export class WitchIronActor extends Actor {
     const systemData = actorData.system;
 
     // Debug log for incoming data
-    console.log("_prepareMonsterData - Actor Data:", actorData);
-    console.log("_prepareMonsterData - System Data:", systemData);
+//////     console.log("_prepareMonsterData - Actor Data:", actorData);
+//////     console.log("_prepareMonsterData - System Data:", systemData);
 
     // Ensure basic data structure exists
     if (!systemData.stats) systemData.stats = {};
@@ -298,7 +301,7 @@ export class WitchIronActor extends Actor {
     // Monster ability score based on Hit Dice from V3 table
     // Make sure to cast to number in case it's stored as string
     const hdValue = Number(systemData.stats.hitDice.value) || 1;
-    console.log(`Monster HD Value: ${hdValue} (type: ${typeof hdValue})`);
+//////     console.log(`Monster HD Value: ${hdValue} (type: ${typeof hdValue})`);
     
     const abilityScoreByHD = {
       1: 30, 2: 33, 3: 40, 4: 44, 5: 50, 
@@ -309,11 +312,11 @@ export class WitchIronActor extends Actor {
 
     // Calculate base ability score from Hit Dice
     const baseAbilityScore = abilityScoreByHD[hdValue] || 30; // Default to 1HD if invalid
-    console.log(`Calculated Base Ability Score: ${baseAbilityScore} for HD: ${hdValue}`);
+//////     console.log(`Calculated Base Ability Score: ${baseAbilityScore} for HD: ${hdValue}`);
     
     // Store in derived values - Force this to be a number
     systemData.derived.abilityScore = Number(baseAbilityScore);
-    console.log(`Set ability score: ${systemData.derived.abilityScore} (type: ${typeof systemData.derived.abilityScore})`);
+//////     console.log(`Set ability score: ${systemData.derived.abilityScore} (type: ${typeof systemData.derived.abilityScore})`);
     
     // +Hits by Hit Dice for checks the monster is good at
     const plusHitsByHD = {
@@ -355,24 +358,24 @@ export class WitchIronActor extends Actor {
     const weaponBonus = weaponDamage[systemData.stats.weaponType.value] || 0;
     const armorBonus = armorValue[systemData.stats.armorType.value] || 0;
     
-    console.log(`Size Modifier: ${sizeModifier} for size: ${systemData.stats.size.value}`);
-    console.log(`Weapon Bonus: ${weaponBonus} for weapon: ${systemData.stats.weaponType.value}`);
-    console.log(`Armor Bonus: ${armorBonus} for armor: ${systemData.stats.armorType.value}`);
+//////     console.log(`Size Modifier: ${sizeModifier} for size: ${systemData.stats.size.value}`);
+//////     console.log(`Weapon Bonus: ${weaponBonus} for weapon: ${systemData.stats.weaponType.value}`);
+//////     console.log(`Armor Bonus: ${armorBonus} for armor: ${systemData.stats.armorType.value}`);
 
     // Final calculated values
     const plusHits = plusHitsByHD[hdValue] || 1;
     
-    console.log(`Calculated plus hits: ${plusHits}`);
+//////     console.log(`Calculated plus hits: ${plusHits}`);
 
     // Calculate ability bonuses (used in rolls)
     const abilityBonus = Math.floor(systemData.derived.abilityScore / 10);
-    console.log(`Calculated ability bonus: ${abilityBonus}`);
+//////     console.log(`Calculated ability bonus: ${abilityBonus}`);
 
     // Calculate base values with minimum 1 before adding weapon/armor
     const baseDamage = Math.max(1, abilityBonus + sizeModifier);
     const baseSoak = Math.max(1, abilityBonus + sizeModifier);
-    console.log(`Base damage (ability bonus + size, min 1): ${baseDamage}`);
-    console.log(`Base soak (ability bonus + size, min 1): ${baseSoak}`);
+//////     console.log(`Base damage (ability bonus + size, min 1): ${baseDamage}`);
+//////     console.log(`Base soak (ability bonus + size, min 1): ${baseSoak}`);
     
     // Add weapon and armor bonuses
     // Initialize battle wear if needed
@@ -396,7 +399,7 @@ export class WitchIronActor extends Actor {
     if (this.isNew) {
         systemData.battleWear.weapon.value = 0;
         systemData.battleWear.armor.value = 0;
-        console.log(`Initializing battle wear to 0 for new monster: ${this.name}`);
+//////         console.log(`Initializing battle wear to 0 for new monster: ${this.name}`);
     }
 
     // Get battle wear values
@@ -407,12 +410,12 @@ export class WitchIronActor extends Actor {
     const effectiveWeaponBonus = Math.max(0, weaponBonus - weaponWear);
     const effectiveArmorBonus = Math.max(0, armorBonus - armorWear);
 
-    console.log(`Weapon Wear: ${weaponWear}, Effective Weapon Bonus: ${effectiveWeaponBonus}`);
-    console.log(`Armor Wear: ${armorWear}, Effective Armor Bonus: ${effectiveArmorBonus}`);
+//////     console.log(`Weapon Wear: ${weaponWear}, Effective Weapon Bonus: ${effectiveWeaponBonus}`);
+//////     console.log(`Armor Wear: ${armorWear}, Effective Armor Bonus: ${effectiveArmorBonus}`);
     
     // Special case: if armor type is "none" but battle wear is not 0, reset it
     if (systemData.stats.armorType.value === "none" && armorWear !== 0) {
-        console.log(`Armor type is "none" but battle wear is ${armorWear}, resetting to 0`);
+//////         console.log(`Armor type is "none" but battle wear is ${armorWear}, resetting to 0`);
         systemData.battleWear.armor.value = 0;
         this.update({"system.battleWear.armor.value": 0});
     }
@@ -421,8 +424,8 @@ export class WitchIronActor extends Actor {
     const damageValue = baseDamage + effectiveWeaponBonus;
     const soakValue = baseSoak + effectiveArmorBonus;
 
-    console.log(`Final damage value (base + effective weapon): ${damageValue}`);
-    console.log(`Final soak value (base + effective armor): ${soakValue}`);
+//////     console.log(`Final damage value (base + effective weapon): ${damageValue}`);
+//////     console.log(`Final soak value (base + effective armor): ${soakValue}`);
 
     // Store all calculated values in derived data
     systemData.derived.abilityBonus = abilityBonus;
@@ -493,8 +496,17 @@ export class WitchIronActor extends Actor {
       systemData.derived.mobAttacks = mobAttacks;
     }
     
+    // Initialize Conditions
+    const condNames = ["aflame","bleed","poison","corruption","stress"];
+    if (!systemData.conditions) systemData.conditions = {};
+    for (const key of condNames) {
+      if (!systemData.conditions[key] || typeof systemData.conditions[key]?.value !== 'number') {
+        systemData.conditions[key] = { value: 0 };
+      }
+    }
+    
     // Final debug log of all derived values
-    console.log("Monster derived values:", {
+     console.log("Monster derived values:", {
       abilityScore: systemData.derived.abilityScore,
       abilityBonus: systemData.derived.abilityBonus,
       damageValue: systemData.derived.damageValue,
@@ -585,7 +597,7 @@ export class WitchIronActor extends Actor {
    * @returns {Promise<Roll>} The Roll instance
    */
   async rollSkill(skillName, options={}) {
-    console.log(`Rolling skill: ${skillName} with options:`, options);
+//////     console.log(`Rolling skill: ${skillName} with options:`, options);
     
     const attributeMap = {
       combat: {
@@ -648,8 +660,14 @@ export class WitchIronActor extends Actor {
     const attributeValue = this.system.attributes[attributeName]?.value || 0;
     
     // Calculate the target value (attribute + skill)
-    const targetValue = attributeValue + skillBonus;
+    let targetValue = attributeValue + skillBonus;
+    // Override target value if custom provided (e.g., condition rating)
+    if (options.customTargetValue !== undefined) {
+      targetValue = Number(options.customTargetValue) || 0;
+    }
+    // Apply situational modifier
     const situationalMod = options.situationalMod || 0;
+    targetValue = targetValue + situationalMod;
     
     // Get additional hits from options (for specializations)
     const additionalHits = options.additionalHits || 0;
@@ -678,7 +696,7 @@ export class WitchIronActor extends Actor {
     
     // Set up roll data
     const rollData = {
-      targetValue: targetValue + situationalMod,
+      targetValue: targetValue,
       label: formattedLabel,
       situationalMod: situationalMod,
       additionalHits: additionalHits,
@@ -705,9 +723,9 @@ export class WitchIronActor extends Actor {
     }
     
     // Debug logs to see what's happening
-    console.log("Monster Check Roll - Actor:", this.name);
-    console.log("Monster derived data:", this.system.derived);
-    console.log("Roll options:", options);
+//////     console.log("Monster Check Roll - Actor:", this.name);
+//////     console.log("Monster derived data:", this.system.derived);
+//////     console.log("Roll options:", options);
     
     // Make sure we have proper derived data
     if (!this.system.derived || typeof this.system.derived.abilityScore === 'undefined') {
@@ -720,30 +738,30 @@ export class WitchIronActor extends Actor {
     let abilityScore;
     if (options.customTargetValue !== undefined) {
       abilityScore = Number(options.customTargetValue) || 0;
-      console.log("Using custom target value:", abilityScore);
+//////       console.log("Using custom target value:", abilityScore);
     } else {
       abilityScore = Number(this.system.derived?.abilityScore) || 0;
-      console.log("Using derived ability score:", abilityScore);
+//////       console.log("Using derived ability score:", abilityScore);
     }
     
     // Apply situational modifier if provided
     const situationalMod = Number(options.situationalMod) || 0;
-    console.log("Situational Modifier:", situationalMod);
+//////     console.log("Situational Modifier:", situationalMod);
     
     // Calculate target value - explicitly make sure it's a number
     const targetValue = Number(abilityScore) + Number(situationalMod);
-    console.log("Target Value:", targetValue);
+//////     console.log("Target Value:", targetValue);
     
     // Get the hits modifier - specialized checks have +Hits
     const additionalHits = Number(options.additionalHits) || 0;
-    console.log("Additional Hits:", additionalHits);
+//////     console.log("Additional Hits:", additionalHits);
     
     // Get the label for the roll
     const label = options.label || "Monster Check";
     
     // Check if this is a combat check
     const isCombatCheck = options.isCombatCheck === true;
-    console.log(`Monster Check - Combat Check: ${isCombatCheck}`);
+//////     console.log(`Monster Check - Combat Check: ${isCombatCheck}`);
     
     // Make sure the data is a proper object with explicitly defined values
     const rollData = {
@@ -754,7 +772,7 @@ export class WitchIronActor extends Actor {
       isCombatCheck: isCombatCheck
     };
     
-    console.log("Roll Data:", rollData);
+//////     console.log("Roll Data:", rollData);
     
     // Perform the roll
     return this._performRoll(rollData);
@@ -768,7 +786,7 @@ export class WitchIronActor extends Actor {
    */
   async _performRoll({ targetValue, label, situationalMod = 0, additionalHits = 0, isCombatCheck = false }) {
     // Debug log for incoming parameters
-    console.log("_performRoll - Incoming params:", { targetValue, label, situationalMod, additionalHits, isCombatCheck });
+//////     console.log("_performRoll - Incoming params:", { targetValue, label, situationalMod, additionalHits, isCombatCheck });
     
     // Enforce types
     targetValue = Number(targetValue || 0);
@@ -790,7 +808,7 @@ export class WitchIronActor extends Actor {
     let hits = baseHits + additionalHits;
     
     // Debug log for calculations
-    console.log("Roll Results:", {
+     console.log("Roll Results:", {
       roll: rollTotal,
       targetValue,
       isSuccess,
@@ -827,13 +845,13 @@ export class WitchIronActor extends Actor {
       actorName: this.name
     };
     
-    console.log("Template data:", templateData);
+//////     console.log("Template data:", templateData);
     
     // Additional JSON stringification to force value conversion
     try {
       // This forces a proper serialization/conversion of numbers
       const jsonData = JSON.stringify(templateData);
-      console.log("Stringified template data:", jsonData);
+//////       console.log("Stringified template data:", jsonData);
     } catch (err) {
       console.error("Error stringifying template data:", err);
     }

@@ -1,0 +1,167 @@
+{
+  "folder": "anIgpH887iKKtr3t",
+  "name": "Petty Miscast",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "_id": "UveqFZQ6qd2MrStO",
+      "text": "<strong>Foul Magick</strong>, for your next Spell, take [[2d6]] damage to an arm &amp; gain +1 Magick",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "_id": "tfONtFsgYqCU7dak",
+      "text": "<strong>Carried Aloft</strong>, The spell is delayed [[1d6]] rounds.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "_id": "W2fct6DKu2Fc1VcO",
+      "text": "<strong>Toppled</strong>, you buckled under Domain, Fall Prone",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "_id": "Jl4Vqegy6KHtS26E",
+      "text": "<strong>Jolted</strong>, you drop anything you're holding.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_id": "vJ2lRgYz8nJhCNIs",
+      "text": "<strong>Switched</strong>, the Winds control your Spell and use it unexpectedly (i.e., target someone else).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "_id": "EMnp1IxGtaC4sqFh",
+      "text": "<strong>Discharge</strong>, a Domain surge jets from you, all within short range behold you but are unharmed.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "_id": "9przVE4PAUx9ripS",
+      "text": "<strong>Release</strong>, you suffer a fierce release of Domain, suffer a Condition (Whatever’s Appropriate).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "_id": "x39NOZt8jEXo1hFz",
+      "text": "<strong>Bewitched</strong>, a playful Demon controls you for a round and will act childishly.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "_id": "WdMsMzWnfuL7Bff4",
+      "text": "<strong>Disjoint</strong>, lose 1 Magick until you cultivate for 10 min.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "_id": "brW87RzWsyDHljVX",
+      "text": "<strong>It’s Worse</strong>, roll Great Miscast",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1698276323498,
+    "modifiedTime": 1698410037938,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

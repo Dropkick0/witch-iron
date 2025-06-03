@@ -256,7 +256,7 @@
               {{#each injuries as |injury id|}}
               <li class="item flexrow" data-item-id="{{injury._id}}">
                 <div class="injury-name">{{injury.name}}</div>
-                <div class="injury-severity">{{injury.system.severity.label}}</div>
+                <div class="injury-severity">{{injury.system.severity.value}}</div>
                 <div class="injury-effect">{{injury.system.effect}}</div>
                 <div class="item-controls">
                   <a class="item-control item-edit" title="Edit Injury"><i class="fas fa-edit"></i></a>
@@ -268,6 +268,18 @@
             
             <div class="item-create">
               <button type="button" class="create-injury" data-type="injury"><i class="fas fa-plus"></i> Add Injury</button>
+            </div>
+            <!-- Conditions UI -->
+            <div class="conditions-list">
+              <h2>Conditions</h2>
+              {{#each conditions as |condition key|}}
+              <div class="condition-row flexrow" data-condition="{{key}}">
+                <button type="button" class="condition-name cond-quarrel">{{condition.label}}</button>
+                <button type="button" class="cond-minus"><i class="fas fa-minus"></i></button>
+                <span class="cond-value">{{condition.value}}</span>
+                <button type="button" class="cond-plus"><i class="fas fa-plus"></i></button>
+              </div>
+              {{/each}}
             </div>
           </div>
         </div>

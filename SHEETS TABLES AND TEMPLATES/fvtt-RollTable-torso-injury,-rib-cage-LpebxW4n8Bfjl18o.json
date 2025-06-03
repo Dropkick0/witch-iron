@@ -1,0 +1,192 @@
+{
+  "folder": "jcV0AWibiTpMic6G",
+  "name": "Torso Injury, Rib Cage",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Throbbing Hit, Pain 1",
+      "documentId": "Viue2mI55ubwTsoH",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "ETDVMDzUBxHAQbJz",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Organ Press, Fall Prone",
+      "documentId": "EJIVTvORqgrvGwN2",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "zUsq2YkI1mfvUiIX",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Fractured Rib, Trauma 1",
+      "documentId": "Gg7tS3tzH5jQ86kX",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "ckUcMTwUiTlJBxs0",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Nerve Struck, Stun 1",
+      "documentId": "yiT0qzwbLwL5LzCJ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "3znPcdO2tTDccDPb",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Few Broken Ribs, Trauma 2",
+      "documentId": "O0iIu9GbuvnE6KS0",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "JTlOECwzOFJWJzGr",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Vessel Rip, Bleed 2",
+      "documentId": "EFix8aOXmbFar3kC",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "meax8AKwEIi6ejmm",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Many Broken Ribs, Trauma 3",
+      "documentId": "iP2xHYtUncxLAtZi",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "dQRYwerNnMMJ8jiu",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Bone Shrapnel, Bleed 4",
+      "documentId": "SKy2kIwK2I3BPmnX",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "LFYKCAFVB8K1XYyj",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Severed Spine, Helpless 5‡",
+      "documentId": "I14jTZdzc1IYEJyf",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "GbBVRAOwqx71vBwX",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Rib Cage: Chopped in Half, Dead",
+      "documentId": "5JEIsN6clTyesakD",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "mTW91CmLPFs9XJZ7",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "PinEv4MOmVtYWIEm",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697850463553,
+    "modifiedTime": 1697915705144,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

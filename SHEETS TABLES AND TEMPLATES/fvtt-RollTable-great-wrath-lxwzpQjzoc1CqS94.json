@@ -1,0 +1,167 @@
+{
+  "folder": "UyQRf60gzZ1jNnTH",
+  "name": "Great Wrath",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "_id": "lNI3YuiIkoUGbxBE",
+      "text": "<strong>Tested</strong>, for your next Miracle, take [[4d6]] damage to an arm &amp; gain +2 Faith.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "_id": "eH17DgCpZPBKBiHL",
+      "text": "<strong>Pray</strong>, you see Presence visions, suffer a Stun Condition.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "_id": "cGQyKYy7SUasDi9Z",
+      "text": "<strong>Conceited</strong>, break anything you’re holding.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "_id": "9YaxHW3KiHA0caL1",
+      "text": "<strong>Visions</strong>, your mind is filled with Presence gain 1 Stress.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_id": "CDUrCWZYudjejfHS",
+      "text": "<strong>I Tire of You</strong>, your God controls your miracle and uses it least beneficially (i.e., benefits an enemy).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "_id": "ulzfgbXr8TmV9H0X",
+      "text": "<strong>Shared Burden</strong>, roll Petty Wrath all within short range, yourself included, suffer from it, or take [[3d6]] damage to the head.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "_id": "u6vy988mPh1Mcs2G",
+      "text": "<strong>Divine Backlash</strong>, you suffer a Presence backlash, suffer [[d6]] Condition (Whatever’s Appropriate).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "_id": "rWhdPpZwvJQNb5fg",
+      "text": "<strong>The Dark Gods Intercept</strong>, [[d6]] 5 Hit Dice Demons are summoned.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "_id": "X4DhkNHW5YsBVNLS",
+      "text": "<strong>Atonement</strong>, lose 2 Faith until you repent for one day.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "_id": "Psk38sIrpt2S1sPr",
+      "text": "<strong>It’s Even Worse</strong>, roll Cataclysmic Wrath.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1698278678369,
+    "modifiedTime": 1698410600385,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

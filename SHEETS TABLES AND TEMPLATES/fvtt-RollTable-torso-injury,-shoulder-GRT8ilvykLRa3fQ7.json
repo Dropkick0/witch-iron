@@ -1,0 +1,192 @@
+{
+  "folder": "jcV0AWibiTpMic6G",
+  "name": "Torso Injury, Shoulder",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Shoulder: Tenderized, Pain 1",
+      "documentId": "R9X8b6ny1aLacRgj",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "bUOzBdZFkaptAoyT",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Shoulder: Beaten, Disarm",
+      "documentId": "tjIfSRnWzP1nEi73",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "4tRGjoJwJ72W7F4t",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Shoulder: Chipped, Pain 2",
+      "documentId": "mFzPUPS8ULf9vDBu",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "cVUQBzVwatfWeW6O",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Shoulder: Torn Rotator Cuff, Trauma 1",
+      "documentId": "YqKiuUXdd8EaEjOr",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "jvvvDQalaReTnHRA",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Shoulder: Nerve Damage, Disarm|Pain 3",
+      "documentId": "taFhOYFptWGs3opn",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "1IJOuKie7dqllmGb",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Shoulder: Fractured, Trauma 2",
+      "documentId": "FH2rqhRaJ2g6ujmZ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "GScSjnNa5JUM8quM",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Shoulder: Dislocated, Lost Arm*",
+      "documentId": "kIvdngKETOvM7PSa",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "KT0Jtp15GxMDroNJ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Shoulder: Shattered, Lost Arm‡",
+      "documentId": "kXK33DxUmNCKjMBN",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "bRJB5arKxxIw28Je",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Shoulder: Torn Off, Lost Arm|Bleed 5",
+      "documentId": "LJEX5am5tCTZxoqX",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "84dX5TVp2e7LWvUR",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Shoulder: Deflect into Neck, Dead",
+      "documentId": "RbRGDCkSx0CDcUw9",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "CGo1jiBTvHBOSDoo",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "vtE6fQPCJH5kJqG9",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697850320036,
+    "modifiedTime": 1697915726876,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

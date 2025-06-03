@@ -1,0 +1,192 @@
+{
+  "folder": "B3ReyhCV2DYOhOkx",
+  "name": "Leg Injury, Thigh",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "<p><em>Non-Living Limbs: Do not suffer Bleed or Pain Conditions.</em></p>",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Thigh: Bruised, Pain 1",
+      "documentId": "ycHpHDM9UDBUbGAP",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "qNO8Ga6u7UouuBHs",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Thigh: Beaten, Fall Prone",
+      "documentId": "tRRAudMx4GJm11bo",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "AwDFNCTBvX5eXffP",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Thigh: Tendon Sprain, Trauma 1",
+      "documentId": "c2g2uXkcNxoxCsZR",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "S2apMn8qAoaRFIEN",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Thigh: Nerve Struck, Pain 2",
+      "documentId": "NmSF0T7E7GAFzcDr",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "5DUhREWiwiGRHy4k",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Thigh: Hairline Fracture, Trauma 2",
+      "documentId": "jx1gBltOcHhZvpzV",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "tHgnCsW6tVG7wfqg",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Thigh: Transfixed, Pain 1|Bleed 2",
+      "documentId": "oNAl30rTfP4Joxuw",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "eLpINmKbJiu41bSI",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Thigh: Broken Femur, Trauma 3",
+      "documentId": "ykVJMxKbD6RoS3eM",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "899YY6XWpqkF2sGA",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Thigh: Ripped Artery, Bleed 4",
+      "documentId": "vFL8bBOO28SMt0cW",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "yTGerGh6Vj4XMfXH",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Thigh: Maimed, Lost Leg‡|Bleed 4",
+      "documentId": "BQQUfsXDLPszBuPk",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "nDLHHXzLSe1GnaGj",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Thigh: Severed, Lost Leg|Bleed 5",
+      "documentId": "j8xRALQooozJZpZm",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "loGSPvNmr3j7Plav",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "anE4mkAZZn6WE4sn",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697897051911,
+    "modifiedTime": 1697916695889,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

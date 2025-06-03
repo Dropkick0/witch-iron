@@ -1,0 +1,192 @@
+{
+  "name": "Head Injury, Jaw",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Jaw: Swollen Cheek, Pain 1",
+      "documentId": "qetJPCX25bYO5UDW",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "pnxTmsouwdlbpTDg",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Jaw: Missing Teeth, Pain 2|d10 Lost",
+      "documentId": "BEv8svV8QbIEKQZD",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "aEm7sG7Pg1SYQjXL",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Jaw: Gushing Mouth, Bleed 1",
+      "documentId": "F6C62Hqs6GtXCduj",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "hzkORa60wTcueHaA",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Jaw: Hard Hit, Fall Prone",
+      "documentId": "BKW65IFEBtW25fEk",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "qFAkstxNfQBppxzs",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Jaw: Dislocated Jaw, Pain 2",
+      "documentId": "yohIlP3JK6p76mDS",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "UhgSt8wwdz2phl2P",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Jaw: Tongue Cut, Speechless*",
+      "documentId": "rnRuGLEIEVJHVr5U",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "eS7TaWsL4am8nCok",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Jaw: Broken Jaw, Trauma 3‡",
+      "documentId": "3cOWLBw4U5aDROTz",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "mmDyicn747QCm9iX",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Jaw: Out Cold, Helpless 3",
+      "documentId": "cT9X7GR7P56ALoaW",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "38djSCblwpOIvGQQ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Jaw: Detached, Lost Jaw‡|Bleed 3",
+      "documentId": "D1w5f4Mqxj0K3HN1",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "VjuImbXEhF0QIx6K",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Jaw: Straight to Brain Stem, Dead",
+      "documentId": "0KOQiQ5LbkQBXzMV",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "dpnHo0Ww2T6YlIXB",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "7XrJibgoFu48f81a",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "folder": "ImprijtblvPR0Na6",
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697848204504,
+    "modifiedTime": 1697900704070,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

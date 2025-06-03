@@ -1,0 +1,192 @@
+{
+  "name": "Head Injury, Nose",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Nose: Swollen Nose, Pain 1",
+      "documentId": "HtlbHpTetptR69d0",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "1LvyFgJBRlr6z5P6",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Nose: Nose Slash, Bleed 1",
+      "documentId": "x3eIY7YaRgv5GSd1",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "dsIfPfPRf3xHSlmD",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Nose: Lose Smell, Trauma 2",
+      "documentId": "lmn65zNrdW6AlIRP",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "uB2uqBdbpDA82Spi",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Nose: Nostril Ripped, Pain 2",
+      "documentId": "o20zBzA4ls0eg4zd",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "FWRaXMeUqPJrXXpV",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Nose: Bridge Gash, Bleed 2",
+      "documentId": "HtprSdlU1H8gtor5",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "4j1EvCu2xx4EEnn8",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Nose: Bent & Broken, Pain 2‡",
+      "documentId": "gVEX4yuihAyVAZCz",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "j0VIbq52caUBg1f7",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Nose: Split Down Middle, Bleed 3",
+      "documentId": "MHTISc6EYqe9HsQt",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "lQm2zd9nGyXcZJsU",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Nose: Mangled, Lost Nose|Pain 2‡",
+      "documentId": "tFVnvLgLfoCJrhIA",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "nXNBDXQVxM3jOrH4",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Nose: Removed, Lost Nose|Bleed 3",
+      "documentId": "H9DOhho17Cr0XKe2",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "OXwkq0aVn33N5qsS",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Nose: Driven into Brain, Dead",
+      "documentId": "dkQ0aU4jT0BAi78N",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "f54zX6QfHF0wdaF2",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "mbUbMiGhnutM25U2",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "folder": "ImprijtblvPR0Na6",
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697846168431,
+    "modifiedTime": 1697900716872,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

@@ -1,0 +1,818 @@
+{
+  "name": "Template: Injury",
+  "type": "_equippableItemTemplate",
+  "img": "icons/svg/item-bag.svg",
+  "system": {
+    "hidden": [],
+    "header": {
+      "contents": [
+        {
+          "key": "injuryheadertable",
+          "cssClass": "",
+          "role": "0",
+          "permission": "0",
+          "tooltip": "",
+          "visibilityFormula": "",
+          "contents": [
+            [
+              {
+                "key": "injuryseverity",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "label": "Severity:",
+                "defaultValue": "1",
+                "size": "m-small",
+                "allowDecimal": false,
+                "minVal": "",
+                "maxVal": "",
+                "allowRelative": false,
+                "showControls": false,
+                "controlsStyle": "hover",
+                "type": "numberField"
+              },
+              {
+                "key": "injuryeffect",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "label": "Effect:",
+                "defaultValue": " ",
+                "size": "full-size",
+                "charList": "",
+                "maxLength": "",
+                "type": "textField"
+              }
+            ]
+          ],
+          "cols": "2",
+          "rows": "1",
+          "layout": "",
+          "type": "table"
+        }
+      ],
+      "key": "custom_header",
+      "cssClass": null,
+      "role": 0,
+      "permission": 0,
+      "tooltip": null,
+      "visibilityFormula": null,
+      "flow": null,
+      "align": null,
+      "type": "panel"
+    },
+    "body": {
+      "contents": [
+        {
+          "key": "injurytable2",
+          "cssClass": "",
+          "role": "0",
+          "permission": "0",
+          "tooltip": "",
+          "visibilityFormula": "",
+          "contents": [
+            [
+              {
+                "key": "injurysurgery",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "label": "Surgery:",
+                "defaultValue": "<p>N/A</p>",
+                "size": null,
+                "style": "dialog",
+                "type": "textArea"
+              }
+            ]
+          ],
+          "cols": "1",
+          "rows": "1",
+          "layout": "c",
+          "type": "table"
+        }
+      ],
+      "key": "custom_body",
+      "cssClass": null,
+      "role": 0,
+      "permission": 0,
+      "tooltip": null,
+      "visibilityFormula": null,
+      "flow": null,
+      "align": null,
+      "type": "panel"
+    },
+    "display": {
+      "width": "600",
+      "height": "600",
+      "fix_size": false,
+      "pp_width": "64",
+      "pp_height": "64"
+    },
+    "templateSystemUniqueVersion": 656166841
+  },
+  "effects": [],
+  "folder": "hdRapf6zKIXnI7HH",
+  "flags": {
+    "custom-system-builder": {
+      "version": "3.2.4",
+      "templateHistory": [
+        [
+          {
+            "kind": "A",
+            "path": [
+              "header",
+              "contents"
+            ],
+            "index": 2,
+            "item": {
+              "kind": "N",
+              "rhs": {
+                "key": "injuryheadertable",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "contents": [],
+                "cols": "2",
+                "rows": "1",
+                "layout": "",
+                "type": "table"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "kind": "A",
+            "path": [
+              "header",
+              "contents"
+            ],
+            "index": 2,
+            "item": {
+              "kind": "D",
+              "lhs": {
+                "key": "injuryheadertable",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "contents": [],
+                "cols": "2",
+                "rows": "1",
+                "layout": "",
+                "type": "table"
+              }
+            }
+          },
+          {
+            "kind": "E",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "key"
+            ],
+            "lhs": "injuryeffect",
+            "rhs": "injuryheadertable"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "label"
+            ],
+            "lhs": "Effect:"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "defaultValue"
+            ],
+            "lhs": " "
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "size"
+            ],
+            "lhs": "full-size"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "charList"
+            ],
+            "lhs": ""
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "maxLength"
+            ],
+            "lhs": ""
+          },
+          {
+            "kind": "E",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "type"
+            ],
+            "lhs": "textField",
+            "rhs": "table"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "contents"
+            ],
+            "rhs": [
+              [
+                null,
+                {
+                  "key": "injuryeffect",
+                  "cssClass": "",
+                  "role": "0",
+                  "permission": "0",
+                  "tooltip": "",
+                  "visibilityFormula": "",
+                  "label": "Effect:",
+                  "defaultValue": " ",
+                  "size": "full-size",
+                  "charList": "",
+                  "maxLength": "",
+                  "type": "textField"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "N",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "cols"
+            ],
+            "rhs": "2"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "rows"
+            ],
+            "rhs": "1"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "header",
+              "contents",
+              1,
+              "layout"
+            ],
+            "rhs": ""
+          }
+        ],
+        [
+          {
+            "kind": "A",
+            "path": [
+              "header",
+              "contents"
+            ],
+            "index": 1,
+            "item": {
+              "kind": "D",
+              "lhs": {
+                "key": "injuryheadertable",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "contents": [
+                  [
+                    null,
+                    {
+                      "key": "injuryeffect",
+                      "cssClass": "",
+                      "role": "0",
+                      "permission": "0",
+                      "tooltip": "",
+                      "visibilityFormula": "",
+                      "label": "Effect:",
+                      "defaultValue": " ",
+                      "size": "full-size",
+                      "charList": "",
+                      "maxLength": "",
+                      "type": "textField"
+                    }
+                  ]
+                ],
+                "cols": "2",
+                "rows": "1",
+                "layout": "",
+                "type": "table"
+              }
+            }
+          },
+          {
+            "kind": "E",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "key"
+            ],
+            "lhs": "injuryseverity",
+            "rhs": "injuryheadertable"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "label"
+            ],
+            "lhs": "Severity:"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "defaultValue"
+            ],
+            "lhs": "1"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "size"
+            ],
+            "lhs": "full-size"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "allowDecimal"
+            ],
+            "lhs": false
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "minVal"
+            ],
+            "lhs": ""
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "maxVal"
+            ],
+            "lhs": ""
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "allowRelative"
+            ],
+            "lhs": false
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "showControls"
+            ],
+            "lhs": false
+          },
+          {
+            "kind": "D",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "controlsStyle"
+            ],
+            "lhs": "hover"
+          },
+          {
+            "kind": "E",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "type"
+            ],
+            "lhs": "numberField",
+            "rhs": "table"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "contents"
+            ],
+            "rhs": [
+              [
+                {
+                  "key": "injuryseverity",
+                  "cssClass": "",
+                  "role": "0",
+                  "permission": "0",
+                  "tooltip": "",
+                  "visibilityFormula": "",
+                  "label": "Severity:",
+                  "defaultValue": "1",
+                  "size": "full-size",
+                  "allowDecimal": false,
+                  "minVal": "",
+                  "maxVal": "",
+                  "allowRelative": false,
+                  "showControls": false,
+                  "controlsStyle": "hover",
+                  "type": "numberField"
+                },
+                {
+                  "key": "injuryeffect",
+                  "cssClass": "",
+                  "role": "0",
+                  "permission": "0",
+                  "tooltip": "",
+                  "visibilityFormula": "",
+                  "label": "Effect:",
+                  "defaultValue": " ",
+                  "size": "full-size",
+                  "charList": "",
+                  "maxLength": "",
+                  "type": "textField"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "N",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "cols"
+            ],
+            "rhs": "2"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "rows"
+            ],
+            "rhs": "1"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "layout"
+            ],
+            "rhs": ""
+          }
+        ],
+        [
+          {
+            "kind": "E",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "contents",
+              0,
+              0,
+              "size"
+            ],
+            "lhs": "full-size",
+            "rhs": "x-small"
+          }
+        ],
+        [
+          {
+            "kind": "A",
+            "path": [
+              "body",
+              "contents"
+            ],
+            "index": 0,
+            "item": {
+              "kind": "N",
+              "rhs": {
+                "key": "injurysurgery",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "label": "Surgery:",
+                "defaultValue": "<p>N/A</p>",
+                "size": null,
+                "style": "dialog",
+                "type": "textArea"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "kind": "A",
+            "path": [
+              "body",
+              "contents"
+            ],
+            "index": 1,
+            "item": {
+              "kind": "N",
+              "rhs": {
+                "key": "injurytable2",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "contents": [],
+                "cols": "1",
+                "rows": "1",
+                "layout": "",
+                "type": "table"
+              }
+            }
+          }
+        ],
+        [
+          {
+            "kind": "A",
+            "path": [
+              "body",
+              "contents"
+            ],
+            "index": 1,
+            "item": {
+              "kind": "D",
+              "lhs": {
+                "key": "injurytable2",
+                "cssClass": "",
+                "role": "0",
+                "permission": "0",
+                "tooltip": "",
+                "visibilityFormula": "",
+                "contents": [],
+                "cols": "1",
+                "rows": "1",
+                "layout": "",
+                "type": "table"
+              }
+            }
+          },
+          {
+            "kind": "E",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "key"
+            ],
+            "lhs": "injurysurgery",
+            "rhs": "injurytable2"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "label"
+            ],
+            "lhs": "Surgery:"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "defaultValue"
+            ],
+            "lhs": "<p>N/A</p>"
+          },
+          {
+            "kind": "D",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "size"
+            ],
+            "lhs": null
+          },
+          {
+            "kind": "D",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "style"
+            ],
+            "lhs": "dialog"
+          },
+          {
+            "kind": "E",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "type"
+            ],
+            "lhs": "textArea",
+            "rhs": "table"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "contents"
+            ],
+            "rhs": [
+              [
+                {
+                  "key": "injurysurgery",
+                  "cssClass": "",
+                  "role": "0",
+                  "permission": "0",
+                  "tooltip": "",
+                  "visibilityFormula": "",
+                  "label": "Surgery:",
+                  "defaultValue": "<p>N/A</p>",
+                  "size": null,
+                  "style": "dialog",
+                  "type": "textArea"
+                }
+              ]
+            ]
+          },
+          {
+            "kind": "N",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "cols"
+            ],
+            "rhs": "1"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "rows"
+            ],
+            "rhs": "1"
+          },
+          {
+            "kind": "N",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "layout"
+            ],
+            "rhs": ""
+          }
+        ],
+        [
+          {
+            "kind": "E",
+            "path": [
+              "body",
+              "contents",
+              0,
+              "layout"
+            ],
+            "lhs": "",
+            "rhs": "c"
+          }
+        ],
+        [
+          {
+            "kind": "E",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "contents",
+              0,
+              0,
+              "size"
+            ],
+            "lhs": "x-small",
+            "rhs": "small"
+          }
+        ],
+        [
+          {
+            "kind": "E",
+            "path": [
+              "header",
+              "contents",
+              0,
+              "contents",
+              0,
+              0,
+              "size"
+            ],
+            "lhs": "small",
+            "rhs": "m-small"
+          }
+        ]
+      ],
+      "templateHistoryRedo": []
+    },
+    "core": {
+      "sourceId": "Item.YFYu2T6ohDIqjX9f"
+    },
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "4.4.2",
+    "coreVersion": "12.331",
+    "createdTime": 1697213742331,
+    "modifiedTime": 1743368886955,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "_id": "0zLsOLutNdN6tGkA",
+  "items": []
+}

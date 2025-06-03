@@ -1,0 +1,14 @@
+1. A hud style hit location display on the bottom left side of the screen showing injuries and conditions. maybe armor and soak values as well. maybe black out or chop off hit locaiton parts as that are lost.
+
+2. A slot machine style screen for rolling mutations, maddness, wind scars and god stains. have the user click on the screen to stop the rolls one at a time.
+
+3. Add a cover system to the hit location workflow that allows the defender to drag and drop piece of cover that prevent hits, allow the attacker to see exactly what is blocked.
+
+4. automate hit location and battle wear for monsters with customizable presets
+
+5. mind map style family tree for descendents
+
+6. interactable crafting screen
+
+7. saveable spontanteous magick/ miracle chart that popups when spontanteous is uses, that way the user can input previous uses at levels for better idea management and show the effect calculations.
+

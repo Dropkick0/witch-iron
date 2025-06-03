@@ -1,0 +1,167 @@
+{
+  "folder": "UyQRf60gzZ1jNnTH",
+  "name": "Petty Wrath",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "_id": "sf8Qrq8mRAXr2poK",
+      "text": "<strong>Tried</strong>, for your next Miracle, take [[2d6]] damage to an arm &amp; gain +1 Faith.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "_id": "KLa8TH6fC0pVnTWB",
+      "text": "<strong>Abandoned?</strong> The miracle is delayed for [[d6]] rounds.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "_id": "8FrcmhQ2BdlDGIoR",
+      "text": "<strong>Kneel</strong>, you buckled under Presence, Fall Prone.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "_id": "6b383Sbr0rcPzg8u",
+      "text": "<strong>Vain</strong>, you drop anything you're holding.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_id": "zmKOVvWPVUAlChOF",
+      "text": "<strong>Witness Me</strong>, your God controls your miracle and uses it unexpectedly (i.e., target someone else).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "_id": "Q3MsSQMGlLyg2PJA",
+      "text": "<strong>Grand Display</strong>, a Presence explosion discharges from you, all within short range, beholding you but unharmed.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "_id": "Ttaq7zagWXhd92te",
+      "text": "<strong>Divine Feedback</strong>, you suffer Presence feedback suffer a Condition (Whatever’s Appropriate).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "_id": "6H66opzhSlRed3Tr",
+      "text": "<strong>Tribute</strong>, your God takes [[d6]] random consumable items or [[d6*10]] silver (i.e., torches, rations, potions).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "_id": "W7WIbUsEhYU0hQJb",
+      "text": "<strong>Penance</strong>, lose 1 Faith until you repent for 10 min.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "_id": "fmWtsSKilawzzZ8X",
+      "text": "<strong>It’s Worse</strong>, roll Great Wrath.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1698278588026,
+    "modifiedTime": 1698410606153,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

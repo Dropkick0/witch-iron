@@ -1,0 +1,192 @@
+{
+  "folder": "B3ReyhCV2DYOhOkx",
+  "name": "Leg Injury, Shin",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "<p><em>Non-Living Limbs: Do not suffer Bleed or Pain Conditions.</em></p>",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Shin: Bruised, Pain 1",
+      "documentId": "ehatdVvgjr45hqh0",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "Vw1O7GlODT8SAs8Y",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Shin: Battered, Fall Prone",
+      "documentId": "9u5zWQDrT4rB3bK6",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "e93zoxracXp8fGQn",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Shin: Extended Knee, Trauma 1",
+      "documentId": "pumwzyXvM1Puwav1",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "hsZtEdB9ljWHmOvm",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Shin: Nerve Struck, Pain 2",
+      "documentId": "WpyCLZ6p3fkjNubb",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "nrYGdo60lybF7Ja9",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Shin: Hairline Fracture, Trauma 2",
+      "documentId": "T3fEUnKEaA1qy33m",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "hLCXiuFMBfj1zO19",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Shin: Transfixed, Pain 1|Bleed 2",
+      "documentId": "ZXg3gsEKnAoMEYYo",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "vVjQtH1ExEnENKAc",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Shin: Broken Tibia, Trauma 3",
+      "documentId": "9idmfSWbKHPjPB4v",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "cDd4xWj6PhTJhxmD",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Shin: Torn Artery, Bleed 3",
+      "documentId": "2Vw8P3eQK6idOVgZ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "LIlxfV2JWwfD9cPy",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Shin: Mutilated, Lost Shin‡|Bleed 3",
+      "documentId": "HFuvg0g1o8K3NitI",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "vsgUXBjMkLa1Fn6z",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Shin: Severed, Lost Shin|Bleed 4",
+      "documentId": "LSeiHnIMVhzRDKGW",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "cQQSk6xsO3gR3m5W",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "pxVvLugtEpPP1XiE",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697896988163,
+    "modifiedTime": 1697916677909,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

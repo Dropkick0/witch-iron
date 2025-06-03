@@ -186,16 +186,15 @@ export class WitchIronItem extends Item {
     if (!this.actor) return;
 
     const severity = this.system.severity.value;
-    const severityLabel = (severity === 1) ? "Minor" : (severity === 2) ? "Major" : "Severe";
 
     const chatData = {
       user: game.user.id,
       speaker: ChatMessage.getSpeaker({ actor: this.actor }),
       content: `
-        <div class="witch-iron injury-card severity-${severity}">
+        <div class="witch-iron injury-card">
           <h2>${this.name}</h2>
           <div class="injury-details">
-            <div class="injury-severity">${severityLabel}</div>
+            <div class="injury-severity">Severity ${severity}</div>
             <div class="injury-effect"><strong>Effect:</strong> ${this.system.effect || "None"}</div>
             <div class="injury-surgery"><strong>Surgery:</strong> ${this.system.surgery || "Not required"}</div>
           </div>

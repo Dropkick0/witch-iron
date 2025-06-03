@@ -2,20 +2,34 @@
 <div class="witch-iron chat-card quarrel-result">
     <div class="quarrel-header">
         <i class="fas fa-crossed-swords"></i>
-        <h3>
-            Quarrel
-            {{#if result.isCombatCheck}}<span class="combat-badge">Combat</span>{{/if}}
+        <h3 style="text-align:center; width:100%;">
+            {{result.headerTitle}}
+            {{#if result.isCombatCheck}}
+              {{#unless result.nonCombat}}
+                <span class="combat-badge">Combat</span>
+              {{/unless}}
+            {{/if}}
         </h3>
     </div>
     <div class="card-content">
         <div class="quarrel-combatants">
             <div class="initiator {{result.initiatorOutcome}}">
-                <div class="token-name">{{result.initiatorName}}</div>
-                <div class="token-container">
-                    {{#if result.initiatorImg}}
-                    <img class="token-image" src="{{result.initiatorImg}}" data-actor="{{result.initiatorName}}">
+                <div class="token-name">
+                    {{#if result.condition}}
+                        {{capitalize result.condition}}
                     {{else}}
-                    <img class="token-image" src="icons/svg/mystery-man.svg" data-actor="{{result.initiatorName}}">
+                        {{result.initiatorName}}
+                    {{/if}}
+                </div>
+                <div class="token-container">
+                    {{#if result.condition}}
+                        <img class="token-image" src="{{result.headerIcon}}" data-actor="{{capitalize result.condition}}">
+                    {{else}}
+                        {{#if result.initiatorImg}}
+                            <img class="token-image" src="{{result.initiatorImg}}" data-actor="{{result.initiatorName}}">
+                        {{else}}
+                            <img class="token-image" src="icons/svg/mystery-man.svg" data-actor="{{result.initiatorName}}">
+                        {{/if}}
                     {{/if}}
                 </div>
                 <span class="hits">Hits: {{result.initiatorHits}}</span>
@@ -54,20 +68,38 @@
     </div>
     
     {{#if result.isCombatCheck}}
-        <div class="combat-result-container">
-            <div class="hit-location-actions" style="position:relative;top:-3px;right:-4px">
-                <button type="button" class="choose-hit-location" style="width:96%;color:#e6c9a3;background:#323232" 
-                    data-attacker="{{#if result.injuryData}}{{result.injuryData.attacker}}{{else}}{{#if (gt result.netHits 0)}}{{result.responderName}}{{else}}{{result.initiatorName}}{{/if}}{{/if}}" 
-                    data-defender="{{#if result.injuryData}}{{result.injuryData.defender}}{{else}}{{#if (gt result.netHits 0)}}{{result.initiatorName}}{{else}}{{result.responderName}}{{/if}}{{/if}}" 
-                    data-damage="{{abs result.netHits}}" 
-                    data-original-damage="{{abs result.netHits}}" 
-                    data-nethits="{{abs result.netHits}}" 
-                    data-weapondmg="{{#if result.injuryData}}{{result.injuryData.weaponDmg}}{{else}}0{{/if}}"
-                    data-soak="{{#if result.injuryData}}{{result.injuryData.soak}}{{else}}0{{/if}}"
-                    data-messageid="{{@root.message._id}}">
-                    <i class="fas fa-bullseye"></i> Select Hit Location
-                </button>
-            </div>
+      <div class="combat-result-container">
+        <div class="hit-location-actions" style="position:relative;top:-3px;right:-4px">
+          <button type="button" class="choose-hit-location" style="width:96%;color:#e6c9a3;background:#323232" 
+            data-attacker="{{#if result.injuryData}}{{result.injuryData.attacker}}{{else}}{{#if (gt result.netHits 0)}}{{result.responderName}}{{else}}{{result.initiatorName}}{{/if}}{{/if}}" 
+            data-defender="{{#if result.injuryData}}{{result.injuryData.defender}}{{else}}{{#if (gt result.netHits 0)}}{{result.initiatorName}}{{else}}{{result.responderName}}{{/if}}{{/if}}" 
+            data-damage="{{abs result.netHits}}" 
+            data-original-damage="{{abs result.netHits}}" 
+            data-nethits="{{abs result.netHits}}" 
+            data-weapondmg="{{#if result.injuryData}}{{result.injuryData.weaponDmg}}{{else}}0{{/if}}"
+            data-soak="{{#if result.injuryData}}{{result.injuryData.soak}}{{else}}0{{/if}}"
+            data-messageid="{{@root.message._id}}">
+            <i class="fas fa-bullseye"></i> Select Hit Location
+          </button>
         </div>
+      </div>
+    {{/if}}
+
+    {{!-- Follow-up messages for custom quarrels --}}
+    {{#if result.resultMessages}}
+      <div class="combat-result-container">
+        <div class="combat-check-section">
+          <span class="combat-check-label">Results</span>
+          <div class="quarrel-followup">
+            {{#if (gt result.netHits 0)}}
+              <div class="quarrel-success">{{result.resultMessages.success}}</div>
+            {{else if (lt result.netHits 0)}}
+              <div class="quarrel-failure">{{result.resultMessages.failure}}</div>
+            {{else}}
+              <div class="quarrel-cost">{{result.resultMessages.cost}}</div>
+            {{/if}}
+          </div>
+        </div>
+      </div>
     {{/if}}
 </div>

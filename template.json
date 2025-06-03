@@ -229,8 +229,16 @@
       },
       "location": "",
       "effect": "",
-      "treatment": "",
-      "isStabilized": false
+      "description": "",
+      "conditions": [],
+      "specialInstructions": "",
+      "includeTreatment": false,
+      "medicalOption": "aid",
+      "treatmentDifficulty": 0,
+      "treatmentNotes": "",
+      "isStabilized": false,
+      "permanent": false,
+      "treatment": ""
     },
     "weapon": {
       "templates": ["base", "physical"],

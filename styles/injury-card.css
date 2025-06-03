@@ -279,7 +279,9 @@
 
 .witch-iron.chat-card.injury-card .injury-header {
     /*margin-bottom: 0.5em;*/
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: none;
     padding: 0;
     border-bottom: none;
@@ -290,11 +292,74 @@
     /*margin: 0.25em 0 0.5em;*/
     color: #333;
     font-size: 1.1em;
+    margin: 0;
+}
+
+/* Damage calculation tabs */
+.witch-iron.chat-card.injury-card .damage-calc-tabs {
+    display: flex;
+    width: 120px;
+    gap: 2px;
+}
+
+.witch-iron.chat-card.injury-card .damage-tab {
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background:rgb(63, 114, 161);
+    font-size: 0.75em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.witch-iron.chat-card.injury-card .damage-tab:hover {
+    background:rgb(52, 100, 145);
+}
+
+.witch-iron.chat-card.injury-card .damage-tab.active {
+    background: #2d557b;
+    color: white;
+    border-color: #2d557b;
+}
+
+/* Damage calculation details */
+.witch-iron.chat-card.injury-card .battle-wear-calculations {
+    margin-top: 0.5em;
+    padding: 0.5em;
+    background: rgba(45, 85, 123, 0.05);
+    border: 1px solid rgba(45, 85, 123, 0.2);
+    border-radius: 4px;
+}
+
+.witch-iron.chat-card.injury-card .calculation-header h5 {
+    margin: 0 0 0.5em 0;
+    font-size: 0.9em;
+    color: #2d557b;
+    border-bottom: 1px solid rgba(45, 85, 123, 0.3);
+    padding-bottom: 0.25em;
+}
+
+.witch-iron.chat-card.injury-card .calculation-formula {
+    font-size: 0.85em;
+    line-height: 1.4;
+}
+
+.witch-iron.chat-card.injury-card .damage-range {
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+    border-top: 1px dashed rgba(45, 85, 123, 0.2);
+    font-size: 0.9em;
+}
+
+.witch-iron.chat-card.injury-card .damage-range .highlighted {
+    font-weight: bold;
+    color: #2d557b;
+    text-decoration: underline;
 }
 
 .witch-iron.chat-card.injury-card .injury-row {
     display: grid;
-    grid-template-columns: 15px 86px 1fr;
+    grid-template-columns: 15px 1fr;
     align-items: center;
     gap: 0.5em;
     padding: 0.25em 0;
@@ -456,4 +521,44 @@
     border-radius: 5px;
     font-style: italic;
     color: #2d557b;
+}
+
+/* Battle Wear Processing Indicator */
+.witch-iron.chat-card.injury-card .battle-wear-processing {
+    text-align: center;
+    margin-top: 0.5em;
+    padding: 4px;
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #555;
+}
+
+.witch-iron.chat-card.injury-card .battle-wear-processing i {
+    margin-right: 5px;
+    color: #2d557b;
+}
+
+/* Deflected effect styling */
+.witch-iron.chat-card.injury-card .effect-col .deflected {
+    color: #2c642c;
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Hidden message container for system messages */
+.hidden {
+    display: none !important;
+}
+
+/* Make system messages very discreet in the chat */
+.chat-message[data-message-id] .witch-iron-system-message {
+    display: none !important;
+    opacity: 0;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    position: absolute;
+    visibility: hidden;
 } 

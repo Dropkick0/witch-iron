@@ -1,0 +1,192 @@
+{
+  "folder": "jcV0AWibiTpMic6G",
+  "name": "Torso Injury, Guts",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Guts: Bruised, Pain 1",
+      "documentId": "hdJu9mCcjn3F2ysi",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "sZm6MciAy19qQ3XR",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Guts: Checked, Fall Prone",
+      "documentId": "8ZRUBKjg6Gl9jRtG",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "kVjZMrj6uIZlqUzQ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Guts: Internal Bleed, Bleed 1",
+      "documentId": "kqz3iRL5Mq9KNLWj",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "GbAy49SrOZBcIc1j",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Guts: Vomiting, Stun 1",
+      "documentId": "z6lvulvhjfmKQePm",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "aVOMRtlYxgp224Wn",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Guts: Punctured Gut, Bleed 2",
+      "documentId": "RMBGtRbNy3QjbGt1",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "dsxotvFVhopfx8hH",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Guts: Lining Damage, Pain 3",
+      "documentId": "iiWac2FWJqzfzNv0",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "w7d2kSNSWC0urDFb",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Guts: Ripped Abs, Pain 2*|Bleed 2",
+      "documentId": "orOwS3xJcpe45jIp",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "bNdGLNVwVX5qrPh3",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Guts: Exposed Intestine, Bleed 4",
+      "documentId": "njBYcNgokYhKtLjA",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "OeUJ68jv60cVlkqO",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Guts: Fecal Seep, Poison 5",
+      "documentId": "15PirJQIGSD0Q9ai",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "l4WyZ4FMGQMVJF6t",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Guts: Disemboweled, Dead",
+      "documentId": "MjtRrm02H54Dk89f",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "9VLb7VwRWyMR3Izm",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "jSg7eVJ9AMyMktKY",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697850516271,
+    "modifiedTime": 1697915209441,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

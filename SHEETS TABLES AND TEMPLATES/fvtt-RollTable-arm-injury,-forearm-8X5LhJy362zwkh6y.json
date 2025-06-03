@@ -1,0 +1,192 @@
+{
+  "folder": "Q6FG1J9hZ0EKsfOQ",
+  "name": "Arm Injury, Forearm",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "<p><em>Non-Living Limbs: Do not suffer Bleed or Pain Conditions.</em></p>",
+  "results": [
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Forearm: Bruised, Pain 1",
+      "documentId": "P6Zf6kEQM8pzcMlR",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "qAKuTfQ8hHQJVQgu",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Forearm: Battered, Disarmed",
+      "documentId": "sjdKT3Y17eVGeQ0Z",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "axuwo8rE5WnhBYDL",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Forearm: Extended Elbow, Trauma 1",
+      "documentId": "ZWjq9woSO3qqYdvb",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "6zOwMH06LUEnkOkZ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Forearm: Nerve Struck, Pain 2",
+      "documentId": "vpCXOCZD98M40mo1",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "V9Lyoz6jRLXgLGW4",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Forearm: Hairline Fracture, Trauma 2",
+      "documentId": "ZGdtkWWN7vsdd6fP",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "WxqYmpDs3lXQAGzz",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Forearm: Transfixed, Pain 1|Bleed 2",
+      "documentId": "LcjmvI0pcxLPIz4c",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "utJfuYTthXvUvXVQ",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Forearm: Broken Ulna, Trauma 3",
+      "documentId": "mxpMiu7k1nhpYGBK",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "Qr52Vdq7mSjr9t45",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Forearm: Torn Artery, Bleed 3",
+      "documentId": "YxXxjX5Dt4D7me7r",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "WjoHvMzabDeQfo6c",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Forearm: Rent, Lost Forearm‡|Bleed 3",
+      "documentId": "oo1dbBwkeZzebNUq",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "FGz7RVEsbRKTAXiX",
+      "flags": {}
+    },
+    {
+      "type": "document",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "text": "Forearm: Split, Lost Forearm|Bleed 4",
+      "documentId": "aPs5GZdlFkvqFKwJ",
+      "img": "icons/svg/item-bag.svg",
+      "_id": "dEfvUL075pnNEqoN",
+      "flags": {}
+    },
+    {
+      "type": "text",
+      "documentCollection": "Item",
+      "weight": 1,
+      "range": [
+        0,
+        0
+      ],
+      "drawn": false,
+      "_id": "hvGC68wbWVG5X4NQ",
+      "text": "Deflected!",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1697896779927,
+    "modifiedTime": 1697916543897,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

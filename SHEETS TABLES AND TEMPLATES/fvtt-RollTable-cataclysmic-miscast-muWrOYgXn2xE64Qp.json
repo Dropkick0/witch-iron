@@ -1,0 +1,167 @@
+{
+  "folder": "anIgpH887iKKtr3t",
+  "name": "Cataclysmic Miscast",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "_id": "QBh2wXizWTINyZ4t",
+      "text": "<strong>Wicked Magick</strong>, for your next Spell, take [[6d6]] damage to an arm &amp; gain +3 Magick",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "_id": "qazXHcfN8QqsX5kS",
+      "text": "<strong>Overwhelming Torment</strong>, you are flooded with unholy visions of Domain, suffer [[1d6]] Helpless Conditions.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "_id": "h6phNN1mjxIuM7Xc",
+      "text": "<strong>Warped</strong>, an influx of Domain invades your body, suffer [[1d6]] Conditions (Whatever’s Appropriate).",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "_id": "dUQQT0XXknoN6XWq",
+      "text": "<strong>Possessed</strong>, a malicious Demon controls you for 10 min and will cause maximum destruction at any cost.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "_id": "qTqwVhOlgkS5Pgq9",
+      "text": "<strong>Severed</strong>, lose 3 Magick until you cultivate for 1 month.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "_id": "88XJ3zU5pK2qwWss",
+      "text": "<strong>Dismembered</strong>, a Limb is violently torn off by Domain. Roll [[1d6]] <br />1-3: Arm<br />4-6: Leg<br /><i>Even= left, Odd= right.</i>",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "_id": "soRAkZ2GqTXWBFJo",
+      "text": "<strong>Explosive Expulsion</strong>, roll Great Miscast all within short range 30ft, yourself included, suffer from it, or take [[5d6]] damage to the head if no one is within short range.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "_id": "0RWFKyYfeXr3iyFw",
+      "text": "<strong>Magick Eruption</strong>, your body erupts with a Domain for [[1d6]] rounds, and you suffer Stun for that time. During this time, all within short range suffer [[2d6]] damage or [[1d6]] Condition from this Domain each round.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "_id": "U7WqYSzNOhYcdGc9",
+      "text": "<strong>Wicked Tempest</strong>, A Domain storm is summoned, causing destruction and hysteria for [[1d6]] hours in the local area.",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    },
+    {
+      "type": "text",
+      "weight": 1,
+      "range": [
+        10,
+        999
+      ],
+      "drawn": false,
+      "_id": "8ONjvjxU0mknIIs3",
+      "text": "<strong>The Dark Gods Answer</strong>, and a Gigantic Sized 15 Hit Dice Demon is summoned",
+      "documentId": null,
+      "flags": {},
+      "img": "icons/svg/d20-black.svg"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": false,
+  "flags": {
+    "exportSource": {
+      "world": "witch-iron",
+      "system": "custom-system-builder",
+      "coreVersion": "12.331",
+      "systemVersion": "4.4.2"
+    }
+  },
+  "_stats": {
+    "systemId": "custom-system-builder",
+    "systemVersion": "3.0.0",
+    "coreVersion": "12.331",
+    "createdTime": 1698278390883,
+    "modifiedTime": 1698410032786,
+    "lastModifiedBy": "KWe6IP9JRb2lkrXM"
+  },
+  "formula": "0"
+}

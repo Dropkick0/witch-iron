@@ -1,4 +1,26 @@
 <form class="{{cssClass}} flexcol" autocomplete="off">
+  <style>
+    /* Collapsible Treatment Section Styling */
+    .treatment-section summary.btn {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      background-color: var(--secondary-content-background);
+      border: 1px solid var(--color-border);
+      padding: 0.5em 0.75em;
+      margin-bottom: 0.5em;
+      border-radius: 3px;
+    }
+    .treatment-section .toggle-arrow {
+      margin-right: 0.5em;
+      transition: transform 0.2s ease;
+      transform: rotate(90deg);
+    }
+    /* Rotate arrow when closed */
+    .treatment-section:not([open]) .toggle-arrow {
+      transform: rotate(0deg);
+    }
+  </style>
   <header class="sheet-header">
     <img src="{{item.img}}" data-edit="img" title="{{item.name}}" height="64" width="64"/>
     <div class="header-fields">
@@ -8,45 +30,32 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}}
-  <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item" data-tab="details">Details</a>
-    <a class="item" data-tab="treatment">Treatment</a>
-    <a class="item" data-tab="conditions">Conditions</a>
-  </nav>
+  {{!-- Removed tab navigation to show all fields on one page --}}
 
   {{!-- Sheet Body --}}
   <section class="sheet-body">
-    {{!-- Details Tab --}}
-    <div class="tab" data-group="primary" data-tab="details">
+    {{!-- Details Section --}}
+    <div class="sheet-section">
+      <h3>Details</h3>
       <div class="grid-2col">
         <div class="form-group">
           <label>Location</label>
           <select name="system.location">
-            {{#select system.location}}
-            <option value=""></option>
             {{#each locationOptions as |name key|}}
-            <option value="{{key}}">{{name}}</option>
+              <option value="{{key}}" {{#if (eq system.location key)}}selected="selected"{{/if}}>{{name}}</option>
             {{/each}}
-            {{/select}}
           </select>
         </div>
         <div class="form-group">
           <label>Severity</label>
           <div class="severity-display">
             <select name="system.severity.value">
-              {{#select system.severity.value}}
               {{#each severityOptions as |name key|}}
-              <option value="{{key}}">{{name}}</option>
+                <option value="{{key}}" {{#if (eq system.severity.value key)}}selected="selected"{{/if}}>{{name}}</option>
               {{/each}}
-              {{/select}}
             </select>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea name="system.description" rows="3">{{system.description}}</textarea>
       </div>
       <div class="form-group">
         <label>Effect</label>
@@ -54,68 +63,34 @@
       </div>
     </div>
 
-    {{!-- Treatment Tab --}}
-    <div class="tab" data-group="primary" data-tab="treatment">
-      <div class="form-group">
-        <label>Medical Option Required</label>
-        <select name="system.medicalOption">
-          {{#select system.medicalOption}}
-          {{#each medicalOptions as |name key|}}
-          <option value="{{key}}">{{name}}</option>
-          {{/each}}
-          {{/select}}
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Treatment Difficulty</label>
-        <div class="grid-2col">
-          <input type="number" name="system.treatmentDifficulty" value="{{system.treatmentDifficulty}}" placeholder="Hits required"/>
-          <p class="notes">{{#if (eq system.medicalOption "aid")}}vs 1/2 Severity{{else}}vs Full Severity{{/if}}</p>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Recovery Time (days)</label>
-        <input type="number" name="system.recoveryTime" value="{{system.recoveryTime}}" placeholder="Days to recover"/>
-      </div>
-      <div class="form-group">
-        <label>Treatment Notes</label>
-        <textarea name="system.treatmentNotes" rows="4">{{system.treatmentNotes}}</textarea>
-      </div>
-      <div class="form-group">
-        <label>Stabilized</label>
-        <input type="checkbox" name="system.isStabilized" {{checked system.isStabilized}}/>
-      </div>
-    </div>
-
-    {{!-- Conditions Tab --}}
-    <div class="tab" data-group="primary" data-tab="conditions">
+    {{!-- Conditions Section --}}
+    <div class="sheet-section">
+      <h3>Conditions</h3>
       <p class="notes">Add conditions caused by this injury (Pain, Bleed, Trauma, etc.)</p>
       
       <div class="conditions-container">
         {{#if system.conditions.length}}
-          {{#each system.conditions}}
+          {{#each system.conditions as |cond idx|}}
             <div class="condition-selection flexrow">
-              <select class="condition-type" name="system.conditions.{{@index}}.type">
-                {{#select this.type}}
-                <option value=""></option>
-                {{#each ../conditionOptions as |name key|}}
-                <option value="{{key}}">{{name}}</option>
+              <select class="condition-type" name="system.conditions.{{idx}}.type">
+                <option value="" disabled {{#unless cond.type}}selected{{/unless}}>Select Condition</option>
+                {{#each @root.conditionOptions as |name key|}}
+                  <option value="{{key}}" {{#if (eq cond.type key)}}selected{{/if}}>{{name}}</option>
                 {{/each}}
-                {{/select}}
               </select>
-              <input class="condition-rating" type="number" name="system.conditions.{{@index}}.rating" value="{{this.rating}}" min="1" max="5" {{#unless (or (eq this.type "pain") (eq this.type "bleed") (eq this.type "trauma") (eq this.type "stun") (eq this.type "helpless"))}}disabled{{/unless}}/>
+              <input class="condition-rating" type="number" name="system.conditions.{{idx}}.rating" value="{{cond.rating}}" min="1" {{#if (eq cond.type "prone")}}disabled{{/if}}/>
               <a class="condition-remove"><i class="fas fa-trash"></i></a>
             </div>
           {{/each}}
         {{else}}
           <div class="condition-selection flexrow">
             <select class="condition-type" name="system.conditions.0.type">
-              <option value=""></option>
-              {{#each conditionOptions as |name key|}}
-              <option value="{{key}}">{{name}}</option>
+              <option value="" disabled selected>Select Condition</option>
+              {{#each @root.conditionOptions as |name key|}}
+                <option value="{{key}}">{{name}}</option>
               {{/each}}
             </select>
-            <input class="condition-rating" type="number" name="system.conditions.0.rating" value="1" min="1" max="5"/>
+            <input class="condition-rating" type="number" name="system.conditions.0.rating" value="1" min="1" disabled/>
             <a class="condition-remove"><i class="fas fa-trash"></i></a>
           </div>
         {{/if}}
@@ -130,5 +105,49 @@
         <textarea name="system.specialInstructions" rows="3">{{system.specialInstructions}}</textarea>
       </div>
     </div>
+
+    {{!-- Treatment Section as collapsible details element --}}
+    <details class="sheet-section treatment-section" open>
+      <summary class="btn">
+        <i class="fas fa-caret-right toggle-arrow"></i>
+        <i class="fas fa-wrench"></i>&nbsp;Treatment Required
+      </summary>
+      <div class="form-group">
+        <label>Medical Option Required</label>
+        <select name="system.medicalOption">
+          <option value="none" {{#if (or (not system.medicalOption) (eq system.medicalOption "none"))}}selected{{/if}}>None</option>
+          <option value="aid" {{#if (eq system.medicalOption "aid")}}selected{{/if}}>Medical Aid</option>
+          <option value="surgery" {{#if (eq system.medicalOption "surgery")}}selected{{/if}}>Surgery</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Treatment Difficulty</label>
+        <div class="grid-2col">
+          <input type="number" name="system.treatmentDifficulty" value="{{system.treatmentDifficulty}}" />
+          <p class="notes">{{#if (eq system.medicalOption "aid")}}vs 1/2 Severity{{else}}vs Full Severity{{/if}}</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Treatment Notes</label>
+        <textarea name="system.treatmentNotes" rows="4">{{system.treatmentNotes}}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Stabilized</label>
+        <input type="checkbox" name="system.isStabilized" {{checked system.isStabilized}}/>
+      </div>
+    </details>
+
+    <div class="sheet-section">
+      <h3>Options</h3>
+      <div class="form-group">
+        <label>Permanent</label>
+        <input type="checkbox" name="system.permanent" {{checked system.permanent}}/>
+      </div>
+    </div>
+
+    <!-- Sheet footer buttons -->
+    <footer class="form-footer">
+      <button type="submit" class="btn">Save Changes</button>
+    </footer>
   </section>
 </form> 
