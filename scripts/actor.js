@@ -58,6 +58,7 @@ export class WitchIronActor extends Actor {
     if (!systemData.skills.combat) systemData.skills.combat = {};
     if (!systemData.skills.physical) systemData.skills.physical = {};
     if (!systemData.skills.social) systemData.skills.social = {};
+    if (!systemData.skills.quickness) systemData.skills.quickness = {};
     if (!systemData.skills.mental) systemData.skills.mental = {};
     
     // Combat skills
@@ -91,17 +92,18 @@ export class WitchIronActor extends Actor {
       systemData.skills.physical.skulk = { value: 0, ability: "agility", label: "Skulk", specializations: [] };
     }
     
-    // Add Social and Mental skills in the same pattern...
+    // Quickness skills
+    if (!systemData.skills.quickness.cunning) {
+      systemData.skills.quickness.cunning = { value: 0, ability: "quickness", label: "Cunning", specializations: [] };
+    }
+    if (!systemData.skills.quickness.perception) {
+      systemData.skills.quickness.perception = { value: 0, ability: "quickness", label: "Perception", specializations: [] };
+    }
+    if (!systemData.skills.quickness.ranged) {
+      systemData.skills.quickness.ranged = { value: 0, ability: "quickness", label: "Ranged", specializations: [] };
+    }
+
     // Social skills
-    if (!systemData.skills.social.cunning) {
-      systemData.skills.social.cunning = { value: 0, ability: "quickness", label: "Cunning", specializations: [] };
-    }
-    if (!systemData.skills.social.perception) {
-      systemData.skills.social.perception = { value: 0, ability: "quickness", label: "Perception", specializations: [] };
-    }
-    if (!systemData.skills.social.ranged) {
-      systemData.skills.social.ranged = { value: 0, ability: "quickness", label: "Ranged", specializations: [] };
-    }
     if (!systemData.skills.social.leadership) {
       systemData.skills.social.leadership = { value: 0, ability: "personality", label: "Leadership", specializations: [] };
     }
@@ -142,7 +144,7 @@ export class WitchIronActor extends Actor {
     }
     
     // Ensure all skills have the specializations array
-    for (const category of ["combat", "physical", "social", "mental"]) {
+    for (const category of ["combat", "physical", "quickness", "social", "mental"]) {
       for (const skillKey in systemData.skills[category]) {
         if (!systemData.skills[category][skillKey].specializations) {
           systemData.skills[category][skillKey].specializations = [];
@@ -613,10 +615,12 @@ export class WitchIronActor extends Actor {
         ride: "agility",
         skulk: "agility"
       },
-      social: {
+      quickness: {
         cunning: "quickness",
         perception: "quickness",
-        ranged: "quickness",
+        ranged: "quickness"
+      },
+      social: {
         leadership: "personality",
         carouse: "personality",
         coerce: "personality"
