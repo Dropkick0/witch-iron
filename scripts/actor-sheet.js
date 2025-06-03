@@ -1,3 +1,5 @@
+import { createItem } from "./utils.js";
+
 /**
  * Extends the basic ActorSheet for Witch Iron actor sheets.
  * @extends {ActorSheet}
@@ -213,22 +215,13 @@ export class WitchIronActorSheet extends ActorSheet {
     event.preventDefault();
     const header = event.currentTarget;
     const type = header.dataset.type;
-    
-    // Grab any data associated with this control
-    const data = duplicate(header.dataset);
-    // Initialize a default name.
-    const name = `New ${type.capitalize()}`;
-    // Prepare the item object.
-    const itemData = {
-      name: name,
-      type: type,
-      system: data
-    };
-    // Remove the type from the dataset since it's in the itemData.type prop.
-    delete itemData.system["type"];
 
-    // Finally, create the item!
-    return this.actor.createEmbeddedDocuments("Item", [itemData]);
+    // Use any data attributes as the initial system data
+    const data = duplicate(header.dataset);
+    delete data["type"];
+
+    // Utilize shared helper to create the item
+    return createItem(this.actor, type, { system: data });
   }
 
   /**
@@ -238,50 +231,10 @@ export class WitchIronActorSheet extends ActorSheet {
    */
   _onRollSkill(event) {
     event.preventDefault();
-    const element = event.currentTarget;
-    const skill = element.dataset.skill;
-    
-    // Get situational modifier if any (via dialog)
-    const options = {
-      situationalMod: 0,
-      additionalHits: 0
-    };
-    
-    // Create dialog to ask for modifiers
-    const content = `
-      <form>
-        <div class="form-group">
-          <label>Situational Modifier</label>
-          <input type="number" name="situationalMod" value="0" step="10" />
-        </div>
-        <div class="form-group">
-          <label>Additional +Hits</label>
-          <input type="number" name="additionalHits" value="0" />
-        </div>
-      </form>
-    `;
-    
-    const dialog = new Dialog({
-      title: `Skill Check: ${skill.charAt(0).toUpperCase() + skill.slice(1)}`,
-      content: content,
-      buttons: {
-        roll: {
-          label: "Roll",
-          callback: html => {
-            const form = html[0].querySelector("form");
-            options.situationalMod = parseInt(form.situationalMod.value) || 0;
-            options.additionalHits = parseInt(form.additionalHits.value) || 0;
-            this.actor.rollSkill(skill, options);
-          }
-        },
-        cancel: {
-          label: "Cancel"
-        }
-      },
-      default: "roll"
-    });
-    
-    dialog.render(true);
+    const skill = event.currentTarget.dataset.skill;
+    const title = `Skill Check: ${skill.charAt(0).toUpperCase() + skill.slice(1)}`;
+
+    this._openRollDialog(title, opts => this.actor.rollSkill(skill, opts));
   }
 
   /**
@@ -291,16 +244,18 @@ export class WitchIronActorSheet extends ActorSheet {
    */
   _onRollAttribute(event) {
     event.preventDefault();
-    const element = event.currentTarget;
-    const attribute = element.dataset.attribute;
-    
-    // Get situational modifier if any (via dialog)
-    const options = {
-      situationalMod: 0,
-      additionalHits: 0
-    };
-    
-    // Create dialog to ask for modifiers
+    const attribute = event.currentTarget.dataset.attribute;
+    const title = `Attribute Check: ${attribute.charAt(0).toUpperCase() + attribute.slice(1)}`;
+    this._openRollDialog(title, opts => this.actor.rollAttribute(attribute, opts));
+  }
+
+  /**
+   * Helper to present a modifier dialog and execute a callback with the results
+   * @param {string} title Dialog title
+   * @param {Function} rollCallback Callback receiving the collected options
+   * @private
+   */
+  _openRollDialog(title, rollCallback) {
     const content = `
       <form>
         <div class="form-group">
@@ -313,27 +268,27 @@ export class WitchIronActorSheet extends ActorSheet {
         </div>
       </form>
     `;
-    
+
     const dialog = new Dialog({
-      title: `Attribute Check: ${attribute.charAt(0).toUpperCase() + attribute.slice(1)}`,
-      content: content,
+      title,
+      content,
       buttons: {
         roll: {
           label: "Roll",
           callback: html => {
             const form = html[0].querySelector("form");
-            options.situationalMod = parseInt(form.situationalMod.value) || 0;
-            options.additionalHits = parseInt(form.additionalHits.value) || 0;
-            this.actor.rollAttribute(attribute, options);
+            const opts = {
+              situationalMod: parseInt(form.situationalMod.value) || 0,
+              additionalHits: parseInt(form.additionalHits.value) || 0
+            };
+            rollCallback(opts);
           }
         },
-        cancel: {
-          label: "Cancel"
-        }
+        cancel: { label: "Cancel" }
       },
       default: "roll"
     });
-    
+
     dialog.render(true);
   }
 
