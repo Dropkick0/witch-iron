@@ -376,11 +376,21 @@ export class WitchIronActorSheet extends ActorSheet {
             const situationalMod = parseInt(form.situationalMod.value) || 0;
             const additionalHits = parseInt(form.additionalHits.value) || 0;
             
-            this.actor.monsterRoll({
-              label: label,
-              situationalMod: situationalMod,
-              additionalHits: additionalHits
-            });
+            // Use the actor's rollMonsterCheck method which handles monster
+            // checks. The previous call attempted to use a non-existent
+            // `monsterRoll` method which resulted in an error when the dialog
+            // was confirmed.
+            if (typeof this.actor.rollMonsterCheck === "function") {
+              this.actor.rollMonsterCheck({
+                label: label,
+                situationalMod: situationalMod,
+                additionalHits: additionalHits
+              });
+            } else {
+              console.error(
+                `Witch Iron | ERROR: Actor ${this.actor.name} does not have rollMonsterCheck method`
+              );
+            }
           }
         },
         cancel: {
