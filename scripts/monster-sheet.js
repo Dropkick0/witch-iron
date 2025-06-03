@@ -3,6 +3,7 @@
 
 // Import the quarrel API for non-combat condition checks
 import { manualQuarrel } from "./quarrel.js";
+import { createItem } from "./utils.js";
 
 /**
  * Monster sheet class for the Witch Iron system
@@ -738,34 +739,22 @@ export class WitchIronMonsterSheet extends ActorSheet {
     event.preventDefault();
     const header = event.currentTarget;
     const type = header.dataset.type;
-    
-    // Prepare the item data
-    const itemData = {
-      name: `New ${this.capitalize(type)}`,
-      type: type,
-      system: {}
-    };
-    
+
     // Special handling for injury type
     if (type === "injury") {
-      itemData.name = "New Injury";
-      itemData.img = "icons/svg/blood.svg";
-      // Base system data for a new injury
-      itemData.system = {
+      const savedDefaults = game.settings.get("witch-iron", "injurySheetDefaults") || {};
+      const system = {
         description: "",
         effect: "",
         location: "",
         severity: { value: 1 }
       };
-      // Merge in any saved defaults so new injuries start with all saved fields
-      const savedDefaults = game.settings.get("witch-iron", "injurySheetDefaults") || {};
-      foundry.utils.mergeObject(itemData.system, savedDefaults, { inplace: true });
-      // Override the name if a default is stored
-      if (savedDefaults.name !== undefined) itemData.name = savedDefaults.name;
+      foundry.utils.mergeObject(system, savedDefaults, { inplace: true });
+      const name = savedDefaults.name !== undefined ? savedDefaults.name : "New Injury";
+      return createItem(this.actor, type, { name, img: "icons/svg/blood.svg", system });
     }
-    
-    // Create the item
-    return this.actor.createEmbeddedDocuments("Item", [itemData]);
+
+    return createItem(this.actor, type);
   }
   
   /**

@@ -1,3 +1,5 @@
+import { createItem } from "./utils.js";
+
 /**
  * Descendant sheet class for the Witch Iron system
  * @extends {ActorSheet}
@@ -353,17 +355,8 @@ export class WitchIronDescendantSheet extends ActorSheet {
   async _onItemCreate(event) {
     event.preventDefault();
     const header = event.currentTarget;
-    // Get the type of item to create
     const type = header.dataset.type || "gear";
-    // Initialize a default name
-    const name = `New ${type.capitalize()}`;
-    // Create the item
-    const itemData = {
-      name: name,
-      type: type,
-      system: {}
-    };
-    await this.actor.createEmbeddedDocuments("Item", [itemData]);
+    await createItem(this.actor, type);
   }
 
   /**
