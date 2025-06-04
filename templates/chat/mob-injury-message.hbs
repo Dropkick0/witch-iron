@@ -1,39 +1,27 @@
-<section class="wi-card mob-card">
-  <header class="wi-card__title">
-    <i class="fas fa-skull"></i>
-    Mob Casualties
+<section class="witch-iron chat-card wi-card mob-casualty-card">
+  <header class="card-header">
+    <i class="fas fa-skull-crossbones"></i>
+    <h3>Mob Casualties</h3>
   </header>
 
-  {{!-- ── Casualty Summary ─────────────────────────────── --}}
-  <details class="wi-block" {{#unless collapsed}}open{{/unless}}>
-    <summary class="wi-block__head">Casualty Summary</summary>
-    <div class="wi-grid2">
-      <span>Losses:</span><span>{{losses}}</span>
-      <span>Remaining:</span><span>{{remaining}}</span>
-      <span>Scale:</span><span>{{scale}} {{scaleIcon}}</span>
+  <details class="cas-detail" open>
+    <summary>Casualty Summary</summary>
+    <div class="grid-two">
+      <span class="label">Losses:</span><span class="value">{{killed}}</span>
+      <span class="label">Remaining:</span><span class="value">{{remaining}}</span>
+      <span class="label">Scale:</span><span class="value">{{newScale}} {{#if scaleChange}}(↓){{/if}}</span>
     </div>
-    <div class="wi-progress">
-      <div style="width:{{progressPct}}%"></div>
-    </div>
-  </details>
-
-  {{!-- ── Combat Details (mirrors Injury card) ─────────── --}}
-  <details class="wi-block" open>
-    <summary class="wi-block__head">Combat Details</summary>
-    <div class="wi-grid2">
-      <span>Damage:</span><span>{{damage}} ({{rawDamage}})</span>
-      <span>Soak:</span><span>{{soak}} ({{baseSoak}})</span>
-      <span>Net Hits:</span><span>{{netHits}}</span>
-      <span>Net Dmg:</span><span>{{netDamage}}</span>
-      <span>Hit the…</span><span>{{hitZone}}</span>
-      <span>In the…</span><span>{{hitSubZone}}</span>
-      <span>Location Roll:</span><span>{{locRoll}}</span>
+    <div class="progress">
+      <div style="width:{{lossPercent}}%"></div>
     </div>
   </details>
 
-  {{#if canAcknowledge}}
-  <footer class="wi-card__footer">
-    <button class="wi-btn" data-action="ack-mob">Acknowledge</button>
-  </footer>
-  {{/if}}
+  <details class="cas-detail">
+    <summary>Damage Details</summary>
+    <div class="grid-two fade">
+      <span class="label">Damage:</span><span class="value">{{damage}}</span>
+      <span class="label">Bodies Lost:</span><span class="value">{{killed}}</span>
+      <span class="label">Bodies Remaining:</span><span class="value">{{remaining}}</span>
+    </div>
+  </details>
 </section>

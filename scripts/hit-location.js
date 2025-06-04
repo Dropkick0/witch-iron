@@ -527,42 +527,31 @@ export class HitLocationSelector {
         // --- Mob handling: convert damage into body losses ---
         if (defenderActor?.system?.mob?.isMob?.value) {
             const currentBodies = defenderActor.system.mob.bodies.value || 0;
-            const losses = Math.floor(netDamage / 5);
-            const remaining = Math.max(0, currentBodies - losses);
+            const bodiesKilled = Math.floor(netDamage / 5);
+            const remainingBodies = Math.max(0, currentBodies - bodiesKilled);
 
-            if (losses > 0) {
-                await defenderActor.update({ "system.mob.bodies.value": remaining });
+            if (bodiesKilled > 0) {
+                await defenderActor.update({ "system.mob.bodies.value": remainingBodies });
             }
 
             const oldScale = getMobScale(currentBodies);
-            const scale = getMobScale(remaining);
-            const scaleIcon = scaleRank(scale) < scaleRank(oldScale) ? "\u2193" : "";
-
-            const progressPct = Math.min(Math.max((losses / (losses + remaining)) * 100, 0), 100);
-
-            const rawDamage = attackerDamage + netHits;
-            const baseSoak = defenderAbilityBonus + armorBonusMax;
-            const chatData = {
-                losses,
-                remaining,
-                scale,
-                scaleIcon,
-                damage: netDamage,
-                rawDamage,
-                soak: defenderSoak,
-                baseSoak,
-                netHits: Math.max(0, netHits),
-                netDamage,
-                hitZone: combatData.location,
-                hitSubZone: game.witch?.currentInjury?.specificLocation || "",
-                locRoll: game.witch?.currentInjury?.locationRoll || 0,
-                progressPct,
-                canAcknowledge: game.user.isGM
-            };
+            const newScale = getMobScale(remainingBodies);
+            const scaleChange = scaleRank(newScale) < scaleRank(oldScale);
+            const totalBodies = remainingBodies + bodiesKilled;
+            const lossPercent = totalBodies > 0 ? Math.round((bodiesKilled * 100) / totalBodies) : 0;
 
             const mobContent = await renderTemplate(
                 "systems/witch-iron/templates/chat/mob-injury-message.hbs",
-                chatData
+                {
+                    attacker: combatData.attacker,
+                    defender: combatData.defender,
+                    killed: bodiesKilled,
+                    remaining: remainingBodies,
+                    damage: netDamage,
+                    scaleChange: scaleChange,
+                    newScale: newScale,
+                    lossPercent: lossPercent
+                }
             );
 
             const mobMessage = await ChatMessage.create({
@@ -578,8 +567,10 @@ export class HitLocationSelector {
                 }
             });
 
+
+
             // Check if mob scale has been reduced and possibly trigger a rout check
-            await handleMobScaleRout(defenderActor, currentBodies, remaining);
+            await handleMobScaleRout(defenderActor, currentBodies, remainingBodies);
 
             return mobMessage;
         }
