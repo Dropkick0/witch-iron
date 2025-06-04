@@ -200,7 +200,14 @@ export async function spawnGhostTokens(token) {
 export async function syncGhostTiles(token, required, overrides = {}) {
   const tiles = canvas.scene.tiles.filter(t => t.getFlag("witch-iron", "ghostParent") === token.id);
   const formation = token.actor?.system?.mob?.formation?.value || "skirmish";
-  const offsets = computeOffsets(required, 0, formation);
+  const rot = overrides.rotation ?? token.rotation;
+  const rad = (rot * Math.PI) / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+  const offsets = computeOffsets(required, 0, formation).map(o => ({
+    x: o.x * cos - o.y * sin,
+    y: o.x * sin + o.y * cos
+  }));
 
   const tilesByIndex = new Map();
   for (const tile of tiles) {
