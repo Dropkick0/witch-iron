@@ -3682,6 +3682,24 @@ button.roll-skill:hover {
   padding: 2px 4px;
   border-radius: 3px;
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
+}
+.modifier-dialog .modifier-row label {
+  flex: 2;
+}
+.modifier-dialog .modifier-row .mod-val,
+.modifier-dialog .modifier-row .rating-spacer {
+  flex: 1;
+  text-align: center;
+}
+.modifier-dialog .modifier-row .rating-spacer {
+  visibility: hidden;
+}
+.modifier-dialog .modifier-row input[type="number"] {
+  flex: 1;
+  width: 50px;
+  margin-left: 0;
 }
 .modifier-dialog .modifier-row:hover {
   background: var(--color-highlight);

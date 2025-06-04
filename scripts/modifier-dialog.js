@@ -37,47 +37,59 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
             </div>`;
   }).join("");
 
-  // Add a +20 effect if any targeted actor is prone
+  // Detect if any targeted token is prone
   const targets = Array.from(game.user?.targets || []);
   const targetProne = targets.some(t => t.actor?.system?.conditions?.prone?.value > 0);
-  if (targetProne) {
-    effectRows += `<div class="form-group effect-row">
-                     <label><input type="checkbox" name="effect-target-prone" data-hits="0" data-target="20" checked/> Target Prone</label>
-                     <span>+20 TN</span>
-                   </div>`;
-  }
 
   const conditionRows = [];
   if (blind > 0) {
+    const blindPenalty = -10 * blind;
     conditionRows.push(`
         <div class="form-group modifier-row ${blind ? 'selected' : ''}" data-toggle="useBlind">
           <label>Blind</label>
+          <span class="mod-val">${blindPenalty}%</span>
           <input type="number" name="blindRating" value="${blind}" min="0" />
           <input type="hidden" name="useBlind" value="${blind ? 1 : 0}">
         </div>`);
   }
   if (deaf > 0) {
+    const deafPenalty = -10 * deaf;
     conditionRows.push(`
         <div class="form-group modifier-row ${deaf ? 'selected' : ''}" data-toggle="useDeaf">
           <label>Deaf</label>
+          <span class="mod-val">${deafPenalty}%</span>
           <input type="number" name="deafRating" value="${deaf}" min="0" />
           <input type="hidden" name="useDeaf" value="${deaf ? 1 : 0}">
         </div>`);
   }
   if (pain > 0) {
+    const painPenalty = -10 * pain;
     conditionRows.push(`
         <div class="form-group modifier-row selected" data-toggle="usePain">
           <label>Pain</label>
+          <span class="mod-val">${painPenalty}%</span>
           <input type="number" name="painRating" value="${pain}" min="0" />
           <input type="hidden" name="usePain" value="1">
         </div>`);
   }
   if (prone > 0) {
+    const pronePenalty = -20 * prone;
     conditionRows.push(`
         <div class="form-group modifier-row selected" data-toggle="useProne">
           <label>Prone</label>
+          <span class="mod-val">${pronePenalty}%</span>
           <input type="number" name="proneRating" value="${prone}" min="0" disabled />
           <input type="hidden" name="useProne" value="1">
+        </div>`);
+  }
+
+  if (targetProne) {
+    conditionRows.push(`
+        <div class="form-group modifier-row selected" data-toggle="useTargetProne">
+          <label>Target Prone</label>
+          <span class="mod-val">+20%</span>
+          <span class="rating-spacer"></span>
+          <input type="hidden" name="useTargetProne" value="1">
         </div>`);
   }
 
@@ -85,9 +97,11 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
     const val = Number(data?.value) || 0;
     if (val > 0) {
       const locLabel = loc.replace(/([A-Z])/g, ' $1');
+      const traumaPenalty = -20 * val;
       conditionRows.push(`
         <div class="form-group modifier-row selected" data-toggle="useTrauma-${loc}">
           <label>Trauma (${locLabel})</label>
+          <span class="mod-val">${traumaPenalty}%</span>
           <input type="number" name="traumaRating-${loc}" value="${val}" min="0" />
           <input type="hidden" name="useTrauma-${loc}" value="1">
         </div>`);
@@ -136,6 +150,9 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
             const useProne = form.querySelector('[name="useProne"]')?.value;
             const proneRating = form.querySelector('[name="proneRating"]')?.value;
             if (parseInt(useProne)) situationalMod -= 20 * (parseInt(proneRating) || 1);
+
+            const useTargetProne = form.querySelector('[name="useTargetProne"]')?.value;
+            if (parseInt(useTargetProne)) situationalMod += 20;
 
             for (const [loc, data] of Object.entries(trauma)) {
               const useTrauma = form.querySelector(`[name="useTrauma-${loc}"]`)?.value;
