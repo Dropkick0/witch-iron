@@ -64,6 +64,7 @@ export async function syncGhostTiles(token, required) {
   const doc = token.document ?? token;
   const width = doc.width * grid;
   const height = doc.height * grid;
+  const imgPath = doc.texture?.src || doc.img || token.actor?.prototypeToken?.texture?.src || token.actor?.prototypeToken?.img || "icons/svg/mystery-man.svg";
   const updateData = [];
   const createData = [];
   const idsToDelete = [];
@@ -77,7 +78,7 @@ export async function syncGhostTiles(token, required) {
       rotation: token.rotation,
       width,
       height,
-      img: doc.texture?.src || doc.img,
+      img: imgPath,
       overhead: true,
       occlusion: { mode: 0 },
       flags: { "witch-iron": { ghostParent: token.id, ghostIndex: i } }
