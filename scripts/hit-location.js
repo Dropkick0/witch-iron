@@ -75,7 +75,8 @@ async function performRoutRoll(actor, label, targetValue) {
         additionalHits: 0,
         isCombatCheck: false,
         actorId: actor.id,
-        actorName: actor.name
+        actorName: actor.name,
+        luckSpent: false
     });
 
     await ChatMessage.create({

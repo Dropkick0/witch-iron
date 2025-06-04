@@ -824,6 +824,7 @@ export function initQuarrel() {
     
     // Register hooks to handle quarrels
     Hooks.on("createChatMessage", onChatMessageCreated);
+    Hooks.on("updateChatMessage", onChatMessageUpdated);
     
     // Add context menu option to chat messages
     Hooks.on("renderChatMessage", (message, html) => {
@@ -873,6 +874,11 @@ export function initQuarrel() {
             
             // Create injury
             html.find('.create-injury').click(onCreateInjuryClick);
+
+            // Roll modification buttons
+            html.find('.reverse-btn').click(ev => handleReverseClick(ev));
+            html.find('.reroll-btn').click(ev => handleRerollClick(ev));
+            html.find('.luck-btn').click(ev => handleLuckClick(ev));
         }
         
         // Legacy flip button for old template
@@ -1303,6 +1309,16 @@ async function automaticQuarrel(checkData) {
     console.log("Witch Iron | No controlled tokens or character found, cannot initiate automatic quarrel");
 }
 
+function onChatMessageUpdated(message) {
+    if (!message.content || !message.content.includes("witch-iron-roll")) return;
+    const hitsMatch = message.content.match(/data-hits="(-?\d+)"/);
+    const rollMatch = message.content.match(/data-roll="(\d+)"/);
+    if (!hitsMatch) return;
+    const hits = parseInt(hitsMatch[1]);
+    const roll = rollMatch ? parseInt(rollMatch[1]) : null;
+    updateQuarrelCheckData(message.id, hits, roll);
+}
+
 /**
  * Process token targets specifically for initiating quarrels
  * @param {Token} token - The token to process targets for
@@ -1602,6 +1618,9 @@ function addQuarrelContextOption(message, html) {
     
     // Handle injury creation buttons
     html.find('.create-injury').click(onCreateInjuryClick);
+    html.find('.reverse-btn').click(handleReverseClick);
+    html.find('.reroll-btn').click(handleRerollClick);
+    html.find('.luck-btn').click(handleLuckClick);
 }
 
 /**
@@ -2059,5 +2078,184 @@ function getActorImage(actor) {
     return actor.img || "icons/svg/mystery-man.svg";
 }
 
+// -------------------------------------------------------------
+// Roll Modification Helpers
+// -------------------------------------------------------------
+
+function computeCheckResult(rollTotal, targetValue, additionalHits = 0, ignoreDoubles = false) {
+    const isSuccess = rollTotal <= targetValue;
+    const isDouble = rollTotal % 11 === 0 && rollTotal !== 100;
+    const isCriticalSuccess = rollTotal <= 5 || (isSuccess && isDouble && !ignoreDoubles);
+    const isFumble = rollTotal >= 96 || (!isSuccess && isDouble && !ignoreDoubles);
+    const baseHits = Math.floor(targetValue / 10) - Math.floor(rollTotal / 10);
+    let hits = baseHits + additionalHits;
+    if (isCriticalSuccess) hits = Math.max(hits + 1, 1);
+    if (isFumble) hits = Math.min(hits - 1, -1);
+    return { isSuccess, isCriticalSuccess, isFumble, hits };
+}
+
+function updateQuarrelCheckData(messageId, hits, roll) {
+    if (!messageId) return;
+
+    if (quarrelTracker.selectedCheck && quarrelTracker.selectedCheck.messageId === messageId) {
+        quarrelTracker.selectedCheck.hits = hits;
+        quarrelTracker.selectedCheck.roll = roll;
+    }
+
+    quarrelTracker.pendingQuarrels.forEach((data, key) => {
+        if (!data) return;
+        if (data.messageId === messageId) {
+            data.hits = hits;
+            data.roll = roll;
+        } else if (data.initiator || data.responder) {
+            if (data.initiator && (data.initiator.checkId === messageId || data.initiator.messageId === messageId)) {
+                data.initiator.hits = hits;
+            }
+            if (data.responder && (data.responder.checkId === messageId || data.responder.messageId === messageId)) {
+                data.responder.hits = hits;
+            }
+        }
+    });
+
+    quarrelTracker.pendingTokenQuarrels.forEach((data, key) => {
+        if (data && data.messageId === messageId) {
+            data.hits = hits;
+            data.roll = roll;
+        }
+    });
+}
+
+async function updateRollMessage(message, card, newRoll, { luckSpent = false } = {}) {
+    const targetValue = Number(card.dataset.target) || 0;
+    const additionalHits = Number(card.dataset.additionalHits) || 0;
+    const label = card.dataset.label || "";
+    const specialization = card.dataset.specialization || null;
+    const situationalMod = Number(card.dataset.situationalMod) || 0;
+    const isCombatCheck = card.dataset.combatCheck === "true";
+    const actorId = card.dataset.actorId;
+    const actorName = card.dataset.actor;
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const result = computeCheckResult(newRoll, targetValue, additionalHits, luckSpent);
+
+    const templateData = {
+        actor: actor,
+        roll: { total: newRoll, formula: "1d100" },
+        targetValue,
+        label,
+        isSuccess: result.isSuccess,
+        isCriticalSuccess: result.isCriticalSuccess,
+        isFumble: result.isFumble,
+        hits: result.hits,
+        specialization,
+        situationalMod,
+        additionalHits,
+        isCombatCheck,
+        actorId,
+        actorName,
+        luckSpent
+    };
+
+    const newContent = await renderTemplate("systems/witch-iron/templates/chat/roll-card.hbs", templateData);
+    await message.update({ content: newContent });
+
+    updateQuarrelCheckData(message.id, result.hits, newRoll);
+
+    if (game.socket) {
+        game.socket.emit("system.witch-iron.rollModUpdate", {
+            messageId: message.id,
+            hits: result.hits,
+            roll: newRoll,
+            userId: game.user.id
+        });
+    }
+}
+
+async function handleReverseClick(event) {
+    event.preventDefault();
+    const messageElement = event.currentTarget.closest('.message');
+    const messageId = messageElement?.dataset?.messageId;
+    if (!messageId) return;
+    const message = game.messages.get(messageId);
+    const card = messageElement.querySelector('.witch-iron-roll');
+    if (!message || !card) return;
+
+    const current = Number(card.dataset.roll);
+    let reversed = current;
+    if (current !== 100) {
+        const tens = Math.floor(current / 10);
+        const units = current % 10;
+        reversed = units * 10 + tens;
+        if (reversed === 0) reversed = 100;
+    }
+
+    await updateRollMessage(message, card, reversed, { luckSpent: card.dataset.luckSpent === "true" });
+}
+
+async function handleRerollClick(event) {
+    event.preventDefault();
+    const messageElement = event.currentTarget.closest('.message');
+    const messageId = messageElement?.dataset?.messageId;
+    if (!messageId) return;
+    const message = game.messages.get(messageId);
+    const card = messageElement.querySelector('.witch-iron-roll');
+    if (!message || !card) return;
+
+    const roll = await (new Roll('1d100')).evaluate({ async: true });
+    await updateRollMessage(message, card, roll.total);
+}
+
+async function handleLuckClick(event) {
+    event.preventDefault();
+    const messageElement = event.currentTarget.closest('.message');
+    const messageId = messageElement?.dataset?.messageId;
+    if (!messageId) return;
+    const message = game.messages.get(messageId);
+    const card = messageElement.querySelector('.witch-iron-roll');
+    if (!message || !card) return;
+
+    const actorId = card.dataset.actorId;
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+    const available = Number(actor.system?.attributes?.luck?.value || 0);
+
+    const dialogContent = `<p>Spend Luck to modify roll (available: ${available})</p><input type="number" name="luck" value="0" />`;
+    const delta = await new Promise(resolve => {
+        new Dialog({
+            title: 'Spend Luck',
+            content: dialogContent,
+            buttons: {
+                ok: {
+                    label: 'Apply',
+                    callback: html => {
+                        const val = parseInt(html.find('input[name="luck"]').val()) || 0;
+                        resolve(val);
+                    }
+                },
+                cancel: { label: 'Cancel', callback: () => resolve(null) }
+            },
+            default: 'ok'
+        }).render(true);
+    });
+
+    if (delta === null || delta === 0) return;
+    const spend = Math.min(Math.abs(delta), available);
+    const finalDelta = delta > 0 ? spend : -spend;
+
+    await actor.update({ 'system.attributes.luck.value': available - spend });
+    const current = Number(card.dataset.roll);
+    await updateRollMessage(message, card, current + finalDelta, { luckSpent: true });
+}
+
+Hooks.once("ready", () => {
+    if (game.socket) {
+        game.socket.on("system.witch-iron.rollModUpdate", data => {
+            if (data.userId === game.user.id) return;
+            updateQuarrelCheckData(data.messageId, data.hits, data.roll);
+        });
+    }
+});
+
 // Export the QuarrelTracker for potential use in other modules
-export { quarrelTracker, manualQuarrel }; 
+export { quarrelTracker, manualQuarrel };

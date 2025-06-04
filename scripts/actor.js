@@ -583,7 +583,8 @@ export class WitchIronActor extends Actor {
         isFumble: isFumble,
         hits: hits,
         // New format: ActorName - Ability-Score
-        label: `${formattedAttrName}`
+        label: `${formattedAttrName}`,
+        luckSpent: false
       }),
       sound: CONFIG.sounds.dice
     };
@@ -865,7 +866,8 @@ export class WitchIronActor extends Actor {
       additionalHits: additionalHits,
       isCombatCheck: isCombatCheck,
       actorId: this.id,
-      actorName: this.name
+      actorName: this.name,
+      luckSpent: false
     };
     
 //////     console.log("Template data:", templateData);
