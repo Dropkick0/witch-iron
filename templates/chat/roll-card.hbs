@@ -14,6 +14,11 @@
       <div class="dice-roll">
         <div class="dice-result">
           <h4 class="dice-total">{{roll.total}}</h4>
+          <div class="roll-actions">
+            <button type="button" class="reverse-btn">Reverse</button>
+            <button type="button" class="reroll-btn">Reroll</button>
+            <button type="button" class="luck-btn">Luck</button>
+          </div>
         </div>
       </div>
       
@@ -45,10 +50,5 @@
       <span class="value">{{roll.formula}}</span>
     </div>
     {{/if}}
-    <div class="roll-actions">
-      <button type="button" class="reverse-btn">Reverse</button>
-      <button type="button" class="reroll-btn">Reroll</button>
-      <button type="button" class="luck-btn">Luck</button>
-    </div>
   </footer>
 </div>

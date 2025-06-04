@@ -1800,6 +1800,23 @@ button.roll-skill:hover {
   margin: 0;
 }
 
+.witch-iron.chat-card .dice-result {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.witch-iron.chat-card .dice-result .roll-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 5px;
+}
+
+.witch-iron.chat-card .roll-actions button {
+  font-size: 0.5em;
+  padding: 2px 4px;
+}
+
 .witch-iron.chat-card .test-details {
   display: grid;
   gap: 5px;
