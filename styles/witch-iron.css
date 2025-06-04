@@ -1804,7 +1804,7 @@ button.roll-skill:hover {
 .witch-iron.chat-card .dice-result {
   display: flex;
   align-items: center;
-  min-width: 60px;
+  min-width: 45px;
   width: 100%;
 }
 
