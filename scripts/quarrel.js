@@ -873,6 +873,11 @@ export function initQuarrel() {
             
             // Create injury
             html.find('.create-injury').click(onCreateInjuryClick);
+
+            // Roll modification buttons
+            html.find('.reverse-btn').click(ev => handleReverseClick(ev));
+            html.find('.reroll-btn').click(ev => handleRerollClick(ev));
+            html.find('.luck-btn').click(ev => handleLuckClick(ev));
         }
         
         // Legacy flip button for old template
@@ -1602,6 +1607,9 @@ function addQuarrelContextOption(message, html) {
     
     // Handle injury creation buttons
     html.find('.create-injury').click(onCreateInjuryClick);
+    html.find('.reverse-btn').click(handleReverseClick);
+    html.find('.reroll-btn').click(handleRerollClick);
+    html.find('.luck-btn').click(handleLuckClick);
 }
 
 /**
@@ -2057,6 +2065,133 @@ function getActorImage(actor) {
     
     // Fall back to actor's image
     return actor.img || "icons/svg/mystery-man.svg";
+}
+
+// -------------------------------------------------------------
+// Roll Modification Helpers
+// -------------------------------------------------------------
+
+function computeCheckResult(rollTotal, targetValue, additionalHits = 0, ignoreDoubles = false) {
+    const isSuccess = rollTotal <= targetValue;
+    const isDouble = rollTotal % 11 === 0 && rollTotal !== 100;
+    const isCriticalSuccess = rollTotal <= 5 || (isSuccess && isDouble && !ignoreDoubles);
+    const isFumble = rollTotal >= 96 || (!isSuccess && isDouble && !ignoreDoubles);
+    const baseHits = Math.floor(targetValue / 10) - Math.floor(rollTotal / 10);
+    let hits = baseHits + additionalHits;
+    if (isCriticalSuccess) hits = Math.max(hits + 1, 1);
+    if (isFumble) hits = Math.min(hits - 1, -1);
+    return { isSuccess, isCriticalSuccess, isFumble, hits };
+}
+
+async function updateRollMessage(message, card, newRoll, { luckSpent = false } = {}) {
+    const targetValue = Number(card.dataset.target) || 0;
+    const additionalHits = Number(card.dataset.additionalHits) || 0;
+    const label = card.dataset.label || "";
+    const specialization = card.dataset.specialization || null;
+    const situationalMod = Number(card.dataset.situationalMod) || 0;
+    const isCombatCheck = card.dataset.combatCheck === "true";
+    const actorId = card.dataset.actorId;
+    const actorName = card.dataset.actor;
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const result = computeCheckResult(newRoll, targetValue, additionalHits, luckSpent);
+
+    const templateData = {
+        actor: actor,
+        roll: { total: newRoll, formula: "1d100" },
+        targetValue,
+        label,
+        isSuccess: result.isSuccess,
+        isCriticalSuccess: result.isCriticalSuccess,
+        isFumble: result.isFumble,
+        hits: result.hits,
+        specialization,
+        situationalMod,
+        additionalHits,
+        isCombatCheck,
+        actorId,
+        actorName
+    };
+
+    const newContent = await renderTemplate("systems/witch-iron/templates/chat/roll-card.hbs", templateData);
+    await message.update({ content: newContent });
+}
+
+async function handleReverseClick(event) {
+    event.preventDefault();
+    const messageElement = event.currentTarget.closest('.message');
+    const messageId = messageElement?.dataset?.messageId;
+    if (!messageId) return;
+    const message = game.messages.get(messageId);
+    const card = messageElement.querySelector('.witch-iron-roll');
+    if (!message || !card) return;
+
+    const current = Number(card.dataset.roll);
+    let reversed = current;
+    if (current !== 100) {
+        const tens = Math.floor(current / 10);
+        const units = current % 10;
+        reversed = units * 10 + tens;
+        if (reversed === 0) reversed = 100;
+    }
+
+    await updateRollMessage(message, card, reversed, { luckSpent: card.dataset.luckSpent === "true" });
+}
+
+async function handleRerollClick(event) {
+    event.preventDefault();
+    const messageElement = event.currentTarget.closest('.message');
+    const messageId = messageElement?.dataset?.messageId;
+    if (!messageId) return;
+    const message = game.messages.get(messageId);
+    const card = messageElement.querySelector('.witch-iron-roll');
+    if (!message || !card) return;
+
+    const roll = await (new Roll('1d100')).evaluate({ async: true });
+    await updateRollMessage(message, card, roll.total);
+}
+
+async function handleLuckClick(event) {
+    event.preventDefault();
+    const messageElement = event.currentTarget.closest('.message');
+    const messageId = messageElement?.dataset?.messageId;
+    if (!messageId) return;
+    const message = game.messages.get(messageId);
+    const card = messageElement.querySelector('.witch-iron-roll');
+    if (!message || !card) return;
+
+    const actorId = card.dataset.actorId;
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+    const available = Number(actor.system?.attributes?.luck?.value || 0);
+
+    const dialogContent = `<p>Spend Luck to modify roll (available: ${available})</p><input type="number" name="luck" value="0" />`;
+    const delta = await new Promise(resolve => {
+        new Dialog({
+            title: 'Spend Luck',
+            content: dialogContent,
+            buttons: {
+                ok: {
+                    label: 'Apply',
+                    callback: html => {
+                        const val = parseInt(html.find('input[name="luck"]').val()) || 0;
+                        resolve(val);
+                    }
+                },
+                cancel: { label: 'Cancel', callback: () => resolve(null) }
+            },
+            default: 'ok'
+        }).render(true);
+    });
+
+    if (delta === null || delta === 0) return;
+    const spend = Math.min(Math.abs(delta), available);
+    const finalDelta = delta > 0 ? spend : -spend;
+
+    await actor.update({ 'system.attributes.luck.value': available - spend });
+    const current = Number(card.dataset.roll);
+    await updateRollMessage(message, card, current + finalDelta, { luckSpent: true });
 }
 
 // Export the QuarrelTracker for potential use in other modules

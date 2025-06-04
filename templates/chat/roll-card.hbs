@@ -1,4 +1,4 @@
-<div class="witch-iron chat-card witch-iron-roll" data-hits="{{hits}}" data-actor="{{actor.name}}" {{#if isCombatCheck}}data-combat-check="true"{{/if}} data-actor-id="{{actorId}}">
+<div class="witch-iron chat-card witch-iron-roll" data-hits="{{hits}}" data-actor="{{actor.name}}" {{#if isCombatCheck}}data-combat-check="true"{{/if}} data-actor-id="{{actorId}}" data-roll="{{roll.total}}" data-target="{{targetValue}}" data-additional-hits="{{additionalHits}}" data-label="{{label}}" data-specialization="{{specialization}}" data-situational-mod="{{situationalMod}}">
   <header class="card-header">
     <img src="{{actor.img}}" title="{{actor.name}}" width="36" height="36"/>
     <h3>
@@ -45,5 +45,10 @@
       <span class="value">{{roll.formula}}</span>
     </div>
     {{/if}}
+    <div class="roll-actions">
+      <button type="button" class="reverse-btn">Reverse</button>
+      <button type="button" class="reroll-btn">Reroll</button>
+      <button type="button" class="luck-btn">Luck</button>
+    </div>
   </footer>
-</div> 
+</div>
