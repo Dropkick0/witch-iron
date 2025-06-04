@@ -195,6 +195,9 @@
         },
         "bodies": {
           "value": 0
+        },
+        "formation": {
+          "value": "skirmish"
         }
       },
       "traits": {

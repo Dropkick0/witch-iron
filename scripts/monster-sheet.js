@@ -5,6 +5,7 @@
 import { manualQuarrel } from "./quarrel.js";
 import { createItem } from "./utils.js";
 import { openModifierDialog } from "./modifier-dialog.js";
+import { FORMATION_SHAPES } from "./ghost-tokens.js";
 
 /**
  * Monster sheet class for the Witch Iron system
@@ -168,6 +169,13 @@ export class WitchIronMonsterSheet extends ActorSheet {
     // Prepare sizes for select
     const sizesConfig = witchIronConfig.sizes || {};
     context.sizes = Object.entries(sizesConfig).map(([key, label]) => ({ key, label }));
+
+    // Prepare formation options for select
+    context.formations = FORMATION_SHAPES.reduce((obj, s) => {
+      const label = s.replace(/([A-Z])/g, " $1").replace(/^./, c => c.toUpperCase());
+      obj[s] = label;
+      return obj;
+    }, {});
 
     // Add actor's items to the context
     context.items = actorData.items;
