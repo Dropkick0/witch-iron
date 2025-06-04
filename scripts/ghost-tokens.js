@@ -50,7 +50,7 @@ export async function spawnGhostTokens(token) {
   await syncGhostTiles(token, bodies - 1);
 }
 
-export async function syncGhostTiles(token, required) {
+export async function syncGhostTiles(token, required, overrides = {}) {
   const tiles = canvas.scene.tiles.filter(t => t.getFlag("witch-iron", "ghostParent") === token.id);
   const offsets = computeOffsets(required, 0);
 
@@ -64,6 +64,9 @@ export async function syncGhostTiles(token, required) {
   const doc = token.document ?? token;
   const width = doc.width * grid;
   const height = doc.height * grid;
+  const xBase = overrides.x ?? token.x;
+  const yBase = overrides.y ?? token.y;
+  const rotation = overrides.rotation ?? token.rotation;
   const imgPath = doc.texture?.src || doc.img || token.actor?.prototypeToken?.texture?.src || token.actor?.prototypeToken?.img || "icons/svg/mystery-man.svg";
   const updateData = [];
   const createData = [];
@@ -73,9 +76,9 @@ export async function syncGhostTiles(token, required) {
     const offset = offsets[i];
     const tile = tilesByIndex.get(i);
     const base = {
-      x: token.x + offset.x,
-      y: token.y + offset.y,
-      rotation: token.rotation,
+      x: xBase + offset.x,
+      y: yBase + offset.y,
+      rotation,
       width,
       height,
       texture: { src: imgPath },
@@ -99,10 +102,15 @@ export async function syncGhostTiles(token, required) {
   if (idsToDelete.length) await canvas.scene.deleteEmbeddedDocuments("Tile", idsToDelete);
 }
 
-export function updateGhostTokenPositions(token) {
+export function updateGhostTokenPositions(token, changes = {}) {
   if (!token.getFlag("witch-iron", "isMobLeader")) return;
   const tiles = canvas.scene.tiles.filter(t => t.getFlag("witch-iron", "ghostParent") === token.id);
-  syncGhostTiles(token, tiles.length);
+  const overrides = {
+    x: "x" in changes ? changes.x : token.x,
+    y: "y" in changes ? changes.y : token.y,
+    rotation: "rotation" in changes ? changes.rotation : token.rotation
+  };
+  syncGhostTiles(token, tiles.length, overrides);
 }
 
 export async function deleteGhostTokens(token) {
@@ -115,7 +123,7 @@ Hooks.on("createToken", token => spawnGhostTokens(token));
 
 Hooks.on("updateToken", (token, changes) => {
   if ("x" in changes || "y" in changes || "rotation" in changes) {
-    updateGhostTokenPositions(token);
+    updateGhostTokenPositions(token, changes);
   }
 });
 
