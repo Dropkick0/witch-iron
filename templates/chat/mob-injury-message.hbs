@@ -1,29 +1,39 @@
-<div class="witch-iron chat-card mob-casualty-card">
-  <header class="card-header">
-    <i class="fas fa-skull-crossbones"></i>
-    <h3>Mob Casualties</h3>
+<section class="witch-iron chat-card wi-card mob-card">
+  <header class="wi-card__title">
+    <i class="fas fa-skull"></i>
+    Mob Casualties
   </header>
-  <div class="card-content">
-    <div class="casualty-summary">
-      <span class="losses">Losses: {{killed}}</span>
-      <span class="remaining">Remaining: {{remaining}}</span>
+
+  {{!-- ── Casualty Summary ─────────────────────────────── --}}
+  <details class="wi-block" {{#unless collapsed}}open{{/unless}}>
+    <summary class="wi-block__head">Casualty Summary</summary>
+    <div class="wi-grid2">
+      <span>Losses:</span><span>{{losses}}</span>
+      <span>Remaining:</span><span>{{remaining}}</span>
+      <span>Scale:</span><span>{{scale}} {{scaleIcon}}</span>
     </div>
-    {{#if scaleChange}}
-    <div class="scale-change">Scale reduced to {{newScale}}</div>
-    {{/if}}
-    <div class="big-numbers">{{killed}} / {{remaining}}</div>
-    <div class="collapsible-section">
-      <div class="section-header casualty-toggle">
-        <i class="fas fa-chevron-down"></i>
-        <h4>Damage Details</h4>
-      </div>
-      <div class="section-content casualty-details hidden">
-        <div class="detail-grid">
-          <div class="detail-item"><span class="label">Damage:</span> <span class="value">{{damage}}</span></div>
-          <div class="detail-item"><span class="label">Bodies Lost:</span> <span class="value">{{killed}}</span></div>
-          <div class="detail-item"><span class="label">Bodies Remaining:</span> <span class="value">{{remaining}}</span></div>
-        </div>
-      </div>
+    <div class="wi-progress">
+      <div style="width:{{progressPct}}%"></div>
     </div>
-  </div>
-</div>
+  </details>
+
+  {{!-- ── Combat Details (mirrors Injury card) ─────────── --}}
+  <details class="wi-block" open>
+    <summary class="wi-block__head">Combat Details</summary>
+    <div class="wi-grid2">
+      <span>Damage:</span><span>{{damage}} ({{rawDamage}})</span>
+      <span>Soak:</span><span>{{soak}} ({{baseSoak}})</span>
+      <span>Net Hits:</span><span>{{netHits}}</span>
+      <span>Net Dmg:</span><span>{{netDamage}}</span>
+      <span>Hit the…</span><span>{{hitZone}}</span>
+      <span>In the…</span><span>{{hitSubZone}}</span>
+      <span>Location Roll:</span><span>{{locRoll}}</span>
+    </div>
+  </details>
+
+  {{#if canAcknowledge}}
+  <footer class="wi-card__footer">
+    <button class="wi-btn" data-action="ack-mob">Acknowledge</button>
+  </footer>
+  {{/if}}
+</section>

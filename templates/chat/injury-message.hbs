@@ -1,8 +1,8 @@
-<div class="witch-iron chat-card injury-card">
-    <div class="card-header">
+<div class="witch-iron chat-card wi-card injury-card">
+    <header class="wi-card__title">
         <i class="fas fa-tint"></i>
-        <h3>Combat Results</h3>
-    </div>
+        Combat Results
+    </header>
     <div class="card-content">
         <!-- Top Row: Attacker -> Arrow -> Defender -->
         <div class="combatants-row compact-row">
@@ -26,15 +26,15 @@
                 <h4>Combat Details</h4>
             </div>
             <div class="section-content combat-details hidden">
-                <div class="detail-grid">
-                    <div class="detail-item"><span class="label">Damage:</span> <span class="value">{{damageText}}</span></div>
-                    <div class="detail-item"><span class="label">Soak:</span> <span class="value">{{soakText}}</span></div>
-                    <div class="detail-item"><span class="label">Net Hits:</span> <span class="value">{{netHits}}</span></div>
-                    <div class="detail-item"><span class="label">Net Dmg:</span> <span class="value">{{severity}}</span></div>
-                    <div class="detail-item wide-item"><span class="label">Hit the...</span> <span class="value">{{location}}</span></div>
+                <div class="wi-grid2">
+                    <span class="label">Damage:</span><span class="value">{{damageText}}</span>
+                    <span class="label">Soak:</span><span class="value">{{soakText}}</span>
+                    <span class="label">Net Hits:</span><span class="value">{{netHits}}</span>
+                    <span class="label">Net Dmg:</span><span class="value">{{severity}}</span>
+                    <div class="wide"><span class="label">Hit the...</span><span class="value">{{location}}</span></div>
                     {{#if specificLocation}}
-                    <div class="detail-item wide-item"><span class="label">In the...</span> <span class="value">{{specificLocation}}</span></div>
-                    <div class="detail-item wide-item"><span class="label">Location Roll:</span> <span class="value">{{locationRoll}}</span></div>
+                    <div class="wide"><span class="label">In the...</span><span class="value">{{specificLocation}}</span></div>
+                    <div class="wide"><span class="label">Location Roll:</span><span class="value">{{locationRoll}}</span></div>
                     {{/if}}
                 </div>
             </div>

@@ -1,0 +1,94 @@
+/* Common card utilities shared across Witch Iron chat cards */
+
+/* ═══ Shared color tokens ═════════════════════════════ */
+:root {
+  --wi-maroon: #702014;
+  --wi-bg-head: var(--wi-maroon);
+  --wi-bg-sub: #f0e9e7;
+  --wi-border: #d1c8c6;
+  --wi-border-light: #e7e1df;
+  --wi-text-muted: #555;
+}
+
+/* ═══ Card Wrapper ══════════════════════════════════════ */
+.wi-card {
+  border: 1px solid var(--wi-border);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 0.85rem;
+  overflow: hidden;
+  line-height: 1.25;
+}
+
+.wi-card__title {
+  background: var(--wi-bg-head);
+  color: #fff;
+  padding: 4px 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: .4em;
+}
+
+/* ═══ Expandable Blocks ═════════════════════════════════ */
+.wi-block summary {
+  background: var(--wi-bg-sub);
+  padding: 3px 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 1px solid var(--wi-border-light);
+}
+
+details.wi-block { border-top: 1px solid var(--wi-border-light); }
+details[open].wi-block { border-bottom: 1px solid var(--wi-border-light); }
+
+/* ═══ Two-column grid ═══════════════════════════════════ */
+.wi-grid2 {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  padding: 6px 8px 8px;
+}
+.wi-grid2 span:nth-child(odd) { color: var(--wi-text-muted); }
+.wi-grid2 span:nth-child(even) { text-align: right; font-weight: 600; }
+
+/* ═══ Progress bar ══════════════════════════════════════ */
+.wi-progress {
+  height: 5px;
+  margin: 0 8px 8px;
+  background: #ddd;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.wi-progress > div { background: var(--wi-maroon); }
+
+/* ═══ Optional footer & buttons ═════════════════════════ */
+.wi-card__footer {
+  padding: 6px 8px;
+  border-top: 1px solid var(--wi-border-light);
+}
+.wi-btn {
+  background: #1d8cf8;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  font-size: .8rem;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.badge,
+.combat-badge {
+  display: inline-block;
+  font-size: 0.7em;
+  background-color: var(--wi-maroon);
+  color: var(--color-surface-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.fade { opacity: 0.7; }
