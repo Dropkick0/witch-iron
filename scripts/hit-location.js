@@ -59,8 +59,8 @@ async function performRoutRoll(actor, label, targetValue) {
     const isCriticalSuccess = rollTotal <= 5 || (isSuccess && rollTotal % 11 === 0);
     const isFumble = rollTotal >= 96 || (!isSuccess && rollTotal % 11 === 0);
     let hits = Math.floor(targetValue/10) - Math.floor(rollTotal/10);
-    if (isCriticalSuccess) hits = Math.max(hits + 1, 1);
-    if (isFumble) hits = Math.min(hits - 1, -1);
+    if (isCriticalSuccess) hits = Math.max(hits + 1, 6);
+    if (isFumble) hits = Math.min(hits - 1, -6);
 
     const content = await renderTemplate("systems/witch-iron/templates/chat/roll-card.hbs", {
         actor,
