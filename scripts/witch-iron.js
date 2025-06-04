@@ -15,6 +15,7 @@ import { initQuarrel, manualQuarrel, quarrelTracker } from "./quarrel.js";
 import { HitLocationSelector } from "./hit-location.js";
 import { InjuryTables } from "./injury-tables.js";
 import { registerCommonHandlebarsHelpers } from "./handlebars-helpers.js";
+import { FORMATION_SHAPES } from "./ghost-tokens.js";
 import "./ghost-tokens.js";
 
 // Define the system configuration object
@@ -95,6 +96,27 @@ Hooks.once("init", function() {
       if (game.user.isGM) {
         const status = value ? "enabled" : "disabled";
         ui.notifications.info(`Witch Iron: Extended roll visibility ${status}`);
+      }
+    }
+  });
+
+  // Setting for mob formation shape
+  const formationChoices = FORMATION_SHAPES.reduce((obj, s) => {
+    const label = s.replace(/([A-Z])/g, " $1").replace(/^./, c => c.toUpperCase());
+    obj[s] = label;
+    return obj;
+  }, {});
+  game.settings.register("witch-iron", "mobFormationShape", {
+    name: "Mob Formation Shape",
+    hint: "Shape used for mob ghost tokens.",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: formationChoices,
+    default: FORMATION_SHAPES[0],
+    onChange: value => {
+      if (game.user.isGM) {
+        ui.notifications.info(`Witch Iron: Mob formation set to ${value}`);
       }
     }
   });
