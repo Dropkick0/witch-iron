@@ -3677,6 +3677,21 @@ button.roll-skill:hover {
   width: 60px;
   margin-left: 4px;
 }
+.modifier-dialog .modifier-row label {
+  flex: 2;
+}
+.modifier-dialog .modifier-row span.modifier-value {
+  flex: 1;
+  text-align: center;
+}
+.modifier-dialog .modifier-row input[type="number"] {
+  flex: 1;
+  width: auto;
+}
+.modifier-dialog .modifier-row .rating-spacer {
+  flex: 1;
+  visibility: hidden;
+}
 .modifier-dialog .modifier-row {
   cursor: pointer;
   padding: 2px 4px;
@@ -3684,7 +3699,7 @@ button.roll-skill:hover {
   transition: background 0.2s;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 .modifier-dialog .modifier-row:hover {
   background: var(--color-highlight);
