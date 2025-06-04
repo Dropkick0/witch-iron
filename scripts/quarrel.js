@@ -964,6 +964,23 @@ export function initQuarrel() {
             });
         }
     });
+
+    Hooks.once("ready", () => {
+        game.socket.on("system.witch-iron.quarrelUpdate", async (data) => {
+            if (!data.completed || data.userId === game.user.id) return;
+            const message = game.messages.get(data.messageId);
+            if (!message) return;
+            const html = await renderTemplate("systems/witch-iron/templates/chat/quarrel-result.hbs", {
+                result: data.quarrelData,
+                i18n: {
+                    victory: game.i18n.localize("WITCHIRON.Victory"),
+                    defeat: game.i18n.localize("WITCHIRON.Defeat")
+                }
+            });
+            const el = document.querySelector(`.message[data-message-id="${data.messageId}"] .message-content`);
+            if (el) el.innerHTML = html;
+        });
+    });
 }
 
 /**
@@ -2111,11 +2128,14 @@ async function updateRollMessage(message, card, newRoll, { luckSpent = false } =
         additionalHits,
         isCombatCheck,
         actorId,
-        actorName
+        actorName,
+        luckSpent
     };
 
     const newContent = await renderTemplate("systems/witch-iron/templates/chat/roll-card.hbs", templateData);
     await message.update({ content: newContent });
+
+    await handleRollModification(message.id, result.hits);
 }
 
 async function handleReverseClick(event) {
@@ -2192,6 +2212,90 @@ async function handleLuckClick(event) {
     await actor.update({ 'system.attributes.luck.value': available - spend });
     const current = Number(card.dataset.roll);
     await updateRollMessage(message, card, current + finalDelta, { luckSpent: true });
+}
+
+async function handleRollModification(messageId, newHits) {
+    // Update pending quarrels and selected checks
+    if (quarrelTracker.selectedCheck && quarrelTracker.selectedCheck.messageId === messageId) {
+        quarrelTracker.selectedCheck.hits = newHits;
+    }
+    for (const [key, value] of quarrelTracker.pendingQuarrels.entries()) {
+        if (value.messageId === messageId) {
+            value.hits = newHits;
+        }
+        if (value.initiator?.checkId === messageId) {
+            value.initiator.hits = newHits;
+        }
+        if (value.responder?.checkId === messageId) {
+            value.responder.hits = newHits;
+        }
+    }
+    for (const [key, value] of quarrelTracker.pendingTokenQuarrels.entries()) {
+        if (value.messageId === messageId) {
+            value.hits = newHits;
+        }
+        if (value.initiator?.checkId === messageId) {
+            value.initiator.hits = newHits;
+        }
+        if (value.responder?.checkId === messageId) {
+            value.responder.hits = newHits;
+        }
+    }
+
+    // Update any resolved quarrel messages
+    for (const msg of game.messages.contents) {
+        const data = msg.getFlag("witch-iron", "quarrelData");
+        if (!data) continue;
+
+        let changed = false;
+        if (data.initiator?.checkId === messageId) {
+            data.initiatorHits = newHits;
+            if (data.initiator) data.initiator.hits = newHits;
+            changed = true;
+        }
+        if (data.responder?.checkId === messageId) {
+            data.responderHits = newHits;
+            if (data.responder) data.responder.hits = newHits;
+            changed = true;
+        }
+        if (!changed) continue;
+
+        data.netHits = data.initiatorHits - data.responderHits;
+        if (data.netHits > 0) {
+            data.outcome = "Victory";
+            data.initiatorOutcome = "Victory";
+            data.responderOutcome = "Defeat";
+        } else if (data.netHits < 0) {
+            data.outcome = "Defeat";
+            data.initiatorOutcome = "Defeat";
+            data.responderOutcome = "Victory";
+        } else {
+            data.outcome = "VictoryAtACost";
+            data.initiatorOutcome = "VictoryAtACost";
+            data.responderOutcome = "VictoryAtACost";
+        }
+
+        const html = await renderTemplate("systems/witch-iron/templates/chat/quarrel-result.hbs", {
+            result: data,
+            i18n: {
+                victory: game.i18n.localize("WITCHIRON.Victory"),
+                defeat: game.i18n.localize("WITCHIRON.Defeat")
+            }
+        });
+        await msg.update({
+            content: html,
+            "flags.witch-iron.quarrelData": data
+        });
+
+        if (game.socket) {
+            game.socket.emit("system.witch-iron.quarrelUpdate", {
+                messageId: msg.id,
+                quarrelData: data,
+                userId: game.user.id,
+                completed: true
+            });
+        }
+    }
 }
 
 // Export the QuarrelTracker for potential use in other modules
