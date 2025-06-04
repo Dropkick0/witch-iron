@@ -382,7 +382,7 @@ export class HitLocationSelector {
         const attackerDamage = attackerAbilityBonus + weaponBonus; // weaponBonus IS the effective bonus
         const defenderSoak = defenderAbilityBonus + armorBonus;   // armorBonus IS the effective bonus
         const baseDamage = Math.max(0, (attackerDamage + netHits) - defenderSoak);
-        
+
         let netDamage = baseDamage; // Use the base damage calculated with effective bonuses
 
         console.log(`INITIAL damage calculation using EFFECTIVE bonuses: (${attackerAbilityBonus} ability + ${weaponBonus} effective weapon + ${netHits} remaining net hits) - (${defenderAbilityBonus} ability + ${armorBonus} effective armor) = ${netDamage}`);
@@ -391,7 +391,45 @@ export class HitLocationSelector {
         // Change weaponBonusMax -> weaponBonus and armorBonusMax -> armorBonus
         const damageText = `${attackerAbilityBonus}(${weaponBonus})`; // Use effective weapon bonus
         const soakText = `${defenderAbilityBonus}(${armorBonus})`;   // Use effective armor bonus
-        
+
+        // --- Mob handling: convert damage into body losses ---
+        if (defenderActor?.system?.mob?.isMob?.value) {
+            const currentBodies = defenderActor.system.mob.bodies.value || 0;
+            const bodiesKilled = Math.floor(netDamage / 5);
+            const remainingBodies = Math.max(0, currentBodies - bodiesKilled);
+
+            if (bodiesKilled > 0) {
+                await defenderActor.update({ "system.mob.bodies.value": remainingBodies });
+            }
+
+            const mobContent = await renderTemplate(
+                "systems/witch-iron/templates/chat/mob-injury-message.hbs",
+                {
+                    attacker: combatData.attacker,
+                    defender: combatData.defender,
+                    killed: bodiesKilled,
+                    remaining: remainingBodies
+                }
+            );
+
+            const mobMessage = await ChatMessage.create({
+                user: game.user.id,
+                content: mobContent,
+                speaker: ChatMessage.getSpeaker(),
+                flavor: "Mob Casualties",
+                flags: {
+                    "witch-iron": {
+                        messageType: "mob-injury",
+                        combatId: combatData.combatId
+                    }
+                }
+            });
+
+            await this._handleMobLosses(defenderActor, currentBodies, remainingBodies);
+
+            return mobMessage;
+        }
+
         // Set the flavor text and message type based on whether the attack was deflected
         const isDeflected = netDamage <= 0;
         const flavor = isDeflected ? "Attack Deflected" : "Combat Injury";
@@ -734,6 +772,163 @@ export class HitLocationSelector {
         
         // Roll on the appropriate table
         return rollOnInjuryTable(baseLocation, roll);
+    }
+
+    /**
+     * Determine mob scale based on number of bodies
+     * @param {number} bodies Number of remaining bodies
+     * @returns {string} Scale label
+     * @private
+     */
+    static _determineMobScale(bodies) {
+        if (bodies >= 100) return 'huge';
+        if (bodies >= 50) return 'large';
+        if (bodies >= 20) return 'medium';
+        if (bodies >= 5) return 'small';
+        return 'none';
+    }
+
+    /**
+     * Handle mob losses and possible rout checks
+     * @param {Actor} mobActor The mob actor
+     * @param {number} prevBodies Bodies before damage
+     * @param {number} newBodies Bodies after damage
+     * @private
+     */
+    static async _handleMobLosses(mobActor, prevBodies, newBodies) {
+        const oldScale = this._determineMobScale(prevBodies);
+        const newScale = this._determineMobScale(newBodies);
+
+        if (newBodies <= 0 || oldScale === newScale) return;
+
+        const success = await this._promptRoutCheck(mobActor);
+
+        const routContent = await renderTemplate(
+            "systems/witch-iron/templates/chat/mob-loss-message.hbs",
+            {
+                mob: mobActor.name,
+                success
+            }
+        );
+
+        await ChatMessage.create({
+            user: game.user.id,
+            content: routContent,
+            speaker: ChatMessage.getSpeaker(),
+            flavor: "Mob Losses",
+            flags: {
+                "witch-iron": { messageType: "mob-loss" }
+            }
+        });
+
+        if (!success) {
+            await mobActor.update({ "system.mob.bodies.value": 0 });
+            canvas.tokens.placeables
+                .filter(t => t.actor?.id === mobActor.id)
+                .forEach(t => t.actor?.toggleStatusEffect("dead", {active: true, overlay: true}));
+        }
+    }
+
+    /**
+     * Prompt for a rout check when a mob loses scale
+     * @param {Actor} mobActor The mob actor
+     * @returns {Promise<boolean>} True if the check succeeded
+     * @private
+     */
+    static _promptRoutCheck(mobActor) {
+        return new Promise(resolve => {
+            const tokens = canvas.tokens.placeables
+                .filter(t => t.actor && t.actor.id !== mobActor.id)
+                .map(t => `<option value="${t.id}">${t.name}</option>`)
+                .join('');
+
+            const content = `
+            <form>
+              <p>Is there a leader nearby for ${mobActor.name}?</p>
+              <div class="form-group">
+                <label>Leader Token</label>
+                <select name="leader">
+                  <option value="">None (Mob Rolls Steel)</option>
+                  ${tokens}
+                </select>
+              </div>
+            </form>`;
+
+            new Dialog({
+                title: "Mob Loss Check",
+                content,
+                buttons: {
+                    roll: {
+                        label: "Roll",
+                        callback: async html => {
+                            const leaderId = html.find('[name="leader"]').val();
+                            let actor = mobActor;
+                            let skill = 'steel';
+                            if (leaderId) {
+                                const token = canvas.tokens.get(leaderId);
+                                if (token?.actor) {
+                                    actor = token.actor;
+                                    skill = 'leadership';
+                                }
+                            }
+                            const result = await HitLocationSelector._simpleSkillCheck(actor, skill);
+                            resolve(result.isSuccess);
+                        }
+                    }
+                },
+                default: "roll",
+                close: () => resolve(true)
+            }).render(true);
+        });
+    }
+
+    /**
+     * Execute a simple skill roll and return success state
+     * @param {Actor} actor The rolling actor
+     * @param {string} skillName Skill name
+     * @returns {Promise<{isSuccess: boolean}>} Roll result
+     * @private
+     */
+    static async _simpleSkillCheck(actor, skillName) {
+        const isLeadership = skillName === 'leadership';
+        const attribute = isLeadership ? 'personality' : 'willpower';
+        const category = isLeadership ? 'social' : 'mental';
+        const skillValue = actor.system.skills[category]?.[skillName]?.value || 0;
+        const attrValue = actor.system.attributes[attribute]?.value || 0;
+        const targetValue = attrValue + skillValue;
+
+        const roll = await (new Roll('1d100')).evaluate({async: true});
+        const total = roll.total;
+        const isSuccess = total <= targetValue;
+        const isCriticalSuccess = total <= 5 || (isSuccess && total % 11 === 0);
+        const isFumble = total >= 96 || (!isSuccess && total % 11 === 0);
+        let hits = Math.floor(targetValue/10) - Math.floor(total/10);
+        if (isCriticalSuccess) hits = Math.max(hits + 1, 1);
+        if (isFumble) hits = Math.min(hits - 1, -1);
+
+        const label = skillName.charAt(0).toUpperCase() + skillName.slice(1);
+        const content = await renderTemplate(
+            "systems/witch-iron/templates/chat/roll-card.hbs",
+            {
+                actor,
+                roll,
+                targetValue,
+                isSuccess,
+                isCriticalSuccess,
+                isFumble,
+                hits,
+                label
+            }
+        );
+
+        await ChatMessage.create({
+            user: game.user.id,
+            speaker: ChatMessage.getSpeaker({ actor }),
+            content,
+            sound: CONFIG.sounds.dice
+        });
+
+        return { isSuccess };
     }
 }
 
