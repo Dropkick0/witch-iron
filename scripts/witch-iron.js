@@ -229,7 +229,15 @@ Hooks.on("updateActor", async (actor) => {
       isConditionQuarrel: true,
       condition: "stress"
     }, token);
-    await actor.rollSkill("steel");
+
+    if (actor.type === "monster") {
+      await actor.rollMonsterCheck({
+        label: "Specialized Check",
+        additionalHits: actor.system.derived?.plusHits || 0
+      });
+    } else {
+      await actor.rollSkill("steel");
+    }
   }
 
   if (pending.corruption !== undefined) {
@@ -247,7 +255,15 @@ Hooks.on("updateActor", async (actor) => {
       isConditionQuarrel: true,
       condition: "corruption"
     }, token);
-    await actor.rollSkill("steel");
+
+    if (actor.type === "monster") {
+      await actor.rollMonsterCheck({
+        label: "Specialized Check",
+        additionalHits: actor.system.derived?.plusHits || 0
+      });
+    } else {
+      await actor.rollSkill("steel");
+    }
   }
 
   pendingConditionQuarrels.delete(actor.id);
