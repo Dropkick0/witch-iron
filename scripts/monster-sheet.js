@@ -1049,6 +1049,31 @@ export class WitchIronMonsterSheet extends ActorSheet {
     let skillName = "";
     let resultMessages = {};
 
+    if (["blind", "deaf", "pain"].includes(conditionName)) {
+      rating = actor.system.conditions[conditionName]?.value || 0;
+      const condLabel = this.capitalize(conditionName);
+      const penalty = rating * 10;
+      const checkType = conditionName === "blind" ? "Sight-based Checks" :
+                        conditionName === "deaf" ? "Hearing & Speech-based Checks" :
+                        "All Checks";
+      const removal = conditionName === "blind" ? "Cleaning out the eyes" :
+                      conditionName === "deaf" ? "Removing blockage" :
+                      "A form of painkiller";
+      const content = `
+        <div class="witch-iron condition-info">
+          <p><strong>${actor.name}</strong> is suffering from ${condLabel} (Rating ${rating}).</p>
+          <p>Retina Overload, Ringing in Ears &amp; Agony. This Condition inflicts a <strong>${penalty}%</strong> Check penalty. Passively reduce by one each hour.</p>
+          <p><strong>Impairs:</strong> ${checkType}.</p>
+          <p><strong>Removed by:</strong> ${removal}.</p>
+        </div>`;
+      const chatData = {
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker({ actor }),
+        content
+      };
+      return ChatMessage.create(chatData);
+    }
+
     if (["aflame", "bleed", "poison"].includes(conditionName)) {
       skillName = "Hardship";
       rating = ["aflame", "bleed", "poison"].reduce((sum, c) => sum + (actor.system.conditions[c]?.value || 0), 0);

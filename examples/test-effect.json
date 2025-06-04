@@ -1,0 +1,16 @@
+{
+  "_id": "example-effect",
+  "name": "Test Accuracy Bonus",
+  "icon": "icons/svg/upgrade.svg",
+  "changes": [],
+  "duration": {},
+  "disabled": false,
+  "flags": {
+    "witch-iron": {
+      "modifier": {
+        "type": "target",
+        "value": 10
+      }
+    }
+  }
+}
