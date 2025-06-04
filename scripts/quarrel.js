@@ -329,8 +329,18 @@ class QuarrelTracker {
         console.log(`Resolving quarrel ${quarrelId}:`, quarrel);
         
         // Get actor information
-        const initiatorActor = game.actors.get(quarrel.initiator.actorId);
-        const responderActor = game.actors.get(quarrel.responder.actorId);
+        let initiatorActor = game.actors.get(quarrel.initiator.actorId);
+        let responderActor = game.actors.get(quarrel.responder.actorId);
+
+        // Fallback to token actors for unlinked tokens
+        if (!initiatorActor && quarrel.initiator.tokenId) {
+            const token = canvas.tokens.get(quarrel.initiator.tokenId);
+            initiatorActor = token?.actor || initiatorActor;
+        }
+        if (!responderActor && quarrel.responder.tokenId) {
+            const token = canvas.tokens.get(quarrel.responder.tokenId);
+            responderActor = token?.actor || responderActor;
+        }
         
         // Validate both actors exist
         if (!initiatorActor || !responderActor) {
