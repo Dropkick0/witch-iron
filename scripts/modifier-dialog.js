@@ -47,8 +47,8 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
     conditionRows.push(`
         <div class="form-group modifier-row ${blind ? 'selected' : ''}" data-toggle="useBlind">
           <label>Blind</label>
+          <span class="modifier-value">${blindPenalty}%</span>
           <input type="number" name="blindRating" value="${blind}" min="0" />
-          <span>${blindPenalty}%</span>
           <input type="hidden" name="useBlind" value="${blind ? 1 : 0}">
         </div>`);
   }
@@ -57,8 +57,8 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
     conditionRows.push(`
         <div class="form-group modifier-row ${deaf ? 'selected' : ''}" data-toggle="useDeaf">
           <label>Deaf</label>
+          <span class="modifier-value">${deafPenalty}%</span>
           <input type="number" name="deafRating" value="${deaf}" min="0" />
-          <span>${deafPenalty}%</span>
           <input type="hidden" name="useDeaf" value="${deaf ? 1 : 0}">
         </div>`);
   }
@@ -67,8 +67,8 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
     conditionRows.push(`
         <div class="form-group modifier-row selected" data-toggle="usePain">
           <label>Pain</label>
+          <span class="modifier-value">${painPenalty}%</span>
           <input type="number" name="painRating" value="${pain}" min="0" />
-          <span>${painPenalty}%</span>
           <input type="hidden" name="usePain" value="1">
         </div>`);
   }
@@ -77,8 +77,8 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
     conditionRows.push(`
         <div class="form-group modifier-row selected" data-toggle="useProne">
           <label>Prone</label>
+          <span class="modifier-value">${pronePenalty}%</span>
           <input type="number" name="proneRating" value="${prone}" min="0" disabled />
-          <span>${pronePenalty}%</span>
           <input type="hidden" name="useProne" value="1">
         </div>`);
   }
@@ -87,7 +87,8 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
     conditionRows.push(`
         <div class="form-group modifier-row selected" data-toggle="useTargetProne">
           <label>Target Prone</label>
-          <span>+20%</span>
+          <span class="modifier-value">+20%</span>
+          <span class="rating-spacer"></span>
           <input type="hidden" name="useTargetProne" value="1">
         </div>`);
   }
@@ -100,8 +101,8 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
       conditionRows.push(`
         <div class="form-group modifier-row selected" data-toggle="useTrauma-${loc}">
           <label>Trauma (${locLabel})</label>
+          <span class="modifier-value">${traumaPenalty}%</span>
           <input type="number" name="traumaRating-${loc}" value="${val}" min="0" />
-          <span>${traumaPenalty}%</span>
           <input type="hidden" name="useTrauma-${loc}" value="1">
         </div>`);
     }
