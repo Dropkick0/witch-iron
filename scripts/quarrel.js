@@ -70,6 +70,34 @@ async function clearPhysicalConditions(actor) {
   }
 }
 
+/**
+ * Apply updates to an actor and all of its active tokens, then refresh sheets.
+ * @param {Actor} actor - The actor to update
+ * @param {Object} updates - The update data object
+ */
+async function updateActorAndTokens(actor, updates) {
+  if (!actor) return;
+
+  // Update the base actor
+  await actor.update(updates);
+
+  // Update any active tokens derived from this actor
+  const tokens = actor.getActiveTokens(true);
+  for (const token of tokens) {
+    if (token.actor) {
+      await token.actor.update(updates);
+      if (token.actor.sheet) {
+        await token.actor.sheet.render(false);
+      }
+    }
+  }
+
+  // Refresh the actor's own sheet if open
+  if (actor.sheet) {
+    await actor.sheet.render(false);
+  }
+}
+
 class QuarrelTracker {
     constructor() {
         this.pendingQuarrels = new Map(); // Map of actor ID -> checkData
@@ -596,16 +624,16 @@ class QuarrelTracker {
                         [wpPath]: Math.max(currentWP - 10, 0),
                         [`system.conditions.${result.condition}.value`]: 0
                     };
-                    await responderActor.update(updateData);
+                    await updateActorAndTokens(responderActor, updateData);
                 }
             }
             // Remove all conditions if actor wins
             else if (result.responderOutcome === 'Victory') {
                 if (['aflame','bleed','poison'].includes(result.condition)) {
                     await clearPhysicalConditions(responderActor);
-                } else {
+                } else if (!['stress','corruption'].includes(result.condition)) {
                     const updateData = { [`system.conditions.${result.condition}.value`]: 0 };
-                    await responderActor.update(updateData);
+                    await updateActorAndTokens(responderActor, updateData);
                 }
             }
             // Tie (VictoryAtACost) -> no automatic changes
