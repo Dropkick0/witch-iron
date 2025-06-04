@@ -3693,3 +3693,18 @@ button.roll-skill:hover {
 .modifier-dialog .modifier-row.selected input[type="number"] {
   color: var(--color-background);
 }
+
+/* Active Effects list within the modifier dialog */
+.modifier-dialog .effects-list {
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border-light-primary);
+  padding: 4px;
+  margin-bottom: 6px;
+}
+
+.modifier-dialog .effect-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
