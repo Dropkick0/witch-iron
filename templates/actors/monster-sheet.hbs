@@ -205,6 +205,12 @@
                   <input type="number" name="system.mob.bodies.value" value="{{system.mob.bodies.value}}">
                 </div>
                 <div class="form-group">
+                  <label>Formation</label>
+                  <select name="system.mob.formation.value">
+                    {{selectOptions formationShapes selected=system.mob.formation.value localize=false}}
+                  </select>
+                </div>
+                <div class="form-group">
                   <label>Mob Scale</label>
                   <span>{{system.derived.mobScale}}</span>
                 </div>

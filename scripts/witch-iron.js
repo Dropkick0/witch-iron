@@ -99,6 +99,7 @@ Hooks.once("init", function() {
     }
   });
 
+
   // Register hidden world setting for injury sheet default values
   game.settings.register("witch-iron", "injurySheetDefaults", {
     name: "Injury Sheet Default Values",

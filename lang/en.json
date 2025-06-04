@@ -79,7 +79,8 @@
       "flaw": "Flaw",
       "specialQualities": "Special Qualities",
       "isMob": "Is Mob",
-      "bodies": "Bodies"
+      "bodies": "Bodies",
+      "formation": "Formation"
     },
     "sizes": {
       "tiny": "Tiny",

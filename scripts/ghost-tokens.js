@@ -1,41 +1,136 @@
-export function computeOffsets(count, start = 0) {
-  const grid = canvas.scene.grid.size;
-  const offsets = [];
-  const visited = new Set(["0,0"]);
-  let frontier = [{ x: 0, y: 0 }];
-  let idx = 0;
+export const FORMATION_SHAPES = [
+  "skirmish",
+  "lineSingle",
+  "lineDouble",
+  "lineTriple",
+  "column",
+  "wedge",
+  "echelonLeft",
+  "echelonRight",
+  "square",
+  "diamond",
+  "circle",
+  "triangle"
+];
 
-  while (offsets.length < count) {
-    const next = [];
-    for (const { x, y } of frontier) {
-      const deltas = [
-        { x: 1, y: 0 },
-        { x: -1, y: 0 },
-        { x: 0, y: 1 },
-        { x: 0, y: -1 },
-        { x: 1, y: 1 },
-        { x: 1, y: -1 },
-        { x: -1, y: 1 },
-        { x: -1, y: -1 },
-      ];
-      for (const d of deltas) {
-        const nx = x + d.x;
-        const ny = y + d.y;
-        const key = `${nx},${ny}`;
-        if (visited.has(key)) continue;
-        visited.add(key);
-        next.push({ x: nx, y: ny });
-        if (idx >= start && offsets.length < count) {
-          offsets.push({ x: nx * grid, y: ny * grid });
-        }
-        idx++;
-        if (offsets.length >= count) break;
-      }
-      if (offsets.length >= count) break;
+export function computeOffsets(count, start = 0, formation = "skirmish") {
+  const grid = canvas.scene.grid.size;
+  const needed = count + start;
+  const coords = [];
+  const add = (x, y) => coords.push({ x: x * grid, y: y * grid });
+
+  switch (formation) {
+    case "lineSingle": {
+      for (let i = 1; coords.length < needed; i++) add(i, 0);
+      break;
     }
-    frontier = next;
+    case "lineDouble": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(i, 0);
+        if (coords.length < needed) add(i, 1);
+      }
+      break;
+    }
+    case "lineTriple": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(i, -1);
+        if (coords.length < needed) add(i, 0);
+        if (coords.length < needed) add(i, 1);
+      }
+      break;
+    }
+    case "column": {
+      for (let i = 1; coords.length < needed; i++) add(0, i);
+      break;
+    }
+    case "wedge": {
+      for (let r = 1; coords.length < needed; r++) {
+        for (let i = -r; i <= r && coords.length < needed; i++) add(i, r);
+      }
+      break;
+    }
+    case "echelonLeft": {
+      for (let i = 1; coords.length < needed; i++) add(-i, i);
+      break;
+    }
+    case "echelonRight": {
+      for (let i = 1; coords.length < needed; i++) add(i, i);
+      break;
+    }
+    case "square": {
+      const side = Math.ceil(Math.sqrt(needed));
+      for (let r = 1; r <= side && coords.length < needed; r++) {
+        for (let c = 0; c < side && coords.length < needed; c++) {
+          add(c - Math.floor(side / 2), r);
+        }
+      }
+      break;
+    }
+    case "diamond": {
+      for (let r = 1; coords.length < needed; r++) {
+        for (let x = -r; x <= r && coords.length < needed; x++) {
+          const y = r - Math.abs(x);
+          if (y > 0) {
+            add(x, y);
+            if (coords.length < needed) add(x, -y);
+          } else {
+            add(x, 0);
+          }
+        }
+      }
+      break;
+    }
+    case "circle": {
+      const radius = Math.ceil(Math.sqrt(needed));
+      for (let i = 0; i < needed; i++) {
+        const ang = (i / needed) * 2 * Math.PI;
+        add(Math.round(radius * Math.cos(ang)), Math.round(radius * Math.sin(ang)));
+      }
+      break;
+    }
+    case "triangle": {
+      for (let r = 1; coords.length < needed; r++) {
+        for (let i = 0; i < r && coords.length < needed; i++) {
+          add(i - Math.floor(r / 2), r);
+        }
+      }
+      break;
+    }
+    default: { // skirmish/random spread
+      const visited = new Set(["0,0"]);
+      let frontier = [{ x: 0, y: 0 }];
+      while (coords.length < needed) {
+        const next = [];
+        for (const { x, y } of frontier) {
+          const deltas = [
+            { x: 1, y: 0 },
+            { x: -1, y: 0 },
+            { x: 0, y: 1 },
+            { x: 0, y: -1 },
+            { x: 1, y: 1 },
+            { x: 1, y: -1 },
+            { x: -1, y: 1 },
+            { x: -1, y: -1 },
+          ].sort(() => Math.random() - 0.5);
+          for (const d of deltas) {
+            const nx = x + d.x;
+            const ny = y + d.y;
+            const key = `${nx},${ny}`;
+            if (visited.has(key)) continue;
+            visited.add(key);
+            next.push({ x: nx, y: ny });
+            add(nx, ny);
+            if (coords.length >= needed) break;
+          }
+          if (coords.length >= needed) break;
+        }
+        frontier = next;
+      }
+      break;
+    }
   }
-  return offsets;
+
+  return coords.slice(start, start + count);
 }
 
 export async function spawnGhostTokens(token) {
@@ -43,8 +138,9 @@ export async function spawnGhostTokens(token) {
   if (!actor?.system?.mob?.isMob?.value) return;
 
   const bodies = actor.system.mob.bodies?.value || 1;
+  if (bodies < 5) return;
   await token.update({
-    [`flags.witch-iron.isMobLeader`]: true,
+    ["flags.witch-iron.isMobLeader"]: true,
     overlayEffect: "icons/svg/target.svg"
   });
   await syncGhostTiles(token, bodies - 1);
@@ -52,7 +148,8 @@ export async function spawnGhostTokens(token) {
 
 export async function syncGhostTiles(token, required, overrides = {}) {
   const tiles = canvas.scene.tiles.filter(t => t.getFlag("witch-iron", "ghostParent") === token.id);
-  const offsets = computeOffsets(required, 0);
+  const actorFormation = token.actor?.system?.mob?.formation?.value || "skirmish";
+  const offsets = computeOffsets(required, 0, actorFormation);
 
   const tilesByIndex = new Map();
   for (const tile of tiles) {
@@ -133,8 +230,9 @@ Hooks.on("updateActor", actor => {
   const tokens = canvas.scene.tokens.filter(t => t.actor?.id === actor.id);
   const isMob = actor.system?.mob?.isMob?.value;
   const bodies = actor.system?.mob?.bodies?.value || 1;
+  const show = isMob && bodies >= 5;
   tokens.forEach(t => {
-    if (isMob) {
+    if (show) {
       if (!t.getFlag("witch-iron", "isMobLeader")) {
         spawnGhostTokens(t);
       } else {
