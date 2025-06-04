@@ -22,7 +22,8 @@
     "styles/combat-card.css",
     "styles/hit-location.css",
     "styles/injury-card.css",
-    "styles/condition-card.css"
+    "styles/condition-card.css",
+    "styles/casualty-cards.css"
   ],
   "packs": [
     {
