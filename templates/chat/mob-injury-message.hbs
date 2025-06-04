@@ -1,28 +1,15 @@
 <div class="witch-iron chat-card mob-injury-card">
   <header class="card-header">
-    <i class="fas fa-users-slash"></i>
     <h3>Mob Casualties</h3>
   </header>
   <div class="card-content">
-    <div class="mob-summary-number">{{killed}}</div>
-    <div class="mob-summary-text">bodies lost</div>
-    <div class="mob-remaining">{{remaining}} remain</div>
-    {{#if scaleChange}}
-      <div class="scale-change">Scale reduced to <strong>{{newScale}}</strong></div>
-    {{/if}}
-    <div class="collapsible-section">
-      <div class="section-header mob-details-toggle">
-        <i class="fas fa-chevron-down"></i>
-        <h4>Damage Details</h4>
-      </div>
-      <div class="section-content mob-details hidden">
-        <div class="detail-grid">
-          <div class="detail-item"><span class="label">Defender:</span><span class="value">{{defender}}</span></div>
-          <div class="detail-item"><span class="label">Damage:</span><span class="value">{{damage}}</span></div>
-          <div class="detail-item"><span class="label">Lost:</span><span class="value">{{killed}}</span></div>
-          <div class="detail-item"><span class="label">Remaining:</span><span class="value">{{remaining}}</span></div>
-        </div>
-      </div>
+    <div class="mob-info">
+      <strong>{{defender}}</strong> loses <strong>{{killed}}</strong> bodies.
+      {{#if remaining}}
+        <span>{{remaining}} bodies remain.</span>
+      {{else}}
+        <span>The mob has been destroyed.</span>
+      {{/if}}
     </div>
   </div>
 </div>
