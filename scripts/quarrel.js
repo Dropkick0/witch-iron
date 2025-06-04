@@ -45,44 +45,26 @@ async function clearPhysicalConditions(actor) {
   if (!actor) return;
 
   const updates = {
-    system: {
-      conditions: {
-        aflame: { value: 0 },
-        bleed: { value: 0 },
-        poison: { value: 0 }
-      }
-    }
+    'system.conditions.aflame.value': 0,
+    'system.conditions.bleed.value': 0,
+    'system.conditions.poison.value': 0
   };
 
-  await updateActorAndTokens(actor, updates);
-}
+  // Update the actor document
+  await actor.update(updates);
 
-/**
- * Apply updates to an actor and all of its active tokens, then refresh sheets.
- * @param {Actor} actor - The actor to update
- * @param {Object} updates - The update data object
- */
-async function updateActorAndTokens(actor, updates) {
-  if (!actor) return;
-
-  // Expand dotted paths so update hooks receive nested data
-  const expanded = foundry.utils.expandObject(updates);
-
-  // Update the base actor
-  await actor.update(expanded);
-
-  // Update any active tokens derived from this actor
+  // Also update any active tokens using this actor (covers unlinked monsters)
   const tokens = actor.getActiveTokens(true);
   for (const token of tokens) {
     if (token.actor) {
-      await token.actor.update(expanded);
+      await token.actor.update(updates);
       if (token.actor.sheet) {
         await token.actor.sheet.render(false);
       }
     }
   }
 
-  // Refresh the actor's own sheet if open
+  // Refresh the actor's own sheet if it's open
   if (actor.sheet) {
     await actor.sheet.render(false);
   }
