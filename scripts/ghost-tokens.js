@@ -78,6 +78,8 @@ export async function syncGhostTiles(token, required) {
       width,
       height,
       img: doc.texture?.src || doc.img,
+      overhead: true,
+      occlusion: { mode: 0 },
       flags: { "witch-iron": { ghostParent: token.id, ghostIndex: i } }
     };
 
