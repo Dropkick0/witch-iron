@@ -517,12 +517,28 @@ export class WitchIronActor extends Actor {
       "stress",
       "blind",
       "deaf",
-      "pain"
+      "pain",
+      "fatigue",
+      "entangle",
+      "helpless",
+      "stun",
+      "prone"
     ];
     if (!systemData.conditions) systemData.conditions = {};
     for (const key of condNames) {
       if (!systemData.conditions[key] || typeof systemData.conditions[key]?.value !== 'number') {
         systemData.conditions[key] = { value: 0 };
+      }
+    }
+
+    // Initialize trauma as an object of locations so multiple traumas can be tracked
+    if (!systemData.conditions.trauma || typeof systemData.conditions.trauma !== 'object') {
+      systemData.conditions.trauma = {};
+    }
+    const traumaLocations = ["head", "torso", "leftArm", "rightArm", "leftLeg", "rightLeg"];
+    for (const loc of traumaLocations) {
+      if (!systemData.conditions.trauma[loc] || typeof systemData.conditions.trauma[loc].value !== 'number') {
+        systemData.conditions.trauma[loc] = { value: 0 };
       }
     }
     
