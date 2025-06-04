@@ -533,7 +533,13 @@ class QuarrelTracker {
             initiatorHits,
             responderHits,
             initiatorImg: getActorImage(initiatorActor),
-            responderImg: getActorImage(responderActor)
+            responderImg: getActorImage(responderActor),
+            initiatorTarget: quarrel.initiator.target || 0,
+            initiatorSituationalMod: quarrel.initiator.situationalMod || 0,
+            initiatorAdditionalHits: quarrel.initiator.additionalHits || 0,
+            responderTarget: quarrel.responder.target || 0,
+            responderSituationalMod: quarrel.responder.situationalMod || 0,
+            responderAdditionalHits: quarrel.responder.additionalHits || 0
         };
         
         // Attach custom quarrel parameters if provided
@@ -829,6 +835,40 @@ export function initQuarrel() {
     Hooks.on("renderChatMessage", (message, html) => {
         // Add quarrel context menu and prepare data
         addQuarrelContextOption(message, html);
+
+        // Add tooltip info for roll cards
+        const rollCard = html.find('.witch-iron-roll');
+        if (rollCard.length) {
+            const target = Number(rollCard.data('target')) || 0;
+            const mod = Number(rollCard.data('situationalMod')) || 0;
+            const addHits = Number(rollCard.data('additionalHits')) || 0;
+            const base = target - mod;
+            const tip = `Base: ${base}, Mod: ${mod >= 0 ? '+' : ''}${mod}, +Hits: ${addHits >= 0 ? '+' : ''}${addHits}`;
+            rollCard.find('.target').attr('title', tip);
+            rollCard.find('.hits').attr('title', tip);
+        }
+
+        const quarrelCard = html.find('.quarrel-result');
+        if (quarrelCard.length) {
+            quarrelCard.find('.initiator .hits').each(function() {
+                const el = $(this);
+                const t = Number(el.data('target')) || 0;
+                const m = Number(el.data('situationalMod')) || 0;
+                const h = Number(el.data('additionalHits')) || 0;
+                const b = t - m;
+                const tt = `Base: ${b}, Mod: ${m >= 0 ? '+' : ''}${m}, +Hits: ${h >= 0 ? '+' : ''}${h}`;
+                el.attr('title', tt);
+            });
+            quarrelCard.find('.responder .hits').each(function() {
+                const el = $(this);
+                const t = Number(el.data('target')) || 0;
+                const m = Number(el.data('situationalMod')) || 0;
+                const h = Number(el.data('additionalHits')) || 0;
+                const b = t - m;
+                const tt = `Base: ${b}, Mod: ${m >= 0 ? '+' : ''}${m}, +Hits: ${h >= 0 ? '+' : ''}${h}`;
+                el.attr('title', tt);
+            });
+        }
         
         // Add event handlers for quarrel result buttons
         const quarrelResult = html.find('.witch-iron-quarrel-result');
@@ -1054,6 +1094,9 @@ async function onChatMessageCreated(message) {
         const hitsMatch = content.match(/data-hits="(-?\d+)"/);
         const actorMatch = content.match(/data-actor="([^"]+)"/);
         const actorIdMatch = content.match(/data-actor-id="([^"]+)"/);
+        const targetMatch = content.match(/data-target="(-?\d+)"/);
+        const situationalMatch = content.match(/data-situational-mod="(-?\d+)"/);
+        const addHitsMatch = content.match(/data-additional-hits="(-?\d+)"/);
         const isCombatCheck = content.includes('data-combat-check="true"') || content.includes('class="combat-badge"');
         
         console.log(`Witch Iron | Extracted from message - isCombatCheck: ${isCombatCheck}`);
@@ -1084,7 +1127,10 @@ async function onChatMessageCreated(message) {
             actorName: actorName,
             hits: hits,
             roll: message.roll?.total || 0,
-            isCombatCheck: isCombatCheck
+            isCombatCheck: isCombatCheck,
+            target: targetMatch ? Number(targetMatch[1]) : 0,
+            situationalMod: situationalMatch ? Number(situationalMatch[1]) : 0,
+            additionalHits: addHitsMatch ? Number(addHitsMatch[1]) : 0
         };
         
         console.log("Witch Iron | Check data created:", checkData);
