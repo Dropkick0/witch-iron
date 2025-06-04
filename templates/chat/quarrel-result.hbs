@@ -32,7 +32,7 @@
                         {{/if}}
                     {{/if}}
                 </div>
-                <span class="hits">Hits: {{result.initiatorHits}}</span>
+                <span class="hits" data-target="{{result.initiatorTarget}}" data-situational-mod="{{result.initiatorSituationalMod}}" data-additional-hits="{{result.initiatorAdditionalHits}}">Hits: {{result.initiatorHits}}</span>
                 <span class="outcome {{result.initiatorOutcome}}">{{outcomeLocalize result.initiatorOutcome}}</span>
                 {{#if (gt result.netHits 0)}}
                 <span class="net-hits positive net-hits-display" data-character="initiator">Net Hits: <span class="hits-value">+{{result.netHits}}</span></span>
@@ -51,7 +51,7 @@
                     <img class="token-image" src="icons/svg/mystery-man.svg" data-actor="{{result.responderName}}">
                     {{/if}}
                 </div>
-                <span class="hits">Hits: {{result.responderHits}}</span>
+                <span class="hits" data-target="{{result.responderTarget}}" data-situational-mod="{{result.responderSituationalMod}}" data-additional-hits="{{result.responderAdditionalHits}}">Hits: {{result.responderHits}}</span>
                 <span class="outcome {{result.responderOutcome}}">{{outcomeLocalize result.responderOutcome}}</span>
                 {{#if (lt result.netHits 0)}}
                 <span class="net-hits positive net-hits-display" data-character="responder">Net Hits: <span class="hits-value">+{{abs result.netHits}}</span></span>

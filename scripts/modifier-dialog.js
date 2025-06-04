@@ -45,21 +45,21 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
   if (blind > 0) {
     const blindPenalty = -10 * blind;
     conditionRows.push(`
-        <div class="form-group modifier-row ${blind ? 'selected' : ''}" data-toggle="useBlind">
+        <div class="form-group modifier-row" data-toggle="useBlind">
           <label>Blind</label>
           <span class="modifier-value">${blindPenalty}%</span>
           <input type="number" name="blindRating" value="${blind}" min="0" />
-          <input type="hidden" name="useBlind" value="${blind ? 1 : 0}">
+          <input type="hidden" name="useBlind" value="0">
         </div>`);
   }
   if (deaf > 0) {
     const deafPenalty = -10 * deaf;
     conditionRows.push(`
-        <div class="form-group modifier-row ${deaf ? 'selected' : ''}" data-toggle="useDeaf">
+        <div class="form-group modifier-row" data-toggle="useDeaf">
           <label>Deaf</label>
           <span class="modifier-value">${deafPenalty}%</span>
           <input type="number" name="deafRating" value="${deaf}" min="0" />
-          <input type="hidden" name="useDeaf" value="${deaf ? 1 : 0}">
+          <input type="hidden" name="useDeaf" value="0">
         </div>`);
   }
   if (pain > 0) {
@@ -99,11 +99,11 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
       const locLabel = loc.replace(/([A-Z])/g, ' $1');
       const traumaPenalty = -20 * val;
       conditionRows.push(`
-        <div class="form-group modifier-row selected" data-toggle="useTrauma-${loc}">
+        <div class="form-group modifier-row" data-toggle="useTrauma-${loc}">
           <label>Trauma (${locLabel})</label>
           <span class="modifier-value">${traumaPenalty}%</span>
           <input type="number" name="traumaRating-${loc}" value="${val}" min="0" />
-          <input type="hidden" name="useTrauma-${loc}" value="1">
+          <input type="hidden" name="useTrauma-${loc}" value="0">
         </div>`);
     }
   }

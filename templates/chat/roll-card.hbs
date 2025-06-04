@@ -18,7 +18,7 @@
       </div>
       
       <div class="test-details">
-        <div class="target">Target: {{targetValue}}</div>
+        <div class="target" data-target="{{targetValue}}" data-situational-mod="{{situationalMod}}" data-additional-hits="{{additionalHits}}">Target: {{targetValue}}</div>
         <div class="outcome">
           {{#if isCriticalSuccess}}
             Critical Success!
@@ -30,7 +30,7 @@
             Failure
           {{/if}}
         </div>
-        <div class="hits">Hits: {{hits}}</div>
+        <div class="hits" data-target="{{targetValue}}" data-situational-mod="{{situationalMod}}" data-additional-hits="{{additionalHits}}">Hits: {{hits}}</div>
         {{#if specialization}}
         <div class="specialization">Specialization: {{specialization}}</div>
         {{/if}}
