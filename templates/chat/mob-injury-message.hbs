@@ -1,0 +1,15 @@
+<div class="witch-iron chat-card mob-injury-card">
+  <header class="card-header">
+    <h3>Mob Casualties</h3>
+  </header>
+  <div class="card-content">
+    <div class="mob-info">
+      <strong>{{defender}}</strong> loses <strong>{{killed}}</strong> bodies.
+      {{#if remaining}}
+        <span>{{remaining}} bodies remain.</span>
+      {{else}}
+        <span>The mob has been destroyed.</span>
+      {{/if}}
+    </div>
+  </div>
+</div>

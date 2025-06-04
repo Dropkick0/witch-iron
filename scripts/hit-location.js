@@ -382,7 +382,7 @@ export class HitLocationSelector {
         const attackerDamage = attackerAbilityBonus + weaponBonus; // weaponBonus IS the effective bonus
         const defenderSoak = defenderAbilityBonus + armorBonus;   // armorBonus IS the effective bonus
         const baseDamage = Math.max(0, (attackerDamage + netHits) - defenderSoak);
-        
+
         let netDamage = baseDamage; // Use the base damage calculated with effective bonuses
 
         console.log(`INITIAL damage calculation using EFFECTIVE bonuses: (${attackerAbilityBonus} ability + ${weaponBonus} effective weapon + ${netHits} remaining net hits) - (${defenderAbilityBonus} ability + ${armorBonus} effective armor) = ${netDamage}`);
@@ -391,7 +391,43 @@ export class HitLocationSelector {
         // Change weaponBonusMax -> weaponBonus and armorBonusMax -> armorBonus
         const damageText = `${attackerAbilityBonus}(${weaponBonus})`; // Use effective weapon bonus
         const soakText = `${defenderAbilityBonus}(${armorBonus})`;   // Use effective armor bonus
-        
+
+        // --- Mob handling: convert damage into body losses ---
+        if (defenderActor?.system?.mob?.isMob?.value) {
+            const currentBodies = defenderActor.system.mob.bodies.value || 0;
+            const bodiesKilled = Math.floor(netDamage / 5);
+            const remainingBodies = Math.max(0, currentBodies - bodiesKilled);
+
+            if (bodiesKilled > 0) {
+                await defenderActor.update({ "system.mob.bodies.value": remainingBodies });
+            }
+
+            const mobContent = await renderTemplate(
+                "systems/witch-iron/templates/chat/mob-injury-message.hbs",
+                {
+                    attacker: combatData.attacker,
+                    defender: combatData.defender,
+                    killed: bodiesKilled,
+                    remaining: remainingBodies
+                }
+            );
+
+            const mobMessage = await ChatMessage.create({
+                user: game.user.id,
+                content: mobContent,
+                speaker: ChatMessage.getSpeaker(),
+                flavor: "Mob Casualties",
+                flags: {
+                    "witch-iron": {
+                        messageType: "mob-injury",
+                        combatId: combatData.combatId
+                    }
+                }
+            });
+
+            return mobMessage;
+        }
+
         // Set the flavor text and message type based on whether the attack was deflected
         const isDeflected = netDamage <= 0;
         const flavor = isDeflected ? "Attack Deflected" : "Combat Injury";
