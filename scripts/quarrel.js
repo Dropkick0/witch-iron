@@ -577,6 +577,17 @@ class QuarrelTracker {
                 canvas.tokens.placeables
                   .filter(t => t.actor?.id === actor.id)
                   .forEach(t => t.actor?.toggleStatusEffect("dead", {active: true, overlay: true}));
+
+                // Additional effects for Stress and Corruption
+                if (['stress','corruption'].includes(result.condition)) {
+                    const wpPath = 'system.attributes.willpower.value';
+                    const currentWP = foundry.utils.getProperty(responderActor, wpPath) || 0;
+                    const updateData = {
+                        [wpPath]: Math.max(currentWP - 10, 0),
+                        [`system.conditions.${result.condition}.value`]: 0
+                    };
+                    await responderActor.update(updateData);
+                }
             }
             // Remove all conditions if actor wins
             else if (result.responderOutcome === 'Victory') {

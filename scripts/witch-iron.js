@@ -11,7 +11,7 @@ import { WitchIronMonsterSheet } from "./monster-sheet.js";
 import { WitchIronActor } from "./actor.js";
 import { WitchIronItem } from "./item.js";
 import { WitchIronInjurySheet } from "./injury-sheet.js";
-import { initQuarrel, manualQuarrel } from "./quarrel.js";
+import { initQuarrel, manualQuarrel, quarrelTracker } from "./quarrel.js";
 import { HitLocationSelector } from "./hit-location.js";
 import { InjuryTables } from "./injury-tables.js";
 import { registerCommonHandlebarsHelpers } from "./handlebars-helpers.js";
@@ -175,6 +175,82 @@ Hooks.once("ready", function() {
       icon.removeClass('fa-calculator').addClass('fa-minus');
     }
   });
+});
+
+// Track actors that need automatic condition quarrels after updates
+const pendingConditionQuarrels = new Map();
+
+// Check for Stress or Corruption thresholds before the actor is updated
+Hooks.on("preUpdateActor", (actor, changes, options, userId) => {
+  if (game.user.id !== userId) return;
+
+  const pending = {};
+
+  const stressNew = foundry.utils.getProperty(changes, "system.conditions.stress.value");
+  if (stressNew !== undefined) {
+    const oldStress = actor.system.conditions.stress?.value || 0;
+    if (Math.floor(stressNew / 3) > Math.floor(oldStress / 3)) {
+      pending.stress = stressNew;
+    }
+  }
+
+  const corruptNew = foundry.utils.getProperty(changes, "system.conditions.corruption.value");
+  if (corruptNew !== undefined) {
+    const oldCorrupt = actor.system.conditions.corruption?.value || 0;
+    if (Math.floor(corruptNew / 3) > Math.floor(oldCorrupt / 3)) {
+      pending.corruption = corruptNew;
+    }
+  }
+
+  if (Object.keys(pending).length > 0) {
+    pendingConditionQuarrels.set(actor.id, pending);
+  }
+});
+
+// After the actor updates, trigger any pending Stress/Corruption quarrels
+Hooks.on("updateActor", async (actor) => {
+  const pending = pendingConditionQuarrels.get(actor.id);
+  if (!pending) return;
+
+  const token = actor.getActiveTokens()[0] || null;
+
+  if (pending.stress !== undefined) {
+    await manualQuarrel({
+      actorId: actor.id,
+      hits: pending.stress,
+      skill: "Steel",
+      customName: "Stress Quarrel",
+      customIcon: quarrelTracker.CONDITION_ICONS.stress,
+      resultMessages: {
+        success: "Your mind breaks! You gain a Madness.",
+        failure: "You steel your mind, avoiding Madness.",
+        cost: "You hold on, but something snaps."
+      },
+      isConditionQuarrel: true,
+      condition: "stress"
+    }, token);
+    await actor.rollSkill("steel");
+  }
+
+  if (pending.corruption !== undefined) {
+    await manualQuarrel({
+      actorId: actor.id,
+      hits: pending.corruption,
+      skill: "Steel",
+      customName: "Corruption Quarrel",
+      customIcon: quarrelTracker.CONDITION_ICONS.corruption,
+      resultMessages: {
+        success: "Corruption takes hold! You gain a Mutation.",
+        failure: "You purge the corruption, avoiding Mutation.",
+        cost: "You push back the corruption, but at a price."
+      },
+      isConditionQuarrel: true,
+      condition: "corruption"
+    }, token);
+    await actor.rollSkill("steel");
+  }
+
+  pendingConditionQuarrels.delete(actor.id);
 });
 
 // Handle roll visibility in chat messages
