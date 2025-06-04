@@ -563,6 +563,8 @@ export class WitchIronActor extends Actor {
     const attribute = this.system.attributes[attributeName];
     if (!attribute) return;
 
+    const luckSpent = options.luckSpent || false;
+
     const roll = new Roll("1d100");
     await roll.evaluate();
 
@@ -574,8 +576,9 @@ export class WitchIronActor extends Actor {
     const targetValue = attribute.value + (this.system.modifiers?.global || 0);
     const rollTotal = roll.total;
     const isSuccess = rollTotal <= targetValue;
-    const isCriticalSuccess = rollTotal <= 5 || (isSuccess && rollTotal % 11 === 0);
-    const isFumble = rollTotal >= 96 || (!isSuccess && rollTotal % 11 === 0);
+    const isDouble = rollTotal % 11 === 0 && rollTotal !== 100;
+    const isCriticalSuccess = rollTotal <= 5 || (isSuccess && isDouble && !luckSpent);
+    const isFumble = rollTotal >= 96 || (!isSuccess && isDouble && !luckSpent);
     
     // Calculate hits
     let hits = Math.floor(targetValue/10) - Math.floor(rollTotal/10);
@@ -599,7 +602,8 @@ export class WitchIronActor extends Actor {
         isFumble: isFumble,
         hits: hits,
         // New format: ActorName - Ability-Score
-        label: `${formattedAttrName}`
+        label: `${formattedAttrName}`,
+        luckSpent: luckSpent
       }),
       sound: CONFIG.sounds.dice
     };
@@ -739,9 +743,10 @@ export class WitchIronActor extends Actor {
       label: formattedLabel,
       situationalMod: situationalMod,
       additionalHits: additionalHits,
-      specialization: specialization
+      specialization: specialization,
+      luckSpent: options.luckSpent || false
     };
-    
+
     // Perform the roll
     return this._performRoll(rollData);
   }
@@ -808,7 +813,8 @@ export class WitchIronActor extends Actor {
       label: String(label),
       situationalMod: Number(situationalMod),
       additionalHits: Number(additionalHits),
-      isCombatCheck: isCombatCheck
+      isCombatCheck: isCombatCheck,
+      luckSpent: options.luckSpent || false
     };
     
 //////     console.log("Roll Data:", rollData);
@@ -823,7 +829,7 @@ export class WitchIronActor extends Actor {
    * @returns {Promise<Roll>} The Roll instance
    * @private
    */
-  async _performRoll({ targetValue, label, situationalMod = 0, additionalHits = 0, isCombatCheck = false }) {
+  async _performRoll({ targetValue, label, situationalMod = 0, additionalHits = 0, isCombatCheck = false, luckSpent = false }) {
     // Debug log for incoming parameters
 //////     console.log("_performRoll - Incoming params:", { targetValue, label, situationalMod, additionalHits, isCombatCheck });
     
@@ -839,8 +845,9 @@ export class WitchIronActor extends Actor {
     // Calculate success/failure
     const rollTotal = roll.total;
     const isSuccess = rollTotal <= targetValue;
-    const isCriticalSuccess = rollTotal <= 5 || (isSuccess && rollTotal % 11 === 0);
-    const isFumble = rollTotal >= 96 || (!isSuccess && rollTotal % 11 === 0);
+    const isDouble = rollTotal % 11 === 0 && rollTotal !== 100;
+    const isCriticalSuccess = rollTotal <= 5 || (isSuccess && isDouble && !luckSpent);
+    const isFumble = rollTotal >= 96 || (!isSuccess && isDouble && !luckSpent);
     
     // Calculate hits (no need to recalculate if additionalHits is provided for monsters)
     const baseHits = Math.floor(targetValue/10) - Math.floor(rollTotal/10);
@@ -881,6 +888,7 @@ export class WitchIronActor extends Actor {
       situationalMod: situationalMod,
       additionalHits: additionalHits,
       isCombatCheck: isCombatCheck,
+      luckSpent: luckSpent,
       actorId: this.id,
       actorName: this.name
     };
