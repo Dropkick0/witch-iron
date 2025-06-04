@@ -17,13 +17,14 @@
   "esmodules": [
     "scripts/witch-iron.js"
   ],
-  "styles": [
-    "styles/witch-iron.css",
-    "styles/combat-card.css",
-    "styles/hit-location.css",
-    "styles/injury-card.css",
-    "styles/condition-card.css"
-  ],
+    "styles": [
+      "styles/witch-iron.css",
+      "styles/combat-card.css",
+      "styles/hit-location.css",
+      "styles/injury-card.css",
+      "styles/condition-card.css",
+      "styles/mob-card.css"
+    ],
   "packs": [
     {
       "name": "witch-iron-actors",
