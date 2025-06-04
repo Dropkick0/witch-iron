@@ -1,16 +1,16 @@
 /* Injury Card Styles */
 .witch-iron.chat-card.injury-card {
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border-light);
     border-radius: 6px;
     margin: 0;
     background: #fff;
-    color: #333;
+    color: var(--color-text-dark);
     font-family: 'Gentium Book', serif;
     overflow: hidden;
 }
 
 .witch-iron.chat-card.injury-card .card-header {
-    background: #7b2d26;
+    background: var(--color-accent);
     color: #f5e8d2;
     padding: 8px 10px;
     display: flex;
@@ -58,7 +58,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border-light);
     object-fit: cover;
 }
 
@@ -66,7 +66,7 @@
     margin-top: 0;
     font-size: 0.9em;
     font-weight: bold;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 .witch-iron.chat-card.injury-card .arrow-container {
@@ -78,7 +78,7 @@
 
 .witch-iron.chat-card.injury-card .arrow-container i {
     font-size: 1.5em;
-    color: #7b2d26;
+    color: var(--color-accent);
 }
 
 /* Collapsible section styling */
@@ -109,7 +109,7 @@
 .witch-iron.chat-card.injury-card .section-header h4 {
     margin: 0;
     font-size: 1em;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 .witch-iron.chat-card.injury-card .section-content {
@@ -144,12 +144,12 @@
 
 .witch-iron.chat-card.injury-card .detail-item .label {
     font-weight: bold;
-    color: #555;
+    color: var(--color-text-muted);
     width: auto;
 }
 
 .witch-iron.chat-card.injury-card .detail-item .value {
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 /* Battle Wear Styling */
@@ -164,7 +164,7 @@
 
 .witch-iron.chat-card.injury-card .battle-wear-header h4 {
     margin: 0;
-    color: #333;
+    color: var(--color-text-dark);
     font-size: 1.1em;
     border-bottom: none;
 }
@@ -188,7 +188,7 @@
 
 .witch-iron.chat-card.injury-card .battle-wear-title {
     font-weight: bold;
-    color: #333;
+    color: var(--color-text-dark);
     margin-bottom: 0.5em;
     text-align: center;
     font-size: 0.9em;
@@ -198,7 +198,7 @@
 .witch-iron.chat-card.injury-card .item-name {
     font-size: 0.8em;
     font-style: italic;
-    color: #666;
+    color: var(--color-text-muted);
     margin-top: 2px;
 }
 
@@ -218,7 +218,7 @@
 
 .witch-iron.chat-card.injury-card .battle-wear-effect {
     font-size: 0.8em;
-    color: #555;
+    color: var(--color-text-muted);
     margin-left: 5px;
 }
 
@@ -240,14 +240,14 @@
     cursor: pointer;
     transition: all 0.2s;
     font-size: 1em;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border-light);
     background: #f8f8f8;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 .witch-iron.chat-card.injury-card .battle-wear-minus:hover,
 .witch-iron.chat-card.injury-card .battle-wear-plus:hover {
-    background: #ddd;
+    background: var(--color-border-lighter);
     transform: none;
     box-shadow: none;
 }
@@ -265,13 +265,13 @@
     text-align: center;
     margin-top: 0.25em;
     font-size: 0.85em;
-    color: #666;
+    color: var(--color-text-muted);
 }
 
 /* Injury container */
 .witch-iron.chat-card.injury-card .injury-container {
     margin: 1em 0;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border-light);
     border-radius: 6px;
     padding: 0.5em;
     overflow: hidden;
@@ -290,7 +290,7 @@
 
 .witch-iron.chat-card.injury-card .injury-header h4 {
     /*margin: 0.25em 0 0.5em;*/
-    color: #333;
+    color: var(--color-text-dark);
     font-size: 1.1em;
     margin: 0;
 }
@@ -304,7 +304,7 @@
 
 .witch-iron.chat-card.injury-card .damage-tab {
     padding: 2px 5px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border-light);
     border-radius: 3px;
     background:rgb(63, 114, 161);
     font-size: 0.75em;
@@ -363,7 +363,7 @@
     align-items: center;
     gap: 0.5em;
     padding: 0.25em 0;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--color-border-lighter);
     background: none;
     text-align: left;
 }
@@ -434,7 +434,7 @@
 
 .deflected-location {
     font-style: italic;
-    color: #444;
+    color: var(--color-border-dark);
 }
 
 /* Change card style for deflections */
@@ -449,19 +449,19 @@
 /* Battle Wear Summary Styling */
 .witch-iron.battle-wear-summary {
     background: rgba(50, 50, 50, 0.05);
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-border-light);
     border-radius: 5px;
     padding: 10px;
     margin: 10px 0;
-    color: #333;
+    color: var(--color-text-dark);
 }
 
 .witch-iron.battle-wear-summary h3 {
     text-align: center;
     margin: 0 0 10px 0;
     padding-bottom: 5px;
-    border-bottom: 1px solid #ddd;
-    color: #333;
+    border-bottom: 1px solid var(--color-border-lighter);
+    color: var(--color-text-dark);
 }
 
 .witch-iron.battle-wear-summary .summary-content {
@@ -478,14 +478,14 @@
 .witch-iron.battle-wear-summary .summary-line:last-child {
     border-bottom: none;
     font-weight: bold;
-    color: #333;
+    color: var(--color-text-dark);
     margin-top: 5px;
 }
 
 /* Attacker/Defender specific styles */
 .witch-iron.chat-card.injury-card .attacker-wear {
     background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
-    border-left: 3px solid #7b2d26;
+    border-left: 3px solid var(--color-accent);
 }
 
 .witch-iron.chat-card.injury-card .defender-wear {
@@ -494,7 +494,7 @@
 }
 
 .witch-iron.chat-card.injury-card .attacker-wear .battle-wear-title {
-    color: #7b2d26;
+    color: var(--color-accent);
 }
 
 .witch-iron.chat-card.injury-card .defender-wear .battle-wear-title {
@@ -504,7 +504,7 @@
 /* Button color distinction */
 .witch-iron.chat-card.injury-card .attacker-wear .battle-wear-plus {
     background: linear-gradient(to bottom, #f0e0e0, #e0d0d0);
-    border-color: #7b2d26;
+    border-color: var(--color-accent);
 }
 
 .witch-iron.chat-card.injury-card .defender-wear .battle-wear-plus {
@@ -532,7 +532,7 @@
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     font-size: 0.85em;
-    color: #555;
+    color: var(--color-text-muted);
 }
 
 .witch-iron.chat-card.injury-card .battle-wear-processing i {
