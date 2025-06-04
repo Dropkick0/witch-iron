@@ -1803,12 +1803,25 @@ button.roll-skill:hover {
 .witch-iron.chat-card .dice-result {
   display: flex;
   align-items: center;
+  min-width: 60px;
   width: 100%;
 }
 
-.witch-iron.chat-card .dice-result .roll-actions {
+.witch-iron.chat-card .roll-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+  font-weight: normal;
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.witch-iron.chat-card .roll-actions {
   margin-left: auto;
   display: flex;
+  flex-direction: column;
   gap: 5px;
 }
 
