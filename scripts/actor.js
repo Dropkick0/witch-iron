@@ -844,7 +844,8 @@ export class WitchIronActor extends Actor {
     
     // Calculate hits (no need to recalculate if additionalHits is provided for monsters)
     const baseHits = Math.floor(targetValue/10) - Math.floor(rollTotal/10);
-    let hits = baseHits + additionalHits;
+    let hits = baseHits;
+    if (isSuccess) hits += additionalHits;
     
     // Debug log for calculations
      console.log("Roll Results:", {
