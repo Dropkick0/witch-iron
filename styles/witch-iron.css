@@ -3660,3 +3660,39 @@ button.roll-skill:hover {
   height: auto;
   padding: 4px 8px;
 }
+/* -------------------------------------------------------------------------- */
+/* Modifier Dialog Styles */
+/* -------------------------------------------------------------------------- */
+.modifier-dialog .form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.modifier-dialog .option-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 6px;
+}
+.modifier-dialog .option-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 4px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.modifier-dialog .option-row:hover {
+  background: var(--color-tertiary);
+}
+.modifier-dialog .option-row.selected {
+  background: var(--color-secondary);
+  color: #fff;
+}
+.modifier-dialog .option-row input[type="number"] {
+  width: 50px;
+  margin-left: 4px;
+}
+.modifier-dialog label {
+  flex: 1;
+  font-weight: bold;
+}
