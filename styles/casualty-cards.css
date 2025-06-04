@@ -1,0 +1,129 @@
+/* Casualty and Rout Result Card Styles */
+.witch-iron.chat-card.mob-casualty-card,
+.witch-iron.chat-card.rout-result-card {
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  margin: 0;
+  background: #fff;
+  color: var(--color-text-dark);
+  font-family: 'Gentium Book', serif;
+  overflow: hidden;
+}
+
+.witch-iron.chat-card.mob-casualty-card .card-header,
+.witch-iron.chat-card.rout-result-card .card-header {
+  background: var(--color-accent);
+  color: #f5e8d2;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.witch-iron.chat-card.mob-casualty-card .card-header h3,
+.witch-iron.chat-card.rout-result-card .card-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.witch-iron.chat-card.mob-casualty-card .card-content,
+.witch-iron.chat-card.rout-result-card .card-content {
+  padding: 12px;
+}
+
+.mob-casualty-card .casualty-summary {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 0.5em;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+.mob-casualty-card .casualty-summary .losses {
+  color: var(--color-accent);
+}
+.mob-casualty-card .casualty-summary .remaining {
+  color: var(--color-success);
+}
+
+.mob-casualty-card .scale-change {
+  text-align: center;
+  color: var(--color-accent);
+  margin-bottom: 0.5em;
+}
+
+.mob-casualty-card .big-numbers {
+  text-align: center;
+  font-size: 1.6em;
+  font-weight: bold;
+  color: var(--color-accent);
+  margin-top: 0.5em;
+}
+
+.mob-casualty-card .collapsible-section {
+  border: 1px solid rgba(123,45,38,0.2);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 0.5em;
+}
+
+.mob-casualty-card .section-header {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  background: rgba(123,45,38,0.1);
+  cursor: pointer;
+}
+
+.mob-casualty-card .section-header i {
+  margin-right: 8px;
+  transition: transform 0.3s;
+}
+
+.mob-casualty-card .section-header.open i {
+  transform: rotate(180deg);
+}
+
+.mob-casualty-card .section-content {
+  padding: 10px;
+  background: rgba(0,0,0,0.02);
+}
+
+.mob-casualty-card .section-content.hidden { display:none; }
+
+.mob-casualty-card .detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25em 1em;
+}
+
+.mob-casualty-card .detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+.mob-casualty-card .detail-item .label {
+  font-weight: bold;
+  color: var(--color-text-muted);
+}
+.mob-casualty-card .detail-item .value {
+  color: var(--color-text-dark);
+}
+
+/* Rout check dialog buttons with better contrast */
+.rout-check-dialog .dialog-buttons button {
+  background: var(--color-accent);
+  color: #f5e8d2;
+  border: 1px solid var(--color-border-dark);
+}
+
+.rout-check-dialog .dialog-buttons button:hover {
+  background: #601f1a;
+}
+
+/* Default dialog button contrast */
+.dialog .dialog-buttons button.default {
+  background: rgba(50, 50, 50, 0.8);
+  color: var(--color-highlight);
+}

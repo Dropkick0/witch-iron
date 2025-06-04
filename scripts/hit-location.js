@@ -104,6 +104,7 @@ async function handleMobScaleRout(mobActor, oldBodies, newBodies) {
                         const target = mobActor.system.derived?.abilityScore || 0;
                         const success = await performRoutRoll(mobActor, "Steel Check", target);
                         if (!success) await mobActor.update({"system.mob.bodies.value": 0});
+                        await createRoutResultCard(mobActor.name, success);
                         resolve();
                     }
                 },
@@ -128,11 +129,13 @@ async function handleMobScaleRout(mobActor, oldBodies, newBodies) {
                             success = await performRoutRoll(mobActor, "Steel Check", target);
                         }
                         if (!success) await mobActor.update({"system.mob.bodies.value": 0});
+                        await createRoutResultCard(mobActor.name, success);
                         resolve();
                     }
                 }
             },
-            default: "mob"
+            default: "mob",
+            classes: ["rout-check-dialog"]
         }).render(true);
     });
 }
@@ -531,13 +534,20 @@ export class HitLocationSelector {
                 await defenderActor.update({ "system.mob.bodies.value": remainingBodies });
             }
 
+            const oldScale = getMobScale(currentBodies);
+            const newScale = getMobScale(remainingBodies);
+            const scaleChange = scaleRank(newScale) < scaleRank(oldScale);
+
             const mobContent = await renderTemplate(
                 "systems/witch-iron/templates/chat/mob-injury-message.hbs",
                 {
                     attacker: combatData.attacker,
                     defender: combatData.defender,
                     killed: bodiesKilled,
-                    remaining: remainingBodies
+                    remaining: remainingBodies,
+                    damage: netDamage,
+                    scaleChange: scaleChange,
+                    newScale: newScale
                 }
             );
 
@@ -553,6 +563,9 @@ export class HitLocationSelector {
                     }
                 }
             });
+
+            // Attach handlers for expand/collapse
+            setTimeout(() => attachMobCasualtyHandlers(mobMessage.id), 50);
 
             // Check if mob scale has been reduced and possibly trigger a rout check
             await handleMobScaleRout(defenderActor, currentBodies, remainingBodies);
@@ -3031,6 +3044,49 @@ async function updateActorBattleWear(message, attackerWear, defenderWear) {
     
     // Return success
     return true;
+}
+
+/**
+ * Create a rout result chat card
+ * @param {string} mobName - Name of the mob
+ * @param {boolean} success - Whether the rout check succeeded
+ */
+async function createRoutResultCard(mobName, success) {
+    const content = await renderTemplate(
+        "systems/witch-iron/templates/chat/rout-result.hbs",
+        { mob: mobName, success }
+    );
+    await ChatMessage.create({
+        user: game.user.id,
+        content,
+        speaker: ChatMessage.getSpeaker(),
+        flavor: "Rout Result",
+        flags: { "witch-iron": { messageType: "rout-result" } }
+    });
+}
+
+/**
+ * Attach expand/collapse handlers for mob casualty cards
+ * @param {string} messageId
+ */
+function attachMobCasualtyHandlers(messageId) {
+    const el = document.querySelector(`.message[data-message-id="${messageId}"]`);
+    if (!el) return;
+    const toggle = el.querySelector('.casualty-toggle');
+    const details = el.querySelector('.casualty-details');
+    if (!toggle || !details) return;
+    toggle.addEventListener('click', ev => {
+        ev.preventDefault();
+        const icon = toggle.querySelector('i');
+        const hidden = details.classList.contains('hidden');
+        if (hidden) {
+            details.classList.remove('hidden');
+            if (icon) icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+        } else {
+            details.classList.add('hidden');
+            if (icon) icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+        }
+    });
 }
 
 // Register a specific hook for injury message rendering
