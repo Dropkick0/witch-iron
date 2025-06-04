@@ -368,10 +368,10 @@ export class WitchIronDescendantSheet extends ActorSheet {
     event.preventDefault();
     const element = event.currentTarget;
     const attribute = element.dataset.attribute;
-    // Call the actor's rollAttribute method if it exists
-    if (this.actor.rollAttribute) {
-      this.actor.rollAttribute(attribute);
-    }
+    const title = `Attribute Check: ${attribute}`;
+    this._openRollDialog(title, opts => {
+      if (this.actor.rollAttribute) this.actor.rollAttribute(attribute, opts);
+    });
   }
 
   /**
@@ -383,8 +383,8 @@ export class WitchIronDescendantSheet extends ActorSheet {
     event.preventDefault();
     const element = event.currentTarget;
     const skillName = element.dataset.skill;
-    
-    this.actor.rollSkill(skillName);
+    const title = `Skill Check: ${skillName}`;
+    this._openRollDialog(title, opts => this.actor.rollSkill(skillName, opts));
   }
 
   /**
@@ -600,5 +600,80 @@ export class WitchIronDescendantSheet extends ActorSheet {
       console.error("Error resetting skills:", error);
       ui.notifications.error("Failed to initialize skills structure. See console for details.");
     }
+  } 
+
+  /**
+   * Helper to present a modifier dialog and execute a callback with the results
+   * @param {string} title  Dialog title
+   * @param {Function} rollCallback Callback receiving the collected options
+   * @private
+   */
+  _openRollDialog(title, rollCallback) {
+    const content = `
+      <form>
+        <h3>Target Number Modifiers</h3>
+        <div class="form-group">
+          <label>Difficulty</label>
+          <select name="difficulty">
+            <option value="40">Very Easy +40%</option>
+            <option value="20">Easy +20%</option>
+            <option value="0" selected>Normal +0%</option>
+            <option value="-20">Hard -20%</option>
+            <option value="-40">Very Hard -40%</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Situational Modifier</label>
+          <input type="number" name="situationalMod" value="0" step="10" />
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" name="condBlind"/> Blind Rating</label>
+          <input type="number" name="blindRating" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" name="condDeaf"/> Deaf Rating</label>
+          <input type="number" name="deafRating" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" name="condPain" checked/> Pain Rating</label>
+          <input type="number" name="painRating" value="0" min="0" />
+        </div>
+        <h3>Hits Modifiers</h3>
+        <div class="form-group">
+          <label>Additional +Hits</label>
+          <input type="number" name="additionalHits" value="0" />
+        </div>
+      </form>
+    `;
+
+    const dialog = new Dialog({
+      title,
+      content,
+      classes: ["witch-iron", "modifier-dialog"],
+      buttons: {
+        roll: {
+          label: "Roll",
+          callback: html => {
+            const form = html[0].querySelector("form");
+            let situationalMod = parseInt(form.situationalMod.value) || 0;
+            const diffMod = parseInt(form.difficulty.value) || 0;
+            const additionalHits = parseInt(form.additionalHits.value) || 0;
+
+            if (form.condBlind.checked) situationalMod -= 10 * (parseInt(form.blindRating.value) || 0);
+            if (form.condDeaf.checked) situationalMod -= 10 * (parseInt(form.deafRating.value) || 0);
+            if (form.condPain.checked) situationalMod -= 10 * (parseInt(form.painRating.value) || 0);
+
+            situationalMod += diffMod;
+
+            const opts = { situationalMod, additionalHits };
+            rollCallback(opts);
+          }
+        },
+        cancel: { label: "Cancel" }
+      },
+      default: "roll"
+    });
+
+    dialog.render(true);
   }
-} 
+}

@@ -149,6 +149,9 @@ export class WitchIronMonsterSheet extends ActorSheet {
     // Prepare conditions for the #each helper
     context.conditions = {};
     const conditionsData = actorData.system.conditions || {};
+    ["blind", "deaf", "pain"].forEach(cond => {
+      if (!conditionsData[cond]) conditionsData[cond] = { value: 0 };
+    });
     for (const condKey in conditionsData) {
       context.conditions[condKey] = {
         label: this.capitalize(condKey),
@@ -460,18 +463,15 @@ export class WitchIronMonsterSheet extends ActorSheet {
   }
   
   /**
-   * Roll a specialized check for the monster
-   * @private
-   */
+  * Roll a specialized check for the monster
+  * @private
+  */
   _rollSpecializedCheck() {
-    // Call the actor's rollMonsterCheck method with appropriate options
-    if (this.actor.rollMonsterCheck) {
-      this.actor.rollMonsterCheck({
-        label: "Specialized Check",
-        // Include the monster's +Hits bonus for specialized skills
-        additionalHits: this.actor.system.derived?.plusHits || 0
-      });
-    }
+    const title = "Specialized Check";
+    this._openRollDialog(title, opts => {
+      opts.additionalHits = this.actor.system.derived?.plusHits || 0;
+      this.actor.rollMonsterCheck(opts);
+    });
   }
   
   /**
@@ -479,13 +479,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
    * @private
    */
   _rollGeneralCheck() {
-    // Call the actor's rollMonsterCheck method with no additional modifiers
-    if (this.actor.rollMonsterCheck) {
-      this.actor.rollMonsterCheck({
-        label: "General Check",
-        additionalHits: 0
-      });
-    }
+    const title = "General Check";
+    this._openRollDialog(title, opts => this.actor.rollMonsterCheck(opts));
   }
   
   /**
@@ -506,14 +501,86 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     const penalty = ineptPenalties[hdValue] || -10;
     
-    // Call the actor's rollMonsterCheck method with the penalty as situational modifier
-    if (this.actor.rollMonsterCheck) {
-      this.actor.rollMonsterCheck({
-        label: "Inept Check",
-        situationalMod: penalty,
-        additionalHits: 0
-      });
-    }
+    const title = "Inept Check";
+    this._openRollDialog(title, opts => {
+      opts.situationalMod += penalty;
+      this.actor.rollMonsterCheck(opts);
+    });
+  }
+
+  /**
+   * Helper to present a modifier dialog and execute a callback with the results
+   * @param {string} title  Dialog title
+   * @param {Function} rollCallback  Callback receiving the collected options
+   * @private
+   */
+  _openRollDialog(title, rollCallback) {
+    const content = `
+      <form>
+        <h3>Target Number Modifiers</h3>
+        <div class="form-group">
+          <label>Difficulty</label>
+          <select name="difficulty">
+            <option value="40">Very Easy +40%</option>
+            <option value="20">Easy +20%</option>
+            <option value="0" selected>Normal +0%</option>
+            <option value="-20">Hard -20%</option>
+            <option value="-40">Very Hard -40%</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Situational Modifier</label>
+          <input type="number" name="situationalMod" value="0" step="10" />
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" name="condBlind"/> Blind Rating</label>
+          <input type="number" name="blindRating" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" name="condDeaf"/> Deaf Rating</label>
+          <input type="number" name="deafRating" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" name="condPain" checked/> Pain Rating</label>
+          <input type="number" name="painRating" value="0" min="0" />
+        </div>
+        <h3>Hits Modifiers</h3>
+        <div class="form-group">
+          <label>Additional +Hits</label>
+          <input type="number" name="additionalHits" value="0" />
+        </div>
+      </form>
+    `;
+
+    const dialog = new Dialog({
+      title,
+      content,
+      classes: ["witch-iron", "modifier-dialog"],
+      buttons: {
+        roll: {
+          label: "Roll",
+          callback: html => {
+            const form = html[0].querySelector("form");
+            let situationalMod = parseInt(form.situationalMod.value) || 0;
+            const diffMod = parseInt(form.difficulty.value) || 0;
+            let additionalHits = parseInt(form.additionalHits.value) || 0;
+
+            if (form.condBlind.checked) situationalMod -= 10 * (parseInt(form.blindRating.value) || 0);
+            if (form.condDeaf.checked) situationalMod -= 10 * (parseInt(form.deafRating.value) || 0);
+            if (form.condPain.checked) situationalMod -= 10 * (parseInt(form.painRating.value) || 0);
+
+            situationalMod += diffMod;
+
+            const opts = { situationalMod, additionalHits };
+            rollCallback(opts);
+          }
+        },
+        cancel: { label: "Cancel" }
+      },
+      default: "roll"
+    });
+
+    dialog.render(true);
   }
 
   /**
