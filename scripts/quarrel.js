@@ -45,26 +45,44 @@ async function clearPhysicalConditions(actor) {
   if (!actor) return;
 
   const updates = {
-    'system.conditions.aflame.value': 0,
-    'system.conditions.bleed.value': 0,
-    'system.conditions.poison.value': 0
+    system: {
+      conditions: {
+        aflame: { value: 0 },
+        bleed: { value: 0 },
+        poison: { value: 0 }
+      }
+    }
   };
 
-  // Update the actor document
-  await actor.update(updates);
+  await updateActorAndTokens(actor, updates);
+}
 
-  // Also update any active tokens using this actor (covers unlinked monsters)
+/**
+ * Apply updates to an actor and all of its active tokens, then refresh sheets.
+ * @param {Actor} actor - The actor to update
+ * @param {Object} updates - The update data object
+ */
+async function updateActorAndTokens(actor, updates) {
+  if (!actor) return;
+
+  // Expand dotted paths so update hooks receive nested data
+  const expanded = foundry.utils.expandObject(updates);
+
+  // Update the base actor
+  await actor.update(expanded);
+
+  // Update any active tokens derived from this actor
   const tokens = actor.getActiveTokens(true);
   for (const token of tokens) {
     if (token.actor) {
-      await token.actor.update(updates);
+      await token.actor.update(expanded);
       if (token.actor.sheet) {
         await token.actor.sheet.render(false);
       }
     }
   }
 
-  // Refresh the actor's own sheet if it's open
+  // Refresh the actor's own sheet if open
   if (actor.sheet) {
     await actor.sheet.render(false);
   }
@@ -596,16 +614,16 @@ class QuarrelTracker {
                         [wpPath]: Math.max(currentWP - 10, 0),
                         [`system.conditions.${result.condition}.value`]: 0
                     };
-                    await responderActor.update(updateData);
+                    await updateActorAndTokens(responderActor, updateData);
                 }
             }
             // Remove all conditions if actor wins
             else if (result.responderOutcome === 'Victory') {
                 if (['aflame','bleed','poison'].includes(result.condition)) {
                     await clearPhysicalConditions(responderActor);
-                } else {
+                } else if (!['stress','corruption'].includes(result.condition)) {
                     const updateData = { [`system.conditions.${result.condition}.value`]: 0 };
-                    await responderActor.update(updateData);
+                    await updateActorAndTokens(responderActor, updateData);
                 }
             }
             // Tie (VictoryAtACost) -> no automatic changes
