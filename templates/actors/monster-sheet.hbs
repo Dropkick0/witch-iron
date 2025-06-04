@@ -276,7 +276,7 @@
               <div class="condition-row flexrow" data-condition="{{key}}">
                 <button type="button" class="condition-name cond-quarrel">{{condition.label}}</button>
                 <button type="button" class="cond-minus"><i class="fas fa-minus"></i></button>
-                <span class="cond-value">{{condition.value}}</span>
+                <input type="number" class="cond-value" value="{{condition.value}}" min="0" />
                 <button type="button" class="cond-plus"><i class="fas fa-plus"></i></button>
               </div>
               {{/each}}

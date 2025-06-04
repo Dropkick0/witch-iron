@@ -3660,3 +3660,34 @@ button.roll-skill:hover {
   height: auto;
   padding: 4px 8px;
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Modifier Dialog Styles                                                    */
+/* -------------------------------------------------------------------------- */
+.modifier-dialog form {
+  padding: 10px;
+}
+.modifier-dialog .form-group {
+  margin-bottom: 8px;
+}
+.modifier-dialog .form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 3px;
+  color: var(--primary-color);
+}
+.modifier-dialog input,
+.modifier-dialog select {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.8);
+}
+.modifier-dialog h3 {
+  margin-top: 10px;
+  margin-bottom: 4px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--primary-color);
+}

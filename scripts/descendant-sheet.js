@@ -1,4 +1,4 @@
-import { createItem } from "./utils.js";
+import { createItem, showModifierDialog } from "./utils.js";
 
 /**
  * Descendant sheet class for the Witch Iron system
@@ -368,10 +368,10 @@ export class WitchIronDescendantSheet extends ActorSheet {
     event.preventDefault();
     const element = event.currentTarget;
     const attribute = element.dataset.attribute;
-    // Call the actor's rollAttribute method if it exists
-    if (this.actor.rollAttribute) {
-      this.actor.rollAttribute(attribute);
-    }
+    const title = `Attribute Check: ${attribute}`;
+    this._openRollDialog(title, opts => {
+      if (this.actor.rollAttribute) this.actor.rollAttribute(attribute, opts);
+    });
   }
 
   /**
@@ -383,8 +383,8 @@ export class WitchIronDescendantSheet extends ActorSheet {
     event.preventDefault();
     const element = event.currentTarget;
     const skillName = element.dataset.skill;
-    
-    this.actor.rollSkill(skillName);
+    const title = `Skill Check: ${skillName}`;
+    this._openRollDialog(title, opts => this.actor.rollSkill(skillName, opts));
   }
 
   /**
@@ -600,5 +600,15 @@ export class WitchIronDescendantSheet extends ActorSheet {
       console.error("Error resetting skills:", error);
       ui.notifications.error("Failed to initialize skills structure. See console for details.");
     }
+  } 
+
+  /**
+   * Helper to present a modifier dialog and execute a callback with the results
+   * @param {string} title  Dialog title
+   * @param {Function} rollCallback Callback receiving the collected options
+   * @private
+   */
+  _openRollDialog(title, rollCallback) {
+    showModifierDialog(title, rollCallback);
   }
-} 
+}

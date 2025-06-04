@@ -3,7 +3,7 @@
 
 // Import the quarrel API for non-combat condition checks
 import { manualQuarrel } from "./quarrel.js";
-import { createItem } from "./utils.js";
+import { createItem, showModifierDialog } from "./utils.js";
 
 /**
  * Monster sheet class for the Witch Iron system
@@ -149,6 +149,9 @@ export class WitchIronMonsterSheet extends ActorSheet {
     // Prepare conditions for the #each helper
     context.conditions = {};
     const conditionsData = actorData.system.conditions || {};
+    ["blind", "deaf", "pain"].forEach(cond => {
+      if (!conditionsData[cond]) conditionsData[cond] = { value: 0 };
+    });
     for (const condKey in conditionsData) {
       context.conditions[condKey] = {
         label: this.capitalize(condKey),
@@ -460,18 +463,15 @@ export class WitchIronMonsterSheet extends ActorSheet {
   }
   
   /**
-   * Roll a specialized check for the monster
-   * @private
-   */
+  * Roll a specialized check for the monster
+  * @private
+  */
   _rollSpecializedCheck() {
-    // Call the actor's rollMonsterCheck method with appropriate options
-    if (this.actor.rollMonsterCheck) {
-      this.actor.rollMonsterCheck({
-        label: "Specialized Check",
-        // Include the monster's +Hits bonus for specialized skills
-        additionalHits: this.actor.system.derived?.plusHits || 0
-      });
-    }
+    const title = "Specialized Check";
+    this._openRollDialog(title, opts => {
+      opts.additionalHits = this.actor.system.derived?.plusHits || 0;
+      this.actor.rollMonsterCheck(opts);
+    });
   }
   
   /**
@@ -479,13 +479,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
    * @private
    */
   _rollGeneralCheck() {
-    // Call the actor's rollMonsterCheck method with no additional modifiers
-    if (this.actor.rollMonsterCheck) {
-      this.actor.rollMonsterCheck({
-        label: "General Check",
-        additionalHits: 0
-      });
-    }
+    const title = "General Check";
+    this._openRollDialog(title, opts => this.actor.rollMonsterCheck(opts));
   }
   
   /**
@@ -506,14 +501,21 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     const penalty = ineptPenalties[hdValue] || -10;
     
-    // Call the actor's rollMonsterCheck method with the penalty as situational modifier
-    if (this.actor.rollMonsterCheck) {
-      this.actor.rollMonsterCheck({
-        label: "Inept Check",
-        situationalMod: penalty,
-        additionalHits: 0
-      });
-    }
+    const title = "Inept Check";
+    this._openRollDialog(title, opts => {
+      opts.situationalMod += penalty;
+      this.actor.rollMonsterCheck(opts);
+    });
+  }
+
+  /**
+   * Helper to present a modifier dialog and execute a callback with the results
+   * @param {string} title  Dialog title
+   * @param {Function} rollCallback  Callback receiving the collected options
+   * @private
+   */
+  _openRollDialog(title, rollCallback) {
+    showModifierDialog(title, rollCallback);
   }
 
   /**
