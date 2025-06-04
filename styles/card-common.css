@@ -1,82 +1,84 @@
 /* Common card and utility styles shared across Witch Iron chat cards */
+
+/* ═══ Card Wrapper ══════════════════════════════════════ */
 .wi-card {
-  border: 1px solid var(--color-border-light);
-  border-radius: 6px;
-  margin: 0;
+  border: 1px solid var(--wi-border);
+  border-radius: 4px;
   background: #fff;
-  color: var(--color-text-dark);
-  font-family: 'Gentium Book', serif;
+  font-size: 0.85rem;
   overflow: hidden;
+  line-height: 1.25;
 }
 
-.wi-card .card-header {
-  background: var(--color-accent);
-  color: #f5e8d2;
-  padding: 8px 10px;
+.wi-card__title {
+  background: var(--wi-bg-head);
+  color: #fff;
+  padding: 4px 8px;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  gap: 0.4em;
 }
 
-.wi-card .card-header h3 {
-  margin: 0;
-  font-size: 1.2em;
-  font-weight: bold;
+/* ═══ Expandable Blocks ═════════════════════════════════ */
+.wi-block summary {
+  background: var(--wi-bg-sub);
+  padding: 3px 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 1px solid var(--wi-border-light);
 }
 
-.wi-card .card-content {
-  padding: 12px;
+details.wi-block {
+  border-top: 1px solid var(--wi-border-light);
 }
 
-.grid-two {
+details[open].wi-block {
+  border-bottom: 1px solid var(--wi-border-light);
+}
+
+/* ═══ Two-column grid (labels left, values right) ═══════ */
+.wi-grid2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.25em 1em;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  padding: 6px 8px 8px;
 }
 
-.grid-two .label {
-  font-weight: bold;
-  color: var(--color-text-muted);
+.wi-grid2 span:nth-child(odd) {
+  color: var(--wi-text-muted);
 }
 
-.grid-two .value {
-  color: var(--color-text-dark);
+.wi-grid2 span:nth-child(even) {
+  text-align: right;
+  font-weight: 600;
 }
 
-.grid-two .wide {
-  grid-column: 1 / span 2;
-  display: flex;
-  gap: 1em;
-}
-
-.badge,
-.combat-badge {
-  display: inline-block;
-  font-size: 0.7em;
-  background-color: var(--color-accent);
-  color: var(--color-surface-light);
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: 8px;
-  vertical-align: middle;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.progress {
-  background: var(--color-border-lighter);
-  border-radius: 4px;
+/* ═══ Progress bar for quick “how dead” read ════════════ */
+.wi-progress {
+  height: 5px;
+  margin: 0 8px 8px;
+  background: #ddd;
+  border-radius: 3px;
   overflow: hidden;
-  height: 8px;
-  margin-top: 4px;
 }
 
-.progress > div {
-  background: var(--color-accent);
-  height: 100%;
+.wi-progress > div {
+  background: var(--wi-maroon);
 }
 
-.fade {
-  opacity: 0.7;
+/* ═══ Optional footer button matches Injury card ════════ */
+.wi-card__footer {
+  padding: 6px 8px;
+  border-top: 1px solid var(--wi-border-light);
+}
+
+.wi-btn {
+  background: #1d8cf8;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  cursor: pointer;
 }
