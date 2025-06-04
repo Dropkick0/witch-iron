@@ -34,7 +34,7 @@ const CONDITION_ICONS = {
   bleed: "icons/svg/blood.svg",
   poison: "icons/svg/poison.svg",
   stress: "icons/svg/burst.svg",
-  corruption: "icons/svg/bone-black.svg"
+  corruption: "icons/svg/bone.svg"
 };
 
 /**
@@ -68,6 +68,8 @@ class QuarrelTracker {
         this.pendingTokenQuarrels = new Map(); // Map of token ID -> checkData
         this.activeQuarrels = new Set(); // Track all actors currently involved in any quarrel
         this.selectedCheck = null;
+        // Expose condition icons mapping on the instance for easy access
+        this.CONDITION_ICONS = CONDITION_ICONS;
         console.log("Witch Iron | QuarrelTracker initialized");
     }
     
@@ -567,12 +569,26 @@ class QuarrelTracker {
                 canvas.tokens.placeables
                   .filter(t => t.actor?.id === actor.id)
                   .forEach(t => t.actor?.toggleStatusEffect("dead", {active: true, overlay: true}));
+
+                // Additional effects for Stress and Corruption
+                if (['stress','corruption'].includes(result.condition)) {
+                    const wpPath = 'system.attributes.willpower.value';
+                    const currentWP = foundry.utils.getProperty(responderActor, wpPath) || 0;
+                    const updateData = {
+                        [wpPath]: Math.max(currentWP - 10, 0),
+                        [`system.conditions.${result.condition}.value`]: 0
+                    };
+                    await responderActor.update(updateData);
+                    if (responderActor.sheet?.rendered) {
+                        responderActor.sheet.render(false);
+                    }
+                }
             }
             // Remove all conditions if actor wins
             else if (result.responderOutcome === 'Victory') {
                 if (['aflame','bleed','poison'].includes(result.condition)) {
                     await clearPhysicalConditions(responderActor);
-                } else {
+                } else if (!['stress','corruption'].includes(result.condition)) {
                     const updateData = { [`system.conditions.${result.condition}.value`]: 0 };
                     await responderActor.update(updateData);
                 }
