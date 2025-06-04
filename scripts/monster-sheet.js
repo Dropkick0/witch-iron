@@ -704,7 +704,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
    * @param {Event} event The originating click event
    * @private
    */
-  _onMeleeAttack(event) {
+  async _onMeleeAttack(event) {
     event.preventDefault();
     
 //////     console.log(`Witch Iron | Performing melee attack for monster ${this.actor.name}`);
@@ -716,21 +716,24 @@ export class WitchIronMonsterSheet extends ActorSheet {
       this.actor.update({'system.flags.isCombatCheck': true});
     }
     
-    // Call the actor's rollMonsterCheck method with combat check flag
-    if (this.actor.rollMonsterCheck) {
-      // Set up options for a combat roll with specialized bonus
-      const combatOptions = {
-        label: "Melee Attack",
-        isCombatCheck: true,
-        additionalHits: this.actor.system.derived?.plusHits || 0
-      };
-      
-//////       console.log(`Witch Iron | Combat options for melee attack:`, combatOptions);
-      
-      // Perform the roll with combat flag
-      this.actor.rollMonsterCheck(combatOptions);
-    } else {
+    if (!this.actor.rollMonsterCheck) {
       console.error(`Witch Iron | ERROR: Actor ${this.actor.name} does not have rollMonsterCheck method`);
+      return;
+    }
+
+    const defaultHits = this.actor.system.derived?.plusHits || 0;
+    const opts = await openModifierDialog(this.actor, {
+      title: "Melee Attack",
+      defaultHits
+    });
+    if (opts) {
+      const additionalHits = defaultHits + (opts.additionalHits || 0);
+      this.actor.rollMonsterCheck({
+        label: "Melee Attack",
+        ...opts,
+        isCombatCheck: true,
+        additionalHits
+      });
     }
   }
 
