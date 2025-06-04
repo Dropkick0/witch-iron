@@ -47,10 +47,10 @@ export async function spawnGhostTokens(token) {
     [`flags.witch-iron.isMobLeader`]: true,
     overlayEffect: "icons/svg/target.svg"
   });
-  await adjustGhostTokenCount(token, bodies - 1);
+  await syncGhostTiles(token, bodies - 1);
 }
 
-export async function adjustGhostTokenCount(token, required) {
+export async function syncGhostTiles(token, required) {
   const tiles = canvas.scene.tiles.filter(t => t.getFlag("witch-iron", "ghostParent") === token.id);
   const offsets = computeOffsets(required, 0);
 
@@ -64,13 +64,14 @@ export async function adjustGhostTokenCount(token, required) {
   const doc = token.document ?? token;
   const width = doc.width * grid;
   const height = doc.height * grid;
-  const newTiles = [];
+  const updateData = [];
+  const createData = [];
   const idsToDelete = [];
 
   for (let i = 0; i < offsets.length; i++) {
     const offset = offsets[i];
     const tile = tilesByIndex.get(i);
-    const data = {
+    const base = {
       x: token.x + offset.x,
       y: token.y + offset.y,
       rotation: token.rotation,
@@ -79,30 +80,26 @@ export async function adjustGhostTokenCount(token, required) {
       img: doc.texture?.src || doc.img,
       flags: { "witch-iron": { ghostParent: token.id, ghostIndex: i } }
     };
+
     if (tile) {
-      await tile.update(data);
+      updateData.push({ _id: tile.id, ...base });
       tilesByIndex.delete(i);
     } else {
-      newTiles.push(data);
+      createData.push(base);
     }
   }
 
-  // Remaining tiles in tilesByIndex are excess and should be removed
   for (const tile of tilesByIndex.values()) idsToDelete.push(tile.id);
 
-  if (newTiles.length) await canvas.scene.createEmbeddedDocuments("Tile", newTiles);
+  if (updateData.length) await canvas.scene.updateEmbeddedDocuments("Tile", updateData);
+  if (createData.length) await canvas.scene.createEmbeddedDocuments("Tile", createData);
   if (idsToDelete.length) await canvas.scene.deleteEmbeddedDocuments("Tile", idsToDelete);
 }
 
 export function updateGhostTokenPositions(token) {
   if (!token.getFlag("witch-iron", "isMobLeader")) return;
   const tiles = canvas.scene.tiles.filter(t => t.getFlag("witch-iron", "ghostParent") === token.id);
-  tiles.sort((a, b) => a.getFlag("witch-iron", "ghostIndex") - b.getFlag("witch-iron", "ghostIndex"));
-  const offsets = computeOffsets(tiles.length, 0);
-  tiles.forEach((tile, i) => {
-    const o = offsets[i];
-    tile.update({ x: token.x + o.x, y: token.y + o.y, rotation: token.rotation });
-  });
+  syncGhostTiles(token, tiles.length);
 }
 
 export async function deleteGhostTokens(token) {
@@ -130,7 +127,7 @@ Hooks.on("updateActor", actor => {
       if (!t.getFlag("witch-iron", "isMobLeader")) {
         spawnGhostTokens(t);
       } else {
-        adjustGhostTokenCount(t, bodies - 1);
+        syncGhostTiles(t, bodies - 1);
       }
     } else if (t.getFlag("witch-iron", "isMobLeader")) {
       t.update({ "flags.witch-iron.isMobLeader": null, overlayEffect: "" });
