@@ -78,7 +78,7 @@ export async function syncGhostTiles(token, required) {
       rotation: token.rotation,
       width,
       height,
-      img: imgPath,
+      texture: { src: imgPath },
       overhead: true,
       occlusion: { mode: 0 },
       flags: { "witch-iron": { ghostParent: token.id, ghostIndex: i } }
