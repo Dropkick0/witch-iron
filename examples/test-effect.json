@@ -1,0 +1,16 @@
+{
+  "_id": "test-effect-1",
+  "label": "Skill Specialization: Sneak",
+  "icon": "icons/svg/upgrade.svg",
+  "changes": [],
+  "disabled": false,
+  "duration": {},
+  "flags": {
+    "witch-iron": {
+      "modifier": {
+        "type": "hits",
+        "value": 1
+      }
+    }
+  }
+}
