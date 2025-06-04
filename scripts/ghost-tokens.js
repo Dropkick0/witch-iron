@@ -78,11 +78,13 @@ export async function syncGhostTiles(token, required) {
       width,
       height,
       img: doc.texture?.src || doc.img,
+      overhead: true,
+      occlusion: { mode: 0 },
       flags: { "witch-iron": { ghostParent: token.id, ghostIndex: i } }
     };
 
     if (tile) {
-      updateData.push({ id: tile.id, ...base });
+      updateData.push({ _id: tile.id, ...base });
       tilesByIndex.delete(i);
     } else {
       createData.push(base);
