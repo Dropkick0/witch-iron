@@ -11,9 +11,16 @@
 
   <div class="card-content">
     <div class="roll-result {{#if isCriticalSuccess}}critical-success{{else if isFumble}}fumble{{else if isSuccess}}success{{else}}failure{{/if}}">
-      <div class="dice-roll">
-        <div class="dice-result">
-          <h4 class="dice-total">{{roll.total}}</h4>
+      <div class="roll-header">
+        <div class="dice-roll">
+          <div class="dice-result">
+            <h4 class="dice-total">{{roll.total}}</h4>
+          </div>
+        </div>
+        <div class="roll-actions">
+          <button type="button" class="reverse-btn">Reverse</button>
+          <button type="button" class="reroll-btn">Reroll</button>
+          <button type="button" class="luck-btn">Luck</button>
         </div>
       </div>
       
@@ -45,10 +52,5 @@
       <span class="value">{{roll.formula}}</span>
     </div>
     {{/if}}
-    <div class="roll-actions">
-      <button type="button" class="reverse-btn">Reverse</button>
-      <button type="button" class="reroll-btn">Reroll</button>
-      <button type="button" class="luck-btn">Luck</button>
-    </div>
   </footer>
 </div>
