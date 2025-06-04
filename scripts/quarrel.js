@@ -43,12 +43,23 @@ const CONDITION_ICONS = {
  */
 async function clearPhysicalConditions(actor) {
   if (!actor) return;
+
   const updates = {
     'system.conditions.aflame.value': 0,
     'system.conditions.bleed.value': 0,
     'system.conditions.poison.value': 0
   };
+
+  // Update the actor document
   await actor.update(updates);
+
+  // Also update any active tokens using this actor (covers unlinked monsters)
+  const tokens = actor.getActiveTokens(true);
+  for (const token of tokens) {
+    if (token.actor) {
+      await token.actor.update(updates);
+    }
+  }
 }
 
 class QuarrelTracker {
