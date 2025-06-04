@@ -3708,3 +3708,9 @@ button.roll-skill:hover {
   align-items: center;
   justify-content: space-between;
 }
+
+/* Darker default dialog buttons for better contrast */
+.dialog .dialog-buttons button.default {
+  background: rgba(50, 50, 50, 0.8);
+  color: var(--color-surface-light);
+}

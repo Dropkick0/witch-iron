@@ -41,6 +41,14 @@
   font-weight: bold;
 }
 
+.mob-casualty-card .casualty-summary .losses {
+  color: var(--color-accent);
+}
+
+.mob-casualty-card .casualty-summary .remaining {
+  color: var(--color-success);
+}
+
 .mob-casualty-card .scale-change {
   text-align: center;
   color: var(--color-accent);
@@ -51,6 +59,7 @@
   text-align: center;
   font-size: 1.4em;
   margin-top: 0.5em;
+  color: var(--color-accent);
 }
 
 .mob-casualty-card .collapsible-section {
@@ -94,6 +103,14 @@
   display: flex;
   justify-content: space-between;
   padding: 2px 0;
+}
+.mob-casualty-card .detail-item .label {
+  font-weight: bold;
+  color: var(--color-text-muted);
+}
+
+.mob-casualty-card .detail-item .value {
+  color: var(--color-text-dark);
 }
 
 /* Rout check dialog buttons with better contrast */
