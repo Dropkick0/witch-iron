@@ -1067,6 +1067,13 @@ export class WitchIronMonsterSheet extends ActorSheet {
       };
       const iconClass = iconMap[conditionName] || "fa-info-circle";
 
+      const shortDescMap = {
+        blind: "Retina Overload",
+        deaf: "Ringing in Ears",
+        pain: "Agony"
+      };
+      const shortDesc = shortDescMap[conditionName] || condLabel;
+
       const content = `
         <div class="witch-iron chat-card condition-card">
           <div class="card-header">
@@ -1074,7 +1081,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
             <h3>${actor.name} - ${condLabel}</h3>
           </div>
           <div class="card-content">
-            <p>Retina Overload, Ringing in Ears &amp; Agony. This Condition inflicts a <strong>${penalty}%</strong> Check penalty. Passively reduce by one each hour.</p>
+            <p>${shortDesc}. This Condition inflicts a <strong>${penalty}%</strong> Check penalty. Passively reduce by one each hour.</p>
             <p><strong>Impairs:</strong> ${checkType}.</p>
             <p><strong>Removed by:</strong> ${removal}.</p>
           </div>
