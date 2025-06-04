@@ -21,7 +21,8 @@
     "styles/witch-iron.css",
     "styles/combat-card.css",
     "styles/hit-location.css",
-    "styles/injury-card.css"
+    "styles/injury-card.css",
+    "styles/condition-card.css"
   ],
   "packs": [
     {

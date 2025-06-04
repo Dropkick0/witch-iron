@@ -1,0 +1,33 @@
+/* Condition Card Styles */
+.witch-iron.chat-card.condition-card {
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  margin: 0;
+  background: #fff;
+  color: var(--color-text-dark);
+  font-family: 'Gentium Book', serif;
+  overflow: hidden;
+}
+
+.witch-iron.chat-card.condition-card .card-header {
+  background: var(--color-accent);
+  color: #f5e8d2;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.witch-iron.chat-card.condition-card .card-header i {
+  font-size: 1.4em;
+}
+
+.witch-iron.chat-card.condition-card .card-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.witch-iron.chat-card.condition-card .card-content {
+  padding: 12px;
+}
