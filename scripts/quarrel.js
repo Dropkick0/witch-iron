@@ -98,6 +98,31 @@ async function updateActorAndTokens(actor, updates) {
   }
 }
 
+/**
+ * Force refresh of a specific condition display on any open sheets
+ * @param {Actor} actor - The actor whose sheet should refresh
+ * @param {string} condition - Condition key (stress, corruption, etc.)
+ * @param {number} value - New numeric value to display
+ */
+function refreshConditionDisplay(actor, condition, value) {
+  if (!actor) return;
+
+  const updateHTML = (sheet) => {
+    if (!sheet?.rendered) return;
+    const html = sheet.element;
+    const displayElement = html.find(`.condition-row[data-condition="${condition}"] .cond-value`);
+    if (displayElement.length) {
+      displayElement.text(value);
+    }
+  };
+
+  updateHTML(actor.sheet);
+
+  for (const token of actor.getActiveTokens(true)) {
+    updateHTML(token.actor?.sheet);
+  }
+}
+
 class QuarrelTracker {
     constructor() {
         this.pendingQuarrels = new Map(); // Map of actor ID -> checkData
@@ -625,6 +650,7 @@ class QuarrelTracker {
                         [`system.conditions.${result.condition}.value`]: 0
                     };
                     await updateActorAndTokens(responderActor, updateData);
+                    refreshConditionDisplay(responderActor, result.condition, 0);
                 }
             }
             // Remove all conditions if actor wins
