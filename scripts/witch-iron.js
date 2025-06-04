@@ -15,6 +15,7 @@ import { initQuarrel, manualQuarrel, quarrelTracker } from "./quarrel.js";
 import { HitLocationSelector } from "./hit-location.js";
 import { InjuryTables } from "./injury-tables.js";
 import { registerCommonHandlebarsHelpers } from "./handlebars-helpers.js";
+import "./ghost-tokens.js";
 
 // Define the system configuration object
 CONFIG.WITCH_IRON = {
