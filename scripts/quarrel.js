@@ -38,8 +38,8 @@ const CONDITION_ICONS = {
 };
 
 /**
- * Reset Aflame, Bleed, and Poison conditions on the actor and any unlinked
- * tokens representing it.
+ * Reset the Aflame, Bleed, and Poison conditions on the given actor and update
+ * any unlinked tokens representing it.
  * @param {Actor} actor - The actor to update
  */
 async function clearPhysicalConditions(actor) {
