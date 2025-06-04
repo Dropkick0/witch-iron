@@ -1,9 +1,17 @@
 export const FORMATION_SHAPES = [
   "line",
+  "doubleLine",
+  "tripleLine",
   "column",
+  "doubleColumn",
+  "tripleColumn",
   "wedge",
   "echelonLeft",
+  "doubleEchelonLeft",
+  "tripleEchelonLeft",
   "echelonRight",
+  "doubleEchelonRight",
+  "tripleEchelonRight",
   "square",
   "diamond",
   "circle",
@@ -11,7 +19,7 @@ export const FORMATION_SHAPES = [
   "skirmish"
 ];
 
-export function computeOffsets(count, start = 0, formation = "line") {
+export function computeOffsets(count, start = 0, formation = "skirmish") {
   const grid = canvas.scene.grid.size;
   const needed = count + start;
   const coords = [];
@@ -22,8 +30,38 @@ export function computeOffsets(count, start = 0, formation = "line") {
       for (let i = 1; coords.length < needed; i++) add(i, 0);
       break;
     }
+    case "doubleLine": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(i, 0);
+        if (coords.length < needed) add(i, 1);
+      }
+      break;
+    }
+    case "tripleLine": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(i, 0);
+        if (coords.length < needed) add(i, 1);
+        if (coords.length < needed) add(i, -1);
+      }
+      break;
+    }
     case "column": {
       for (let i = 1; coords.length < needed; i++) add(0, i);
+      break;
+    }
+    case "doubleColumn": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(0, i);
+        if (coords.length < needed) add(1, i);
+      }
+      break;
+    }
+    case "tripleColumn": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(0, i);
+        if (coords.length < needed) add(1, i);
+        if (coords.length < needed) add(-1, i);
+      }
       break;
     }
     case "wedge": {
@@ -36,8 +74,38 @@ export function computeOffsets(count, start = 0, formation = "line") {
       for (let i = 1; coords.length < needed; i++) add(-i, i);
       break;
     }
+    case "doubleEchelonLeft": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(-i, i);
+        if (coords.length < needed) add(-i + 1, i + 1);
+      }
+      break;
+    }
+    case "tripleEchelonLeft": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(-i, i);
+        if (coords.length < needed) add(-i + 1, i + 1);
+        if (coords.length < needed) add(-i - 1, i - 1);
+      }
+      break;
+    }
     case "echelonRight": {
       for (let i = 1; coords.length < needed; i++) add(i, i);
+      break;
+    }
+    case "doubleEchelonRight": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(i, i);
+        if (coords.length < needed) add(i + 1, i - 1);
+      }
+      break;
+    }
+    case "tripleEchelonRight": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(i, i);
+        if (coords.length < needed) add(i + 1, i - 1);
+        if (coords.length < needed) add(i - 1, i + 1);
+      }
       break;
     }
     case "square": {
@@ -51,9 +119,14 @@ export function computeOffsets(count, start = 0, formation = "line") {
     }
     case "diamond": {
       for (let d = 1; coords.length < needed; d++) {
-        for (let i = -d; i <= d && coords.length < needed; i++) {
-          add(i, d);
-          if (coords.length < needed) add(i, -d);
+        for (let x = -d; x <= d && coords.length < needed; x++) {
+          const y = d - Math.abs(x);
+          if (y > 0) {
+            add(x, y);
+            if (coords.length < needed) add(x, -y);
+          } else {
+            add(x, 0);
+          }
         }
       }
       break;
@@ -126,7 +199,7 @@ export async function spawnGhostTokens(token) {
 
 export async function syncGhostTiles(token, required, overrides = {}) {
   const tiles = canvas.scene.tiles.filter(t => t.getFlag("witch-iron", "ghostParent") === token.id);
-  const formation = game.settings.get("witch-iron", "mobFormationShape") || "line";
+  const formation = token.actor?.system?.mob?.formation?.value || "skirmish";
   const offsets = computeOffsets(required, 0, formation);
 
   const tilesByIndex = new Map();

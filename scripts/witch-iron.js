@@ -113,7 +113,7 @@ Hooks.once("init", function() {
     config: true,
     type: String,
     choices: formationChoices,
-    default: FORMATION_SHAPES[0],
+    default: "skirmish",
     onChange: value => {
       if (game.user.isGM) {
         ui.notifications.info(`Witch Iron: Mob formation set to ${value}`);
