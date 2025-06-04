@@ -82,7 +82,7 @@ export async function syncGhostTiles(token, required) {
     };
 
     if (tile) {
-      updateData.push({ id: tile.id, ...base });
+      updateData.push({ _id: tile.id, ...base });
       tilesByIndex.delete(i);
     } else {
       createData.push(base);
