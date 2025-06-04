@@ -828,7 +828,8 @@ export class WitchIronActor extends Actor {
     
     // Calculate hits (no need to recalculate if additionalHits is provided for monsters)
     const baseHits = Math.floor(targetValue/10) - Math.floor(rollTotal/10);
-    let hits = baseHits + additionalHits;
+    let hits = baseHits;
+    if (isSuccess) hits += additionalHits;
     
     // Debug log for calculations
      console.log("Roll Results:", {
@@ -844,8 +845,8 @@ export class WitchIronActor extends Actor {
     });
     
     // Apply critical effects
-    if (isCriticalSuccess) hits = Math.max(hits + 1, 1);  // At least 1 hit on crit success
-    if (isFumble) hits = Math.min(hits - 1, -1);  // At most -1 hit on fumble
+    if (isCriticalSuccess) hits = Math.max(hits + 1, 6);  // At least 6 hits on crit success
+    if (isFumble) hits = Math.min(hits - 1, -6);  // At most -6 hits on fumble
     
     // Get roll mode and extended visibility setting
     const rollMode = game.settings.get("core", "rollMode");

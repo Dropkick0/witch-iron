@@ -483,7 +483,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
       this.actor.rollMonsterCheck({
         label: "Specialized Check",
         ...opts,
-        additionalHits: defaultHits + (opts.additionalHits || 0)
+        additionalHits: opts.additionalHits
       });
     }
   }
@@ -735,12 +735,11 @@ export class WitchIronMonsterSheet extends ActorSheet {
       defaultHits
     });
     if (opts) {
-      const additionalHits = defaultHits + (opts.additionalHits || 0);
       this.actor.rollMonsterCheck({
         label: "Melee Attack",
         ...opts,
         isCombatCheck: true,
-        additionalHits
+        additionalHits: opts.additionalHits
       });
     }
   }
