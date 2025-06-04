@@ -35,6 +35,32 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
             </div>`;
   }).join("");
 
+  const conditionRows = [];
+  if (blind > 0) {
+    conditionRows.push(`
+        <div class="form-group modifier-row ${blind ? 'selected' : ''}" data-toggle="useBlind">
+          <label>Blind</label>
+          <input type="number" name="blindRating" value="${blind}" min="0" />
+          <input type="hidden" name="useBlind" value="${blind ? 1 : 0}">
+        </div>`);
+  }
+  if (deaf > 0) {
+    conditionRows.push(`
+        <div class="form-group modifier-row ${deaf ? 'selected' : ''}" data-toggle="useDeaf">
+          <label>Deaf</label>
+          <input type="number" name="deafRating" value="${deaf}" min="0" />
+          <input type="hidden" name="useDeaf" value="${deaf ? 1 : 0}">
+        </div>`);
+  }
+  if (pain > 0) {
+    conditionRows.push(`
+        <div class="form-group modifier-row selected" data-toggle="usePain">
+          <label>Pain</label>
+          <input type="number" name="painRating" value="${pain}" min="0" />
+          <input type="hidden" name="usePain" value="1">
+        </div>`);
+  }
+
   return new Promise(resolve => {
     const content = `
       <form class="witch-iron modifier-dialog">
@@ -48,22 +74,7 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
             <option value="-40">Very Hard -40%</option>
           </select>
         </div>
-        <h3>Condition Modifiers</h3>
-        <div class="form-group modifier-row ${blind ? 'selected' : ''}" data-toggle="useBlind">
-          <label>Blind</label>
-          <input type="number" name="blindRating" value="${blind}" min="0" />
-          <input type="hidden" name="useBlind" value="${blind ? 1 : 0}">
-        </div>
-        <div class="form-group modifier-row ${deaf ? 'selected' : ''}" data-toggle="useDeaf">
-          <label>Deaf</label>
-          <input type="number" name="deafRating" value="${deaf}" min="0" />
-          <input type="hidden" name="useDeaf" value="${deaf ? 1 : 0}">
-        </div>
-        <div class="form-group modifier-row selected" data-toggle="usePain">
-          <label>Pain</label>
-          <input type="number" name="painRating" value="${pain}" min="0" />
-          <input type="hidden" name="usePain" value="1">
-        </div>
+        ${conditionRows.length ? `<h3>Condition Modifiers</h3>${conditionRows.join('')}` : ''}
         <h3>Hits Modifiers</h3>
         <div class="form-group">
           <label>Additional +Hits</label>
@@ -80,9 +91,15 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
           callback: html => {
             const form = html[0].querySelector("form");
             let situationalMod = Number(form.difficulty.value) || 0;
-            if (parseInt(form.useBlind.value)) situationalMod -= 10 * (parseInt(form.blindRating.value) || 0);
-            if (parseInt(form.useDeaf.value)) situationalMod -= 10 * (parseInt(form.deafRating.value) || 0);
-            if (parseInt(form.usePain.value)) situationalMod -= 10 * (parseInt(form.painRating.value) || 0);
+            const useBlind = form.querySelector('[name="useBlind"]')?.value;
+            const blindRating = form.querySelector('[name="blindRating"]')?.value;
+            if (parseInt(useBlind)) situationalMod -= 10 * (parseInt(blindRating) || 0);
+            const useDeaf = form.querySelector('[name="useDeaf"]')?.value;
+            const deafRating = form.querySelector('[name="deafRating"]')?.value;
+            if (parseInt(useDeaf)) situationalMod -= 10 * (parseInt(deafRating) || 0);
+            const usePain = form.querySelector('[name="usePain"]')?.value;
+            const painRating = form.querySelector('[name="painRating"]')?.value;
+            if (parseInt(usePain)) situationalMod -= 10 * (parseInt(painRating) || 0);
             let additionalHits = parseInt(form.additionalHits.value) || 0;
 
             // Apply selected Active Effects

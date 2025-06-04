@@ -1,0 +1,8 @@
+.witch-iron.chat-card.condition-card {
+  /* Base chat card styles inherited */
+}
+
+.witch-iron.chat-card.condition-card .card-header i {
+  font-size: 1.2em;
+}
+
