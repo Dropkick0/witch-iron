@@ -34,7 +34,10 @@ const CONDITION_ICONS = {
   bleed: "icons/svg/blood.svg",
   poison: "icons/svg/poison.svg",
   stress: "icons/svg/burst.svg",
-  corruption: "icons/svg/bone.svg"
+  corruption: "icons/svg/bone.svg",
+  blind: "icons/svg/eye.svg",
+  deaf: "icons/svg/deaf.svg",
+  pain: "icons/svg/daze.svg"
 };
 
 /**

@@ -1059,13 +1059,27 @@ export class WitchIronMonsterSheet extends ActorSheet {
       const removal = conditionName === "blind" ? "Cleaning out the eyes" :
                       conditionName === "deaf" ? "Removing blockage" :
                       "A form of painkiller";
+
+      const iconMap = {
+        blind: "fa-eye-slash",
+        deaf: "fa-ear-deaf",
+        pain: "fa-hand-holding-medical"
+      };
+      const iconClass = iconMap[conditionName] || "fa-info-circle";
+
       const content = `
-        <div class="witch-iron condition-info">
-          <p><strong>${actor.name}</strong> is suffering from ${condLabel} (Rating ${rating}).</p>
-          <p>Retina Overload, Ringing in Ears &amp; Agony. This Condition inflicts a <strong>${penalty}%</strong> Check penalty. Passively reduce by one each hour.</p>
-          <p><strong>Impairs:</strong> ${checkType}.</p>
-          <p><strong>Removed by:</strong> ${removal}.</p>
+        <div class="witch-iron chat-card condition-card">
+          <div class="card-header">
+            <i class="fas ${iconClass}"></i>
+            <h3>${actor.name} - ${condLabel}</h3>
+          </div>
+          <div class="card-content">
+            <p>Retina Overload, Ringing in Ears &amp; Agony. This Condition inflicts a <strong>${penalty}%</strong> Check penalty. Passively reduce by one each hour.</p>
+            <p><strong>Impairs:</strong> ${checkType}.</p>
+            <p><strong>Removed by:</strong> ${removal}.</p>
+          </div>
         </div>`;
+
       const chatData = {
         user: game.user.id,
         speaker: ChatMessage.getSpeaker({ actor }),
