@@ -34,7 +34,7 @@ const CONDITION_ICONS = {
   bleed: "icons/svg/blood.svg",
   poison: "icons/svg/poison.svg",
   stress: "icons/svg/burst.svg",
-  corruption: "icons/svg/bone-black.svg"
+  corruption: "icons/svg/bone.svg"
 };
 
 /**
@@ -68,6 +68,8 @@ class QuarrelTracker {
         this.pendingTokenQuarrels = new Map(); // Map of token ID -> checkData
         this.activeQuarrels = new Set(); // Track all actors currently involved in any quarrel
         this.selectedCheck = null;
+        // Expose condition icons mapping on the instance for easy access
+        this.CONDITION_ICONS = CONDITION_ICONS;
         console.log("Witch Iron | QuarrelTracker initialized");
     }
     
