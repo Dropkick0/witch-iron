@@ -240,6 +240,15 @@ export class WitchIronActor extends Actor {
     // Calculate literacy based on intellect
     const intellectValue = systemData.attributes.intellect?.value || 0;
     systemData.derivedFlags.canReadWrite = intellectValue >= 40;
+
+    // Initialize common conditions
+    const condList = ["blind", "deaf", "pain"];
+    if (!systemData.conditions) systemData.conditions = {};
+    for (const key of condList) {
+      if (!systemData.conditions[key] || typeof systemData.conditions[key]?.value !== 'number') {
+        systemData.conditions[key] = { value: 0 };
+      }
+    }
   }
 
   /**
@@ -499,7 +508,16 @@ export class WitchIronActor extends Actor {
     }
     
     // Initialize Conditions
-    const condNames = ["aflame","bleed","poison","corruption","stress"];
+    const condNames = [
+      "aflame",
+      "bleed",
+      "poison",
+      "corruption",
+      "stress",
+      "blind",
+      "deaf",
+      "pain"
+    ];
     if (!systemData.conditions) systemData.conditions = {};
     for (const key of condNames) {
       if (!systemData.conditions[key] || typeof systemData.conditions[key]?.value !== 'number') {

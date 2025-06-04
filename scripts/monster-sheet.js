@@ -4,6 +4,7 @@
 // Import the quarrel API for non-combat condition checks
 import { manualQuarrel } from "./quarrel.js";
 import { createItem } from "./utils.js";
+import { openModifierDialog } from "./modifier-dialog.js";
 
 /**
  * Monster sheet class for the Witch Iron system
@@ -463,13 +464,18 @@ export class WitchIronMonsterSheet extends ActorSheet {
    * Roll a specialized check for the monster
    * @private
    */
-  _rollSpecializedCheck() {
-    // Call the actor's rollMonsterCheck method with appropriate options
-    if (this.actor.rollMonsterCheck) {
+  async _rollSpecializedCheck() {
+    if (!this.actor.rollMonsterCheck) return;
+    const defaultHits = this.actor.system.derived?.plusHits || 0;
+    const opts = await openModifierDialog(this.actor, {
+      title: "Specialized Check",
+      defaultHits
+    });
+    if (opts) {
       this.actor.rollMonsterCheck({
         label: "Specialized Check",
-        // Include the monster's +Hits bonus for specialized skills
-        additionalHits: this.actor.system.derived?.plusHits || 0
+        ...opts,
+        additionalHits: defaultHits + (opts.additionalHits || 0)
       });
     }
   }
@@ -478,13 +484,11 @@ export class WitchIronMonsterSheet extends ActorSheet {
    * Roll a general check for the monster
    * @private
    */
-  _rollGeneralCheck() {
-    // Call the actor's rollMonsterCheck method with no additional modifiers
-    if (this.actor.rollMonsterCheck) {
-      this.actor.rollMonsterCheck({
-        label: "General Check",
-        additionalHits: 0
-      });
+  async _rollGeneralCheck() {
+    if (!this.actor.rollMonsterCheck) return;
+    const opts = await openModifierDialog(this.actor, { title: "General Check" });
+    if (opts) {
+      this.actor.rollMonsterCheck({ label: "General Check", ...opts });
     }
   }
   
@@ -492,7 +496,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
    * Roll an inept check for the monster
    * @private
    */
-  _rollIneptCheck() {
+  async _rollIneptCheck() {
     // Get the penalty based on HD
     const hdValue = this.actor.system.stats?.hitDice?.value || 1;
     
@@ -506,13 +510,13 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     const penalty = ineptPenalties[hdValue] || -10;
     
-    // Call the actor's rollMonsterCheck method with the penalty as situational modifier
-    if (this.actor.rollMonsterCheck) {
-      this.actor.rollMonsterCheck({
-        label: "Inept Check",
-        situationalMod: penalty,
-        additionalHits: 0
-      });
+    if (!this.actor.rollMonsterCheck) return;
+    const opts = await openModifierDialog(this.actor, {
+      title: "Inept Check",
+    });
+    if (opts) {
+      const situationalMod = (opts.situationalMod || 0) + penalty;
+      this.actor.rollMonsterCheck({ label: "Inept Check", ...opts, situationalMod });
     }
   }
 
@@ -700,7 +704,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
    * @param {Event} event The originating click event
    * @private
    */
-  _onMeleeAttack(event) {
+  async _onMeleeAttack(event) {
     event.preventDefault();
     
 //////     console.log(`Witch Iron | Performing melee attack for monster ${this.actor.name}`);
@@ -712,21 +716,24 @@ export class WitchIronMonsterSheet extends ActorSheet {
       this.actor.update({'system.flags.isCombatCheck': true});
     }
     
-    // Call the actor's rollMonsterCheck method with combat check flag
-    if (this.actor.rollMonsterCheck) {
-      // Set up options for a combat roll with specialized bonus
-      const combatOptions = {
-        label: "Melee Attack",
-        isCombatCheck: true,
-        additionalHits: this.actor.system.derived?.plusHits || 0
-      };
-      
-//////       console.log(`Witch Iron | Combat options for melee attack:`, combatOptions);
-      
-      // Perform the roll with combat flag
-      this.actor.rollMonsterCheck(combatOptions);
-    } else {
+    if (!this.actor.rollMonsterCheck) {
       console.error(`Witch Iron | ERROR: Actor ${this.actor.name} does not have rollMonsterCheck method`);
+      return;
+    }
+
+    const defaultHits = this.actor.system.derived?.plusHits || 0;
+    const opts = await openModifierDialog(this.actor, {
+      title: "Melee Attack",
+      defaultHits
+    });
+    if (opts) {
+      const additionalHits = defaultHits + (opts.additionalHits || 0);
+      this.actor.rollMonsterCheck({
+        label: "Melee Attack",
+        ...opts,
+        isCombatCheck: true,
+        additionalHits
+      });
     }
   }
 

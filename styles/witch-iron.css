@@ -3660,3 +3660,20 @@ button.roll-skill:hover {
   height: auto;
   padding: 4px 8px;
 }
+/* -------------------------------------------------------------------------- */
+/* Modifier Dialog Styles */
+/* -------------------------------------------------------------------------- */
+.modifier-dialog .form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.modifier-dialog label {
+  flex: 1;
+  font-weight: bold;
+}
+.modifier-dialog input[type="number"],
+.modifier-dialog select {
+  width: 70px;
+  margin-left: 4px;
+}

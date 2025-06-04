@@ -1,4 +1,5 @@
 import { createItem } from "./utils.js";
+import { openModifierDialog } from "./modifier-dialog.js";
 
 /**
  * Descendant sheet class for the Witch Iron system
@@ -364,14 +365,11 @@ export class WitchIronDescendantSheet extends ActorSheet {
    * @param {Event} event   The originating click event
    * @private
    */
-  _onRollAttribute(event) {
+  async _onRollAttribute(event) {
     event.preventDefault();
-    const element = event.currentTarget;
-    const attribute = element.dataset.attribute;
-    // Call the actor's rollAttribute method if it exists
-    if (this.actor.rollAttribute) {
-      this.actor.rollAttribute(attribute);
-    }
+    const attribute = event.currentTarget.dataset.attribute;
+    const opts = await openModifierDialog(this.actor, { title: `Attribute Check: ${attribute}` });
+    if (opts) this.actor.rollAttribute(attribute, opts);
   }
 
   /**
@@ -379,12 +377,11 @@ export class WitchIronDescendantSheet extends ActorSheet {
    * @param {Event} event The originating click event
    * @private
    */
-  _onRollSkill(event) {
+  async _onRollSkill(event) {
     event.preventDefault();
-    const element = event.currentTarget;
-    const skillName = element.dataset.skill;
-    
-    this.actor.rollSkill(skillName);
+    const skillName = event.currentTarget.dataset.skill;
+    const opts = await openModifierDialog(this.actor, { title: `Skill Check: ${skillName}` });
+    if (opts) this.actor.rollSkill(skillName, opts);
   }
 
   /**
