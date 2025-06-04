@@ -152,10 +152,21 @@ export class WitchIronMonsterSheet extends ActorSheet {
     context.conditions = {};
     const conditionsData = actorData.system.conditions || {};
     for (const condKey in conditionsData) {
-      context.conditions[condKey] = {
-        label: this.capitalize(condKey),
-        value: conditionsData[condKey].value
-      };
+      if (condKey === "trauma" && typeof conditionsData.trauma === "object") {
+        for (const loc in conditionsData.trauma) {
+          const key = `trauma.${loc}`;
+          const labelLoc = loc.replace(/([A-Z])/g, " $1");
+          context.conditions[key] = {
+            label: `Trauma (${this.capitalize(labelLoc)})`,
+            value: conditionsData.trauma[loc].value
+          };
+        }
+      } else {
+        context.conditions[condKey] = {
+          label: this.capitalize(condKey),
+          value: conditionsData[condKey].value
+        };
+      }
     }
 
     // Prepare armor types for select
@@ -1103,6 +1114,86 @@ export class WitchIronMonsterSheet extends ActorSheet {
       return ChatMessage.create(chatData);
     }
 
+    if (conditionName === "fatigue") {
+      rating = actor.system.conditions.fatigue?.value || 0;
+      const content = `
+        <div class="witch-iron chat-card condition-card">
+          <div class="card-header">
+            <i class="fas fa-bed"></i>
+            <h3>${actor.name} - Fatigue ${rating}</h3>
+          </div>
+          <div class="card-content">
+            <p>Muscle Exhaustion & Burning Lungs. This Condition only takes up Enc slots and cannot be removed if the source is an active Lingering Quarrel.</p>
+            <p><strong>Removed by:</strong> A good night's rest.</p>
+          </div>
+        </div>`;
+      const chatData = { user: game.user.id, speaker: ChatMessage.getSpeaker({ actor }), content };
+      return ChatMessage.create(chatData);
+    }
+
+    if (["entangle", "helpless", "stun"].includes(conditionName)) {
+      rating = actor.system.conditions[conditionName]?.value || 0;
+      const iconMap = { entangle: "fa-link", helpless: "fa-skull", stun: "fa-bolt" };
+      const preventsMap = {
+        entangle: "Movement",
+        helpless: "Actions & Movement (opponents may inflict any Injury while in melee)",
+        stun: "Actions"
+      };
+      const removalMap = { entangle: "Slipping or breaking out", helpless: "Receiving Damage", stun: "Smelling salts" };
+      const label = this.capitalize(conditionName);
+      const content = `
+        <div class="witch-iron chat-card condition-card">
+          <div class="card-header">
+            <i class="fas ${iconMap[conditionName] || 'fa-info-circle'}"></i>
+            <h3>${actor.name} - ${label} ${rating}</h3>
+          </div>
+          <div class="card-content">
+            <p>Grapples, Nets, Knock Outs & Discombulation. Passively reduce by one each round.</p>
+            <p><strong>Prevents:</strong> ${preventsMap[conditionName]}.</p>
+            <p><strong>Removed by:</strong> ${removalMap[conditionName]}.</p>
+          </div>
+        </div>`;
+      const chatData = { user: game.user.id, speaker: ChatMessage.getSpeaker({ actor }), content };
+      return ChatMessage.create(chatData);
+    }
+
+    if (conditionName === "prone") {
+      rating = actor.system.conditions.prone?.value || 0;
+      const content = `
+        <div class="witch-iron chat-card condition-card">
+          <div class="card-header">
+            <i class="fas fa-person-falling"></i>
+            <h3>${actor.name} - Prone</h3>
+          </div>
+          <div class="card-content">
+            <p>Pinned in Armor & Slipping in Mud. This Condition inflicts a -20% Check Modifier to you and a +20% Check Modifier to your opponents.</p>
+            <p><strong>Removed by:</strong> Spending an action to stand up.</p>
+          </div>
+        </div>`;
+      const chatData = { user: game.user.id, speaker: ChatMessage.getSpeaker({ actor }), content };
+      return ChatMessage.create(chatData);
+    }
+
+    if (conditionName.startsWith("trauma.")) {
+      const loc = conditionName.split(".")[1];
+      rating = foundry.utils.getProperty(actor, `system.conditions.trauma.${loc}.value`) || 0;
+      const locLabel = this.capitalize(loc.replace(/([A-Z])/g, " $1"));
+      const penalty = rating * 20;
+      const content = `
+        <div class="witch-iron chat-card condition-card">
+          <div class="card-header">
+            <i class="fas fa-bone"></i>
+            <h3>${actor.name} - Trauma (${locLabel}) ${rating}</h3>
+          </div>
+          <div class="card-content">
+            <p>Broken Bones & Torn Muscles. This Condition inflicts a <strong>${penalty}%</strong> penalty on all Checks involving ${locLabel}.</p>
+            <p><strong>Removed by:</strong> Resting one month per Rating.</p>
+          </div>
+        </div>`;
+      const chatData = { user: game.user.id, speaker: ChatMessage.getSpeaker({ actor }), content };
+      return ChatMessage.create(chatData);
+    }
+
     if (["aflame", "bleed", "poison"].includes(conditionName)) {
       skillName = "Hardship";
       rating = ["aflame", "bleed", "poison"].reduce((sum, c) => sum + (actor.system.conditions[c]?.value || 0), 0);
@@ -1171,7 +1262,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const row = event.currentTarget.closest('.condition-row');
     const cond = row.dataset.condition;
     const input = row.querySelector('input.cond-value');
-    let current = parseInt(input?.value) || this.actor.system.conditions?.[cond]?.value || 0;
+    let current = parseInt(input?.value) || foundry.utils.getProperty(this.actor, `system.conditions.${cond}.value`) || 0;
     const value = current + 1;
     if (input) input.value = value;
     await this.actor.update({ [`system.conditions.${cond}.value`]: value });
@@ -1188,7 +1279,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const row = event.currentTarget.closest('.condition-row');
     const cond = row.dataset.condition;
     const input = row.querySelector('input.cond-value');
-    let current = parseInt(input?.value) || this.actor.system.conditions?.[cond]?.value || 0;
+    let current = parseInt(input?.value) || foundry.utils.getProperty(this.actor, `system.conditions.${cond}.value`) || 0;
     const value = Math.max(0, current - 1);
     if (input) input.value = value;
     await this.actor.update({ [`system.conditions.${cond}.value`]: value });

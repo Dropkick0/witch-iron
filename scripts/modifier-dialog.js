@@ -2,6 +2,8 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
   const blind = actor?.system?.conditions?.blind?.value || 0;
   const deaf = actor?.system?.conditions?.deaf?.value || 0;
   const pain = actor?.system?.conditions?.pain?.value || 0;
+  const prone = actor?.system?.conditions?.prone?.value || 0;
+  const trauma = actor?.system?.conditions?.trauma || {};
 
   // ------------------------------------------------------------
   // Active Effect Parsing
@@ -18,7 +20,7 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
   // apply normally through Foundry's standard Active Effect system.
 
   const effects = actor?.effects?.contents || [];
-  const effectRows = effects.map(e => {
+  let effectRows = effects.map(e => {
     const mod = e.flags?.["witch-iron"]?.modifier;
     if (!mod) return "";
     const label = e.name ?? e.label ?? "Unnamed";
@@ -34,6 +36,16 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
               <span>${valueLabel}</span>
             </div>`;
   }).join("");
+
+  // Add a +20 effect if any targeted actor is prone
+  const targets = Array.from(game.user?.targets || []);
+  const targetProne = targets.some(t => t.actor?.system?.conditions?.prone?.value > 0);
+  if (targetProne) {
+    effectRows += `<div class="form-group effect-row">
+                     <label><input type="checkbox" name="effect-target-prone" data-hits="0" data-target="20" checked/> Target Prone</label>
+                     <span>+20 TN</span>
+                   </div>`;
+  }
 
   const conditionRows = [];
   if (blind > 0) {
@@ -59,6 +71,27 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
           <input type="number" name="painRating" value="${pain}" min="0" />
           <input type="hidden" name="usePain" value="1">
         </div>`);
+  }
+  if (prone > 0) {
+    conditionRows.push(`
+        <div class="form-group modifier-row selected" data-toggle="useProne">
+          <label>Prone</label>
+          <input type="number" name="proneRating" value="${prone}" min="0" disabled />
+          <input type="hidden" name="useProne" value="1">
+        </div>`);
+  }
+
+  for (const [loc, data] of Object.entries(trauma)) {
+    const val = Number(data?.value) || 0;
+    if (val > 0) {
+      const locLabel = loc.replace(/([A-Z])/g, ' $1');
+      conditionRows.push(`
+        <div class="form-group modifier-row selected" data-toggle="useTrauma-${loc}">
+          <label>Trauma (${locLabel})</label>
+          <input type="number" name="traumaRating-${loc}" value="${val}" min="0" />
+          <input type="hidden" name="useTrauma-${loc}" value="1">
+        </div>`);
+    }
   }
 
   return new Promise(resolve => {
@@ -100,6 +133,15 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
             const usePain = form.querySelector('[name="usePain"]')?.value;
             const painRating = form.querySelector('[name="painRating"]')?.value;
             if (parseInt(usePain)) situationalMod -= 10 * (parseInt(painRating) || 0);
+            const useProne = form.querySelector('[name="useProne"]')?.value;
+            const proneRating = form.querySelector('[name="proneRating"]')?.value;
+            if (parseInt(useProne)) situationalMod -= 20 * (parseInt(proneRating) || 1);
+
+            for (const [loc, data] of Object.entries(trauma)) {
+              const useTrauma = form.querySelector(`[name="useTrauma-${loc}"]`)?.value;
+              const traumaRating = form.querySelector(`[name="traumaRating-${loc}"]`)?.value;
+              if (parseInt(useTrauma)) situationalMod -= 20 * (parseInt(traumaRating) || 0);
+            }
             let additionalHits = parseInt(form.additionalHits.value) || 0;
 
             // Apply selected Active Effects
