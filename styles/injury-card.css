@@ -1,22 +1,10 @@
 /* Injury Card Styles */
 .witch-iron.chat-card.injury-card {
-    border: 1px solid var(--color-border-light);
-    border-radius: 6px;
-    margin: 0;
-    background: #fff;
-    color: var(--color-text-dark);
-    font-family: 'Gentium Book', serif;
-    overflow: hidden;
+    /* base styles come from .wi-card */
 }
 
 .witch-iron.chat-card.injury-card .card-header {
-    background: var(--color-accent);
-    color: #f5e8d2;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    /* header styles from .wi-card */
 }
 
 .witch-iron.chat-card.injury-card .card-header i {
@@ -24,13 +12,11 @@
 }
 
 .witch-iron.chat-card.injury-card .card-header h3 {
-    margin: 0;
-    font-size: 1.2em;
-    font-weight: bold;
+    /* heading styles from .wi-card */
 }
 
 .witch-iron.chat-card.injury-card .card-content {
-    padding: 12px;
+    /* padding from .wi-card */
 }
 
 /* Combatants row with token images */
@@ -123,33 +109,27 @@
 }
 
 /* Combat details grid */
-.witch-iron.chat-card.injury-card .detail-grid {
+.witch-iron.chat-card.injury-card .grid-two {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.25em 1em;
 }
 
-.witch-iron.chat-card.injury-card .detail-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 2px 0;
-    border-bottom: none;
-}
-
-.witch-iron.chat-card.injury-card .detail-item.wide-item {
-    grid-column: 1 / span 2;
-    justify-content: flex-start;
-    gap: 1em;
-}
-
-.witch-iron.chat-card.injury-card .detail-item .label {
+.witch-iron.chat-card.injury-card .grid-two .label {
     font-weight: bold;
     color: var(--color-text-muted);
     width: auto;
 }
 
-.witch-iron.chat-card.injury-card .detail-item .value {
+.witch-iron.chat-card.injury-card .grid-two .value {
     color: var(--color-text-dark);
+}
+
+.witch-iron.chat-card.injury-card .wide {
+    grid-column: 1 / span 2;
+    justify-content: flex-start;
+    gap: 1em;
+    display: flex;
 }
 
 /* Battle Wear Styling */

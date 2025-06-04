@@ -1,0 +1,82 @@
+/* Common card and utility styles shared across Witch Iron chat cards */
+.wi-card {
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  margin: 0;
+  background: #fff;
+  color: var(--color-text-dark);
+  font-family: 'Gentium Book', serif;
+  overflow: hidden;
+}
+
+.wi-card .card-header {
+  background: var(--color-accent);
+  color: #f5e8d2;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.wi-card .card-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.wi-card .card-content {
+  padding: 12px;
+}
+
+.grid-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25em 1em;
+}
+
+.grid-two .label {
+  font-weight: bold;
+  color: var(--color-text-muted);
+}
+
+.grid-two .value {
+  color: var(--color-text-dark);
+}
+
+.grid-two .wide {
+  grid-column: 1 / span 2;
+  display: flex;
+  gap: 1em;
+}
+
+.badge,
+.combat-badge {
+  display: inline-block;
+  font-size: 0.7em;
+  background-color: var(--color-accent);
+  color: var(--color-surface-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.progress {
+  background: var(--color-border-lighter);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 8px;
+  margin-top: 4px;
+}
+
+.progress > div {
+  background: var(--color-accent);
+  height: 100%;
+}
+
+.fade {
+  opacity: 0.7;
+}

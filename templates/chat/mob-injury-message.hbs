@@ -1,29 +1,27 @@
-<div class="witch-iron chat-card mob-casualty-card">
+<section class="witch-iron chat-card wi-card mob-casualty-card">
   <header class="card-header">
     <i class="fas fa-skull-crossbones"></i>
     <h3>Mob Casualties</h3>
   </header>
-  <div class="card-content">
-    <div class="casualty-summary">
-      <span class="losses">Losses: {{killed}}</span>
-      <span class="remaining">Remaining: {{remaining}}</span>
+
+  <details class="cas-detail" open>
+    <summary>Casualty Summary</summary>
+    <div class="grid-two">
+      <span class="label">Losses:</span><span class="value">{{killed}}</span>
+      <span class="label">Remaining:</span><span class="value">{{remaining}}</span>
+      <span class="label">Scale:</span><span class="value">{{newScale}} {{#if scaleChange}}(↓){{/if}}</span>
     </div>
-    {{#if scaleChange}}
-    <div class="scale-change">Scale reduced to {{newScale}}</div>
-    {{/if}}
-    <div class="big-numbers">{{killed}} / {{remaining}}</div>
-    <div class="collapsible-section">
-      <div class="section-header casualty-toggle">
-        <i class="fas fa-chevron-down"></i>
-        <h4>Damage Details</h4>
-      </div>
-      <div class="section-content casualty-details hidden">
-        <div class="detail-grid">
-          <div class="detail-item"><span class="label">Damage:</span> <span class="value">{{damage}}</span></div>
-          <div class="detail-item"><span class="label">Bodies Lost:</span> <span class="value">{{killed}}</span></div>
-          <div class="detail-item"><span class="label">Bodies Remaining:</span> <span class="value">{{remaining}}</span></div>
-        </div>
-      </div>
+    <div class="progress">
+      <div style="width:{{lossPercent}}%"></div>
     </div>
-  </div>
-</div>
+  </details>
+
+  <details class="cas-detail">
+    <summary>Damage Details</summary>
+    <div class="grid-two fade">
+      <span class="label">Damage:</span><span class="value">{{damage}}</span>
+      <span class="label">Bodies Lost:</span><span class="value">{{killed}}</span>
+      <span class="label">Bodies Remaining:</span><span class="value">{{remaining}}</span>
+    </div>
+  </details>
+</section>

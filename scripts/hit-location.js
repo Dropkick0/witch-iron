@@ -537,6 +537,8 @@ export class HitLocationSelector {
             const oldScale = getMobScale(currentBodies);
             const newScale = getMobScale(remainingBodies);
             const scaleChange = scaleRank(newScale) < scaleRank(oldScale);
+            const totalBodies = remainingBodies + bodiesKilled;
+            const lossPercent = totalBodies > 0 ? Math.round((bodiesKilled * 100) / totalBodies) : 0;
 
             const mobContent = await renderTemplate(
                 "systems/witch-iron/templates/chat/mob-injury-message.hbs",
@@ -547,7 +549,8 @@ export class HitLocationSelector {
                     remaining: remainingBodies,
                     damage: netDamage,
                     scaleChange: scaleChange,
-                    newScale: newScale
+                    newScale: newScale,
+                    lossPercent: lossPercent
                 }
             );
 
@@ -564,8 +567,7 @@ export class HitLocationSelector {
                 }
             });
 
-            // Attach handlers for expand/collapse
-            setTimeout(() => attachMobCasualtyHandlers(mobMessage.id), 50);
+
 
             // Check if mob scale has been reduced and possibly trigger a rout check
             await handleMobScaleRout(defenderActor, currentBodies, remainingBodies);
@@ -3062,30 +3064,6 @@ async function createRoutResultCard(mobName, success) {
         speaker: ChatMessage.getSpeaker(),
         flavor: "Rout Result",
         flags: { "witch-iron": { messageType: "rout-result" } }
-    });
-}
-
-/**
- * Attach expand/collapse handlers for mob casualty cards
- * @param {string} messageId
- */
-function attachMobCasualtyHandlers(messageId) {
-    const el = document.querySelector(`.message[data-message-id="${messageId}"]`);
-    if (!el) return;
-    const toggle = el.querySelector('.casualty-toggle');
-    const details = el.querySelector('.casualty-details');
-    if (!toggle || !details) return;
-    toggle.addEventListener('click', ev => {
-        ev.preventDefault();
-        const icon = toggle.querySelector('i');
-        const hidden = details.classList.contains('hidden');
-        if (hidden) {
-            details.classList.remove('hidden');
-            if (icon) icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
-        } else {
-            details.classList.add('hidden');
-            if (icon) icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
-        }
     });
 }
 
