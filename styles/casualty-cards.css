@@ -6,10 +6,14 @@
 
 /* <details> styling for casualty sections */
 .mob-casualty-card details {
-  margin-top: 0.5em;
-  border: 1px solid rgba(123,45,38,0.2);
-  border-radius: 6px;
-  padding: 0.5em;
+  margin: 0.5em 0;
+  padding: 0.5em 0.5em;
+  border-top: 1px solid rgba(123,45,38,0.2);
+  border-bottom: 1px solid rgba(123,45,38,0.2);
+}
+
+.mob-casualty-card details + details {
+  border-top: none;
 }
 
 .mob-casualty-card summary {
