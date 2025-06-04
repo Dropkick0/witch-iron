@@ -58,7 +58,15 @@ async function clearPhysicalConditions(actor) {
   for (const token of tokens) {
     if (token.actor) {
       await token.actor.update(updates);
+      if (token.actor.sheet) {
+        await token.actor.sheet.render(false);
+      }
     }
+  }
+
+  // Refresh the actor's own sheet if it's open
+  if (actor.sheet) {
+    await actor.sheet.render(false);
   }
 }
 
