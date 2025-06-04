@@ -4,20 +4,63 @@
 /*  General Styles                           */
 /* ----------------------------------------- */
 
+:root {
+  --color-primary: #4b3621;
+  --color-secondary: #76543a;
+  --color-tertiary: #d1b48c;
+  --color-accent: #7b2d26;
+  --color-highlight: #e6c9a3;
+  --color-background: #f5f5dc;
+  --color-text: #2d2013;
+  --color-text-dark: #333;
+  --color-text-muted: #666;
+  --color-border: #8a6642;
+  --color-border-light: #ccc;
+  --color-border-lighter: #ddd;
+  --color-border-dark: #444;
+  --color-surface-light: #f5e8d2;
+  --color-shadow: rgba(0, 0, 0, 0.2);
+  --color-success: #006400;
+  --color-error: #8b0000;
+  --witchiron-bg: #f5f3e6;
+  --witchiron-border: #a39388;
+  --witchiron-font: serif;
+  --witchiron-header-bg: #a39388;
+  --witchiron-header-text: white;
+  --witchiron-text-accent: var(--color-accent);
+  --witchiron-success: green;
+  --witchiron-danger: var(--color-accent);
+  --witchiron-warning: orange;
+  --witchiron-panel-bg: #e5e2d5;
+  --witchiron-text: #444;
+  --witchiron-text-muted: #777;
+  --witchiron-dice: var(--color-accent);
+  --witchiron-button-bg: #a39388;
+  --witchiron-button-text: white;
+  --witchiron-button-hover: #857971;
+  --witchiron-button-secondary-bg: #e5e2d5;
+  --witchiron-button-secondary-text: #444;
+  --witchiron-button-secondary-hover: #d5d2c5;
+  --witchiron-warning-bg: #fff3cd;
+  --witchiron-warning-text: #856404;
+  --witchiron-danger-bg: #f8d7da;
+  --witchiron-danger-text: #721c24;
+}
+
 .witch-iron {
   --sheet-width: 720px;
   --sheet-height: 800px;
-  --primary-color: #4b3621;
-  --secondary-color: #76543a;
-  --tertiary-color: #d1b48c;
+  --primary-color: var(--color-primary);
+  --secondary-color: var(--color-secondary);
+  --tertiary-color: var(--color-tertiary);
   --accent-color: #a47449;
-  --background-color: #f5f5dc;
-  --text-color: #2d2013;
-  --border-color: #8a6642;
-  --highlight-color: #987654;
-  --shadow-color: rgba(0, 0, 0, 0.2);
-  --error-color: #8b0000;
-  --success-color: #006400;
+  --background-color: var(--color-background);
+  --text-color: var(--color-text);
+  --border-color: var(--color-border);
+  --highlight-color: var(--color-highlight);
+  --shadow-color: var(--color-shadow);
+  --error-color: var(--color-error);
+  --success-color: var(--color-success);
   --header-height: 130px;  /* Approximate header height */
   --tabs-height: 35px;     /* Approximate tabs height */
 }
@@ -439,12 +482,12 @@
   margin-left: 5px;
   padding: 0;
   background: #eee;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-light);
   border-radius: 3px;
 }
 
 .witch-iron.sheet.descendant .skill-item button:hover {
-  background: #ddd;
+  background: var(--color-border-lighter);
 }
 
 /* Ensure skills tab has scrolling for potentially long content */
@@ -1023,7 +1066,7 @@ button.roll-skill:hover {
 .witch-iron.sheet.descendant .skill-item {
   padding: 3px;
   margin-bottom: 2px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 /* Actor Sheet - Monster */
@@ -1430,7 +1473,7 @@ button.roll-skill:hover {
 .witch-iron.sheet select:disabled {
   background-color: #f0f0f0;
   color: #888;
-  border-color: #ccc;
+  border-color: var(--color-border-light);
 }
 
 /* Condition types color-coding */
@@ -1474,14 +1517,14 @@ button.roll-skill:hover {
 /* Roll styling for chat */
 .witch-iron-roll {
   padding: 5px;
-  border: 1px solid #999;
+  border: 1px solid var(--color-text-muted);
   border-radius: 5px;
   margin-bottom: 5px;
 }
 
 .witch-iron-roll .roll-header {
   font-weight: bold;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--color-border-lighter);
   margin-bottom: 5px;
   padding-bottom: 3px;
 }
@@ -1799,7 +1842,7 @@ button.roll-skill:hover {
   padding: 5px;
   font-size: 0.9em;
   color: #666;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--color-border-lighter);
 }
 
 .witch-iron.chat-card .formula {
@@ -1927,12 +1970,12 @@ button.roll-skill:hover {
   margin-left: 5px;
   padding: 0;
   background: #eee;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-light);
   border-radius: 3px;
 }
 
 .witch-iron.sheet.descendant .skill-specialization-button:hover {
-  background: #ddd;
+  background: var(--color-border-lighter);
 }
 
 .witch-iron.sheet.descendant .skill-specializations {
@@ -1955,7 +1998,7 @@ button.roll-skill:hover {
 .witch-iron.sheet.descendant .specialization-name {
   flex: 2;
   cursor: pointer;
-  color: #444;
+  color: var(--color-border-dark);
 }
 
 .witch-iron.sheet.descendant .specialization-name:hover {
@@ -1972,7 +2015,7 @@ button.roll-skill:hover {
 .witch-iron.sheet.descendant .specialization-popup {
   position: absolute;
   background: white;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border-lighter);
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   padding: 10px;
@@ -1981,7 +2024,7 @@ button.roll-skill:hover {
 }
 
 .witch-iron.sheet.descendant .specialization-popup h3 {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--color-border-lighter);
   padding-bottom: 5px;
   margin-bottom: 10px;
   font-weight: bold;
@@ -2030,7 +2073,7 @@ button.roll-skill:hover {
   display: flex;
   align-items: center;
   padding-top: 10px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--color-border-lighter);
 }
 
 .witch-iron.sheet.descendant .specialization-popup-new input[type="text"] {
@@ -2995,7 +3038,7 @@ button.roll-skill:hover {
 /* Combat Results Styling */
 .combat-result {
   background: rgba(30, 30, 30, 0.9);
-  border: 1px solid #444;
+  border: 1px solid var(--color-border-dark);
   border-radius: 5px;
   padding: 10px;
   margin: 10px 0;
@@ -3061,7 +3104,7 @@ button.roll-skill:hover {
 
 .injury-result p:first-child {
   font-weight: bold;
-  color: #7b2d26;
+  color: var(--color-accent);
 }
 
 @media (max-width: 600px) {
@@ -3110,7 +3153,7 @@ button.roll-skill:hover {
 
 .combat-result-container {
   margin-top: 10px;
-  border-top: 1px solid #444;
+  border-top: 1px solid var(--color-border-dark);
   padding-top: 8px;
 }
 
@@ -3121,8 +3164,8 @@ button.roll-skill:hover {
 .combat-badge {
   display: inline-block;
   font-size: 0.7em;
-  background-color: #7b2d26;
-  color: #f5e8d2;
+  background-color: var(--color-accent);
+  color: var(--color-surface-light);
   padding: 2px 6px;
   border-radius: 4px;
   margin-left: 8px;
@@ -3138,7 +3181,7 @@ button.roll-skill:hover {
   margin: 10px 0;
   padding: 8px;
   background: rgba(123, 45, 38, 0.1);
-  border: 1px solid #7b2d26;
+  border: 1px solid var(--color-accent);
   border-radius: 4px;
   text-align: center;
 }
@@ -3147,7 +3190,7 @@ button.roll-skill:hover {
   font-weight: bold;
   font-size: 1.1em;
   margin-left: 5px;
-  color: #7b2d26;
+  color: var(--color-accent);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -3162,7 +3205,7 @@ button.roll-skill:hover {
   opacity: 0.6;
   cursor: not-allowed;
   background: rgba(60, 60, 60, 0.6);
-  color: #999;
+  color: var(--color-text-muted);
 }
 
 /* Monster Actions Section */
@@ -3175,8 +3218,8 @@ button.roll-skill:hover {
   font-size: 1.2em;
   margin-bottom: 10px;
   text-align: center;
-  color: #7b2d26;
-  border-bottom: 1px solid #7b2d26;
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--color-accent);
   padding-bottom: 5px;
 }
 
@@ -3194,7 +3237,7 @@ button.roll-skill:hover {
   padding: 10px;
   border-radius: 5px;
   font-weight: bold;
-  color: #f5e8d2;
+  color: var(--color-surface-light);
   cursor: pointer;
   transition: all 0.2s ease;
   height: 50px;
@@ -3208,7 +3251,7 @@ button.roll-skill:hover {
 }
 
 .monster-action.melee-attack {
-  background: linear-gradient(to bottom, #7b2d26, #5a1e1a);
+  background: linear-gradient(to bottom, var(--color-accent), #5a1e1a);
   box-shadow: 0 3px 0 #4e1b17;
 }
 
@@ -3248,7 +3291,7 @@ button.roll-skill:hover {
 
 .create-injury {
   display: inline-block;
-  background: linear-gradient(to bottom, #7b2d26, #5a1e1a);
+  background: linear-gradient(to bottom, var(--color-accent), #5a1e1a);
   color: #fff;
   padding: 6px 12px;
   border: none;
@@ -3314,7 +3357,7 @@ button.roll-skill:hover {
 
 .injuries-list .item {
   align-items: center;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--color-border-lighter);
   display: flex;
   padding: 5px 0;
 }
@@ -3411,7 +3454,7 @@ button.roll-skill:hover {
   text-align: center;
   margin: 0 5px;
   padding: 3px 5px;
-  border: 1px solid #333;
+  border: 1px solid var(--color-text-dark);
   background-color: #fff;
   border-radius: 3px;
   color: #000;
@@ -3455,7 +3498,7 @@ button.roll-skill:hover {
 .witch-iron.sheet.monster .battle-wear-plus:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background-color: #ccc;
+  background-color: var(--color-border-light);
 }
 
 /* Dynamic potential injury display */

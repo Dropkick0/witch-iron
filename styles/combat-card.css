@@ -17,7 +17,7 @@
 /* Style the label to not wrap and be just wide enough */
 .detail-item .label {
   font-weight: bold;
-  color: #a89078;
+  color: var(--color-border-light, #a89078);
   display: inline-block;
   width: 100px;
   padding-right: 10px;
@@ -25,7 +25,7 @@
 
 /* Style the value */
 .detail-item .value {
-  color: #f5e8d2;
+  color: var(--color-surface-light);
 }
 
 /* Handle any existing detail-row elements for backward compatibility */
@@ -36,20 +36,20 @@
 
 .detail-row .label {
   font-weight: bold;
-  color: #a89078;
+  color: var(--color-border-light, #a89078);
   display: inline-block;
   width: 100px;
   padding-right: 10px;
 }
 
 .detail-row .value {
-  color: #f5e8d2;
+  color: var(--color-surface-light);
 }
 
 /* Combat result container - simplified version */
 .combat-result-container {
   margin-top: 10px;
-  border-top: 1px solid #444;
+  border-top: 1px solid var(--color-border-dark);
   padding-top: 8px;
 }
 
@@ -62,8 +62,8 @@
 
 .choose-hit-location {
   background: rgba(30, 30, 30, 0.9);
-  color: #e6c9a3;
-  border: 1px solid #666;
+  color: var(--color-highlight);
+  border: 1px solid var(--color-text-muted);
   border-radius: 3px;
   padding: 8px 15px;
   cursor: pointer;
@@ -74,7 +74,7 @@
 
 .choose-hit-location:hover {
   background: rgba(50, 50, 50, 0.9);
-  text-shadow: 0 0 5px #e6c9a3;
+  text-shadow: 0 0 5px var(--color-highlight);
   transform: translateY(-2px);
 }
 
@@ -86,14 +86,14 @@
 .no-damage-message {
   padding: 10px;
   text-align: center;
-  color: #7b2d26;
+  color: var(--color-accent);
   font-style: italic;
 }
 
 /* No injury data message - reused from existing styles */
 .no-injury-data {
   padding: 10px;
-  color: #7b2d26;
+  color: var(--color-accent);
   text-align: center;
   font-style: italic;
 } 
