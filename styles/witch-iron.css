@@ -3674,6 +3674,35 @@ button.roll-skill:hover {
 }
 .modifier-dialog input[type="number"],
 .modifier-dialog select {
-  width: 70px;
+  width: 60px;
   margin-left: 4px;
+}
+.modifier-dialog .modifier-list {
+  max-height: 120px;
+  overflow-y: auto;
+  margin-bottom: 6px;
+  padding-right: 4px;
+}
+.modifier-dialog .modifier-list .form-group {
+  margin-bottom: 4px;
+}
+.modifier-dialog .modifier-row {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+.modifier-dialog .modifier-row span {
+  width: 40px;
+  text-align: right;
+}
+.modifier-dialog .modifier-row:hover {
+  background: var(--color-highlight);
+}
+.modifier-dialog .modifier-row.selected {
+  background: var(--color-accent);
+  color: var(--color-background);
+}
+.modifier-dialog .modifier-row.selected input[type="number"] {
+  color: var(--color-background);
 }
