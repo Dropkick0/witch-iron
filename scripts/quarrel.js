@@ -1020,6 +1020,24 @@ export function initQuarrel() {
             const el = document.querySelector(`.message[data-message-id="${data.messageId}"] .message-content`);
             if (el) el.innerHTML = html;
         });
+
+        game.socket.on("system.witch-iron.rollUpdate", (data) => {
+            if (!data.completed || (game.user.isGM && data.userId === game.user.id)) return;
+            const el = document.querySelector(`.message[data-message-id="${data.messageId}"] .message-content`);
+            if (el) el.innerHTML = data.newContent;
+        });
+
+        Hooks.on("createChatMessage", (message) => {
+            if (!game.user.isGM) return;
+            const type = message.getFlag("witch-iron", "messageType");
+            if (type === "roll-update-request") {
+                const data = message.getFlag("witch-iron", "data");
+                if (!data) return;
+                processRollUpdateRequest(data)
+                    .then(() => message.delete())
+                    .catch(err => { console.error("Error processing roll update:", err); message.delete(); });
+            }
+        });
     });
 }
 
@@ -2202,7 +2220,24 @@ async function handleReverseClick(event) {
         if (reversed === 0) reversed = 100;
     }
 
-    await updateRollMessage(message, card, reversed, { luckSpent: card.dataset.luckSpent === "true" });
+    if (game.user.isGM) {
+        await updateRollMessage(message, card, reversed, { luckSpent: card.dataset.luckSpent === "true" });
+    } else {
+        const requestData = {
+            messageId,
+            newRoll: reversed,
+            luckSpent: card.dataset.luckSpent === "true",
+            targetValue: Number(card.dataset.target) || 0,
+            label: card.dataset.label || "",
+            specialization: card.dataset.specialization || null,
+            situationalMod: Number(card.dataset.situationalMod) || 0,
+            additionalHits: Number(card.dataset.additionalHits) || 0,
+            isCombatCheck: card.dataset.combatCheck === "true",
+            actorId: card.dataset.actorId,
+            actorName: card.dataset.actor
+        };
+        await sendRollUpdateRequest(requestData);
+    }
 }
 
 async function handleRerollClick(event) {
@@ -2215,7 +2250,24 @@ async function handleRerollClick(event) {
     if (!message || !card) return;
 
     const roll = await (new Roll('1d100')).evaluate({ async: true });
-    await updateRollMessage(message, card, roll.total);
+    if (game.user.isGM) {
+        await updateRollMessage(message, card, roll.total);
+    } else {
+        const requestData = {
+            messageId,
+            newRoll: roll.total,
+            luckSpent: false,
+            targetValue: Number(card.dataset.target) || 0,
+            label: card.dataset.label || "",
+            specialization: card.dataset.specialization || null,
+            situationalMod: Number(card.dataset.situationalMod) || 0,
+            additionalHits: Number(card.dataset.additionalHits) || 0,
+            isCombatCheck: card.dataset.combatCheck === "true",
+            actorId: card.dataset.actorId,
+            actorName: card.dataset.actor
+        };
+        await sendRollUpdateRequest(requestData);
+    }
 }
 
 async function handleLuckClick(event) {
@@ -2257,7 +2309,25 @@ async function handleLuckClick(event) {
 
     await actor.update({ 'system.attributes.luck.value': available - spend });
     const current = Number(card.dataset.roll);
-    await updateRollMessage(message, card, current + finalDelta, { luckSpent: true });
+    const newRoll = current + finalDelta;
+    if (game.user.isGM) {
+        await updateRollMessage(message, card, newRoll, { luckSpent: true });
+    } else {
+        const requestData = {
+            messageId,
+            newRoll,
+            luckSpent: true,
+            targetValue: Number(card.dataset.target) || 0,
+            label: card.dataset.label || "",
+            specialization: card.dataset.specialization || null,
+            situationalMod: Number(card.dataset.situationalMod) || 0,
+            additionalHits: Number(card.dataset.additionalHits) || 0,
+            isCombatCheck: card.dataset.combatCheck === "true",
+            actorId: card.dataset.actorId,
+            actorName: card.dataset.actor
+        };
+        await sendRollUpdateRequest(requestData);
+    }
 }
 
 async function handleRollModification(messageId, newHits) {
@@ -2342,6 +2412,81 @@ async function handleRollModification(messageId, newHits) {
             });
         }
     }
+}
+
+/**
+ * Sends a roll update request to the GM via an invisible chat message
+ * @param {Object} data - The data describing the roll update
+ */
+async function sendRollUpdateRequest(data) {
+    const messageData = {
+        content: `<div class="witch-iron-system-message">System: Roll Update Request</div>`,
+        whisper: ChatMessage.getWhisperRecipients("GM"),
+        speaker: ChatMessage.getSpeaker({ alias: "System" }),
+        flags: {
+            "witch-iron": {
+                messageType: "roll-update-request",
+                data: data
+            }
+        }
+    };
+
+    try {
+        return await ChatMessage.create(messageData);
+    } catch (err) {
+        console.error("Error sending roll update request:", err);
+        ui.notifications.error("Failed to send roll update request");
+        return null;
+    }
+}
+
+/**
+ * Process a roll update request (GM only)
+ * @param {Object} data - Roll update data
+ */
+async function processRollUpdateRequest(data) {
+    const message = game.messages.get(data.messageId);
+    if (!message) {
+        console.error(`Message ${data.messageId} not found`);
+        return;
+    }
+
+    const actor = game.actors.get(data.actorId);
+    if (!actor) {
+        console.error(`Actor ${data.actorId} not found`);
+        return;
+    }
+
+    const result = computeCheckResult(data.newRoll, Number(data.targetValue) || 0, Number(data.additionalHits) || 0, data.luckSpent);
+
+    const templateData = {
+        actor,
+        roll: { total: data.newRoll, formula: "1d100" },
+        targetValue: Number(data.targetValue) || 0,
+        label: data.label || "",
+        isSuccess: result.isSuccess,
+        isCriticalSuccess: result.isCriticalSuccess,
+        isFumble: result.isFumble,
+        hits: result.hits,
+        specialization: data.specialization || null,
+        situationalMod: Number(data.situationalMod) || 0,
+        additionalHits: Number(data.additionalHits) || 0,
+        isCombatCheck: data.isCombatCheck,
+        actorId: data.actorId,
+        actorName: data.actorName,
+        luckSpent: data.luckSpent
+    };
+
+    const newContent = await renderTemplate("systems/witch-iron/templates/chat/roll-card.hbs", templateData);
+    await message.update({ content: newContent });
+    await handleRollModification(message.id, result.hits);
+
+    game.socket.emit("system.witch-iron.rollUpdate", {
+        messageId: message.id,
+        newContent,
+        userId: game.user.id,
+        completed: true
+    });
 }
 
 // Export the QuarrelTracker for potential use in other modules
