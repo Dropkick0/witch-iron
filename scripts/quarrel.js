@@ -54,7 +54,7 @@ async function clearPhysicalConditions(actor) {
   await actor.update(updates);
 
   // Also update any active tokens using this actor (covers unlinked monsters)
-  const tokens = actor.getActiveTokens(true);
+  const tokens = actor.getActiveTokens(false);
   for (const token of tokens) {
     if (token.actor) {
       await token.actor.update(updates);
@@ -82,7 +82,7 @@ async function updateActorAndTokens(actor, updates) {
   await actor.update(updates);
 
   // Update any active tokens derived from this actor
-  const tokens = actor.getActiveTokens(true);
+  const tokens = actor.getActiveTokens(false);
   for (const token of tokens) {
     if (token.actor) {
       await token.actor.update(updates);
@@ -118,7 +118,7 @@ function refreshConditionDisplay(actor, condition, value) {
 
   updateHTML(actor.sheet);
 
-  for (const token of actor.getActiveTokens(true)) {
+  for (const token of actor.getActiveTokens(false)) {
     updateHTML(token.actor?.sheet);
   }
 }

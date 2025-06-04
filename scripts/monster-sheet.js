@@ -1078,7 +1078,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     console.log(`Witch Iron | Result Messages:`, resultMessages);
 
     // Setup the condition's side of the quarrel
-    const monsterToken = this.actor.getActiveTokens()[0] || null; // Get the first active token, or null
+    const monsterToken = this.actor.getActiveTokens(false)[0] || null; // Include unlinked tokens
 
     const customParameters = {
         actorId: this.actor.id,   // Add the source actor's ID

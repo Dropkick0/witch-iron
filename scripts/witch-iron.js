@@ -212,7 +212,7 @@ Hooks.on("updateActor", async (actor) => {
   const pending = pendingConditionQuarrels.get(actor.id);
   if (!pending) return;
 
-  const token = actor.getActiveTokens()[0] || null;
+  const token = actor.getActiveTokens(false)[0] || null;
 
   if (pending.stress !== undefined) {
     await manualQuarrel({
