@@ -37,6 +37,31 @@ const CONDITION_ICONS = {
   corruption: "icons/svg/bone-black.svg"
 };
 
+/**
+ * Clear all physical affliction conditions on the actor
+ * @param {Actor} actor - The actor to update
+ */
+async function clearPhysicalConditions(actor) {
+  if (!actor) return;
+  const updates = {
+    'system.conditions.aflame.value': 0,
+    'system.conditions.bleed.value': 0,
+    'system.conditions.poison.value': 0
+  };
+
+  // Update the base actor
+  await actor.update(updates);
+
+  // Also update any unlinked token actors to keep sheets in sync
+  canvas.tokens.placeables
+    .filter(t => t.actor?.id === actor.id)
+    .forEach(t => {
+      if (!t.document.actorLink) {
+        t.actor.update(updates);
+      }
+    });
+}
+
 class QuarrelTracker {
     constructor() {
         this.pendingQuarrels = new Map(); // Map of actor ID -> checkData
@@ -330,69 +355,13 @@ class QuarrelTracker {
         console.log(`Using existing hits - Initiator: ${initiatorHits}, Responder: ${responderHits}, Net: ${netHits}`);
 
         // If actor wins a relevant condition quarrel, clear all related physical conditions
-        if (quarrel.condition && ['aflame', 'bleed', 'poison'].includes(quarrel.condition)) {
-            if (netHits < 0) { // Responder (the monster/actor) won
-                if (responderActor) { // Ensure responderActor is defined
-                    console.log(`Witch Iron | Actor ${responderActor.name} won against ${quarrel.condition}. Clearing Aflame, Bleed, and Poison conditions.`);
-                    const updates = {
-                        'system.conditions.aflame.value': 0,
-                        'system.conditions.bleed.value': 0,
-                        'system.conditions.poison.value': 0
-                    };
-                    await responderActor.update(updates);
-                    console.log(`WITCH IRON (quarrel.js) | actor.update() call completed.`);
-
-                    // ---- START DATA VERIFICATION ----
-                    const freshActor = game.actors.get(responderActor.id);
-                    if (freshActor) {
-                        console.log(`WITCH IRON (quarrel.js) | Data Verification - Post-update from freshActor:`);
-                        console.log(`WITCH IRON (quarrel.js) |   Aflame: ${freshActor.system.conditions.aflame.value}`);
-                        console.log(`WITCH IRON (quarrel.js) |   Bleed: ${freshActor.system.conditions.bleed.value}`);
-                        console.log(`WITCH IRON (quarrel.js) |   Poison: ${freshActor.system.conditions.poison.value}`);
-                        
-                        // Also log from the original responderActor instance for comparison
-                        console.log(`WITCH IRON (quarrel.js) | Data Verification - Post-update from original responderActor instance:`);
-                        console.log(`WITCH IRON (quarrel.js) |   Aflame (original): ${responderActor.system.conditions.aflame.value}`);
-                        console.log(`WITCH IRON (quarrel.js) |   Bleed (original): ${responderActor.system.conditions.bleed.value}`);
-                        console.log(`WITCH IRON (quarrel.js) |   Poison (original): ${responderActor.system.conditions.poison.value}`);
-
-                    } else {
-                        console.error(`WITCH IRON (quarrel.js) | Data Verification - FAILED to re-fetch actor ${responderActor.id}`);
-                    }
-                    // ---- END DATA VERIFICATION ----
-                    
-                    ui.notifications.info(`${responderActor.name} has overcome their physical afflictions!`);
-
-                    // ---- START MANUAL HOOK TRIGGER ----
-                    if (freshActor) { // Use freshActor for the hook call
-                        const changesForHook = { system: { conditions: updates } }; // Construct a changes object similar to what the hook expects
-                        console.log(`WITCH IRON (quarrel.js) | Manually calling updateActor hook for ${freshActor.name} with changes:`, changesForHook);
-                        Hooks.callAll('updateActor', freshActor, changesForHook, {diff: true, render: true}, game.user.id);
-                    } else {
-                        console.warn("WITCH IRON (quarrel.js) | freshActor not available, cannot manually call updateActor hook.");
-                    }
-                    // ---- END MANUAL HOOK TRIGGER ----
-
-                    // ---- START DIAGNOSTIC RE-RENDER ----
-                    const actorSheet = Object.values(ui.windows).find(w => w instanceof ActorSheet && w.actor?.id === responderActor.id);
-                    if (actorSheet?.rendered) {
-                        console.log(`WITCH IRON (quarrel.js) | Found rendered sheet for ${responderActor.name} via ui.windows. Forcing re-render.`);
-                        actorSheet.render(true);
-                    } else {
-                        console.log(`WITCH IRON (quarrel.js) | Could not find rendered sheet for ${responderActor.name} via ui.windows (or responderActor.sheet was not rendered).`);
-                        // Fallback to try the original method, just in case, and log its state
-                        if (responderActor.sheet?.rendered) {
-                            console.log(`WITCH IRON (quarrel.js) | Fallback: responderActor.sheet IS rendered. Forcing re-render.`);
-                            responderActor.sheet.render(true);
-                        } else {
-                            console.log(`WITCH IRON (quarrel.js) | Fallback: responderActor.sheet also not rendered or found.`);
-                        }
-                    }
-                    // ---- END DIAGNOSTIC RE-RENDER ----
-
-                } else {
-                    console.warn(`Witch Iron | Condition quarrel won by responder, but responderActor is undefined. Cannot clear conditions.`);
-                }
+        if (quarrel.condition && ['aflame', 'bleed', 'poison'].includes(quarrel.condition) && netHits < 0) {
+            if (responderActor) {
+                console.log(`Witch Iron | Actor ${responderActor.name} won against ${quarrel.condition}. Clearing Aflame, Bleed, and Poison conditions.`);
+                await clearPhysicalConditions(responderActor);
+                ui.notifications.info(`${responderActor.name} has overcome their physical afflictions!`);
+            } else {
+                console.warn(`Witch Iron | Condition quarrel won by responder, but responderActor is undefined. Cannot clear conditions.`);
             }
         }
 
@@ -595,23 +564,18 @@ class QuarrelTracker {
             const actor = initiatorActor;
             // Character 'dies' if condition wins (initiatorOutcome is 'Victory'); mark token as dead
             if (result.initiatorOutcome === 'Victory') {
-                // Mark all tokens of this actor with the standard 'Dead' status effect
                 canvas.tokens.placeables
                   .filter(t => t.actor?.id === actor.id)
                   .forEach(t => t.actor?.toggleStatusEffect("dead", {active: true, overlay: true}));
             }
-            // Remove all conditions if actor wins (initiatorOutcome is 'Defeat')
-            else if (result.initiatorOutcome === 'Defeat') {
-                const cond = result.condition;
-                const updateData = {};
-                if (['aflame','bleed','poison'].includes(cond)) {
-                    updateData['system.conditions.aflame.value'] = 0;
-                    updateData['system.conditions.bleed.value'] = 0;
-                    updateData['system.conditions.poison.value'] = 0;
+            // Remove all conditions if actor wins
+            else if (result.responderOutcome === 'Victory') {
+                if (['aflame','bleed','poison'].includes(result.condition)) {
+                    await clearPhysicalConditions(responderActor);
                 } else {
-                    updateData[`system.conditions.${cond}.value`] = 0;
+                    const updateData = { [`system.conditions.${result.condition}.value`]: 0 };
+                    await responderActor.update(updateData);
                 }
-                actor.update(updateData);
             }
             // Tie (VictoryAtACost) -> no automatic changes
         }
