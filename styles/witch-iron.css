@@ -1807,9 +1807,12 @@ button.roll-skill:hover {
   width: 100%;
 }
 
+
 .witch-iron.chat-card .roll-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   align-items: center;
+  justify-items: center;
   width: 100%;
   gap: 10px;
   font-weight: normal;
@@ -1819,7 +1822,7 @@ button.roll-skill:hover {
 }
 
 .witch-iron.chat-card .roll-actions {
-  margin-left: auto;
+  justify-self: center;
   display: flex;
   flex-direction: column;
   gap: 5px;
