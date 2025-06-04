@@ -193,7 +193,7 @@
 
 .dialog-buttons button {
     background: rgba(50, 50, 50, 0.8);
-    color: var(--color-highlight);
+    color: #000000;
     border: 1px solid var(--color-text-muted);
     padding: 6px 12px;
     border-radius: 3px;
