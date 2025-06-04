@@ -1,15 +1,39 @@
-<div class="witch-iron chat-card mob-injury-card">
-  <header class="card-header">
+<div class="witch-iron chat-card injury-card mob-injury-card">
+  <div class="card-header">
+    <i class="fas fa-skull-crossbones"></i>
     <h3>Mob Casualties</h3>
-  </header>
+  </div>
   <div class="card-content">
-    <div class="mob-info">
-      <strong>{{defender}}</strong> loses <strong>{{killed}}</strong> bodies.
-      {{#if remaining}}
-        <span>{{remaining}} bodies remain.</span>
-      {{else}}
-        <span>The mob has been destroyed.</span>
-      {{/if}}
+    <div class="combatants-row compact-row">
+      <div class="combatant attacker">
+        <img class="token-image" src="{{attackerImg}}" alt="{{attacker}}">
+        <div class="token-name">{{attacker}}</div>
+      </div>
+      <div class="arrow-container"><i class="fas fa-long-arrow-alt-right"></i></div>
+      <div class="combatant defender">
+        <img class="token-image" src="{{defenderImg}}" alt="{{defender}}">
+        <div class="token-name">{{defender}}</div>
+      </div>
     </div>
+    <div class="collapsible-section">
+      <div class="section-header combat-toggle">
+        <i class="fas fa-chevron-down"></i>
+        <h4>Damage Details</h4>
+      </div>
+      <div class="section-content combat-details hidden">
+        <div class="detail-grid">
+          <div class="detail-item"><span class="label">Damage:</span> <span class="value">{{damage}}</span></div>
+          <div class="detail-item"><span class="label">Bodies Lost:</span> <span class="value">{{killed}}</span></div>
+          <div class="detail-item"><span class="label">Remaining:</span> <span class="value">{{remaining}}</span></div>
+          {{#if scaleChange}}
+          <div class="detail-item wide-item"><span class="label">Scale Change:</span> <span class="value">{{oldScale}} → {{newScale}}</span></div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+    <div class="loss-summary">-{{killed}} / {{remaining}}</div>
+    {{#if scaleChange}}
+    <div class="scale-change">Now {{newScale}} (was {{oldScale}})</div>
+    {{/if}}
   </div>
 </div>

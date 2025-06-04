@@ -8,6 +8,151 @@ import { rollOnInjuryTable, getFullInjuryName, getInjuryEffect } from './injury-
 // Add a log message when this module is loaded
 console.log("Witch Iron | Hit Location module loaded");
 
+// Helper functions for mob scale and rout checks
+function getMobScale(bodies) {
+    if (bodies >= 100) return "huge";
+    if (bodies >= 50) return "large";
+    if (bodies >= 20) return "medium";
+    if (bodies >= 5) return "small";
+    return "none";
+}
+
+function scaleRank(scale) {
+    switch (scale) {
+        case "huge": return 4;
+        case "large": return 3;
+        case "medium": return 2;
+        case "small": return 1;
+        default: return 0;
+    }
+}
+
+async function selectTokenDialog(title = "Select Leader Token") {
+    const tokens = canvas.tokens.placeables;
+    const options = tokens.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
+    return new Promise(resolve => {
+        new Dialog({
+            title,
+            content: `<form><div class="form-group"><label>Token:</label><select name="token">${options}</select></div></form>`,
+            buttons: {
+                select: {
+                    label: "Select",
+                    callback: html => {
+                        const id = html.find('select[name="token"]').val();
+                        resolve(canvas.tokens.get(id) || null);
+                    }
+                },
+                cancel: {
+                    label: "Cancel",
+                    callback: () => resolve(null)
+                }
+            },
+            default: "select"
+        }).render(true);
+    });
+}
+
+async function performRoutRoll(actor, label, targetValue) {
+    const roll = await new Roll("1d100").evaluate({async: true});
+    const rollTotal = roll.total;
+    const isSuccess = rollTotal <= targetValue;
+    const isCriticalSuccess = rollTotal <= 5 || (isSuccess && rollTotal % 11 === 0);
+    const isFumble = rollTotal >= 96 || (!isSuccess && rollTotal % 11 === 0);
+    let hits = Math.floor(targetValue/10) - Math.floor(rollTotal/10);
+    if (isCriticalSuccess) hits = Math.max(hits + 1, 1);
+    if (isFumble) hits = Math.min(hits - 1, -1);
+
+    const content = await renderTemplate("systems/witch-iron/templates/chat/roll-card.hbs", {
+        actor,
+        roll,
+        targetValue,
+        label,
+        isSuccess,
+        isCriticalSuccess,
+        isFumble,
+        hits,
+        situationalMod: 0,
+        additionalHits: 0,
+        isCombatCheck: false,
+        actorId: actor.id,
+        actorName: actor.name
+    });
+
+    await ChatMessage.create({
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker({actor}),
+        content,
+        sound: CONFIG.sounds.dice
+    });
+
+    return isSuccess;
+}
+
+async function handleMobScaleRout(mobActor, oldBodies, newBodies) {
+    const oldScale = getMobScale(oldBodies);
+    const newScale = getMobScale(newBodies);
+    if (scaleRank(newScale) >= scaleRank(oldScale)) return;
+
+    return new Promise(resolve => {
+        new Dialog({
+            title: "Mob Losses",
+            content: `<p>${mobActor.name} has been reduced to <strong>${newScale}</strong> scale. Is a leader nearby?</p>`,
+            buttons: {
+                mob: {
+                    label: "No (Mob Rolls Steel)",
+                    callback: async () => {
+                        const target = mobActor.system.derived?.abilityScore || 0;
+                        const success = await performRoutRoll(mobActor, "Steel Check", target);
+                        await ChatMessage.create({
+                            user: game.user.id,
+                            speaker: ChatMessage.getSpeaker({actor: mobActor}),
+                            content: await renderTemplate("systems/witch-iron/templates/chat/mob-rout-message.hbs", {
+                                mobName: mobActor.name,
+                                success
+                            })
+                        });
+                        if (!success) await mobActor.update({"system.mob.bodies.value": 0});
+                        resolve();
+                    }
+                },
+                leader: {
+                    label: "Yes (Select Leader)",
+                    callback: async () => {
+                        const token = await selectTokenDialog();
+                        let success = false;
+                        if (token && token.actor) {
+                            const leader = token.actor;
+                            if (leader.type === "monster") {
+                                const t = leader.system.derived?.abilityScore || 0;
+                                success = await performRoutRoll(leader, "Leadership Check", t);
+                            } else {
+                                const attr = leader.system.attributes?.personality?.value || 0;
+                                const skill = leader.system.skills?.social?.leadership?.value || 0;
+                                const t = attr + skill;
+                                success = await performRoutRoll(leader, "Leadership Check", t);
+                            }
+                        } else {
+                            const target = mobActor.system.derived?.abilityScore || 0;
+                            success = await performRoutRoll(mobActor, "Steel Check", target);
+                        }
+                        await ChatMessage.create({
+                            user: game.user.id,
+                            speaker: ChatMessage.getSpeaker({actor: mobActor}),
+                            content: await renderTemplate("systems/witch-iron/templates/chat/mob-rout-message.hbs", {
+                                mobName: mobActor.name,
+                                success
+                            })
+                        });
+                        if (!success) await mobActor.update({"system.mob.bodies.value": 0});
+                        resolve();
+                    }
+                }
+            },
+            default: "mob"
+        }, { classes: ["rout-dialog"] }).render(true);
+    });
+}
+
 export class HitLocationSelector {
     /**
      * Generate a unique ID for the combat workflow
@@ -402,13 +547,22 @@ export class HitLocationSelector {
                 await defenderActor.update({ "system.mob.bodies.value": remainingBodies });
             }
 
+            const oldScale = getMobScale(currentBodies);
+            const newScale = getMobScale(remainingBodies);
+
             const mobContent = await renderTemplate(
                 "systems/witch-iron/templates/chat/mob-injury-message.hbs",
                 {
                     attacker: combatData.attacker,
                     defender: combatData.defender,
+                    attackerImg: battleWearDataForTemplate.attacker.tokenImg,
+                    defenderImg: battleWearDataForTemplate.defender.tokenImg,
                     killed: bodiesKilled,
-                    remaining: remainingBodies
+                    remaining: remainingBodies,
+                    damage: netDamage,
+                    oldScale,
+                    newScale,
+                    scaleChange: scaleRank(newScale) < scaleRank(oldScale)
                 }
             );
 
@@ -424,6 +578,13 @@ export class HitLocationSelector {
                     }
                 }
             });
+
+            setTimeout(() => {
+                attachInjuryMessageHandlers(mobMessage.id);
+            }, 100);
+
+            // Check if mob scale has been reduced and possibly trigger a rout check
+            await handleMobScaleRout(defenderActor, currentBodies, remainingBodies);
 
             return mobMessage;
         }
