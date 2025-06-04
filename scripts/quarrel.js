@@ -53,14 +53,13 @@ async function clearPhysicalConditions(actor) {
   // Update the base actor
   await actor.update(updates);
 
-  // Also update any unlinked token actors to keep sheets in sync
-  canvas.tokens.placeables
-    .filter(t => t.actor?.id === actor.id)
-    .forEach(t => {
-      if (!t.document.actorLink) {
-        t.actor.update(updates);
-      }
-    });
+  // Also update any unlinked tokens so their sheets stay in sync
+  const activeTokens = actor.getActiveTokens(true);
+  for (const token of activeTokens) {
+    if (!token.document.actorLink) {
+      await token.actor.update(updates);
+    }
+  }
 }
 
 class QuarrelTracker {
