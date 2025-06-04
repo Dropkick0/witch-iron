@@ -1,27 +1,30 @@
-<section class="witch-iron chat-card wi-card mob-casualty-card">
-  <header class="card-header">
+<div class="witch-iron chat-card wi-card mob-casualty-card">
+  <div class="card-header">
     <i class="fas fa-skull-crossbones"></i>
     <h3>Mob Casualties</h3>
-  </header>
+  </div>
+  <div class="card-content">
+    <details class="cas-detail" open>
+      <summary>Casualty Summary</summary>
+      <div class="grid-two">
+        <span class="label">Losses:</span><span class="value">{{killed}}</span>
+        <span class="label">Remaining:</span><span class="value">{{remaining}}</span>
+        <span class="label">Scale:</span><span class="value">{{newScale}} {{#if scaleChange}}(↓){{/if}}</span>
+      </div>
+      <div class="progress">
+        <div style="width:{{lossPercent}}%"></div>
+      </div>
+    </details>
 
-  <details class="cas-detail" open>
-    <summary>Casualty Summary</summary>
-    <div class="grid-two">
-      <span class="label">Losses:</span><span class="value">{{killed}}</span>
-      <span class="label">Remaining:</span><span class="value">{{remaining}}</span>
-      <span class="label">Scale:</span><span class="value">{{newScale}} {{#if scaleChange}}(↓){{/if}}</span>
-    </div>
-    <div class="progress">
-      <div style="width:{{lossPercent}}%"></div>
-    </div>
-  </details>
-
-  <details class="cas-detail">
-    <summary>Damage Details</summary>
-    <div class="grid-two fade">
-      <span class="label">Damage:</span><span class="value">{{damage}}</span>
-      <span class="label">Bodies Lost:</span><span class="value">{{killed}}</span>
-      <span class="label">Bodies Remaining:</span><span class="value">{{remaining}}</span>
-    </div>
-  </details>
-</section>
+    <details class="cas-detail">
+      <summary>Combat Details</summary>
+      <div class="grid-two fade">
+        <span class="label">Damage:</span><span class="value">{{damageText}}</span>
+        <span class="label">Soak:</span><span class="value">{{soakText}}</span>
+        <span class="label">Net Hits:</span><span class="value">{{netHits}}</span>
+        <span class="label">Net Dmg:</span><span class="value">{{netDamage}}</span>
+        <div class="wide"><span class="label">Hit the...</span><span class="value">{{location}}</span></div>
+      </div>
+    </details>
+  </div>
+</div>

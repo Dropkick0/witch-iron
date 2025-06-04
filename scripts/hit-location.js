@@ -548,6 +548,11 @@ export class HitLocationSelector {
                     killed: bodiesKilled,
                     remaining: remainingBodies,
                     damage: netDamage,
+                    damageText: damageText,
+                    soakText: soakText,
+                    netHits: netHits,
+                    netDamage: netDamage,
+                    location: combatData.location,
                     scaleChange: scaleChange,
                     newScale: newScale,
                     lossPercent: lossPercent
