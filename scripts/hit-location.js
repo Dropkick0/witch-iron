@@ -104,7 +104,6 @@ async function handleMobScaleRout(mobActor, oldBodies, newBodies) {
                         const target = mobActor.system.derived?.abilityScore || 0;
                         const success = await performRoutRoll(mobActor, "Steel Check", target);
                         if (!success) await mobActor.update({"system.mob.bodies.value": 0});
-                        await createRoutResultMessage(mobActor.name, success);
                         resolve();
                     }
                 },
@@ -129,27 +128,12 @@ async function handleMobScaleRout(mobActor, oldBodies, newBodies) {
                             success = await performRoutRoll(mobActor, "Steel Check", target);
                         }
                         if (!success) await mobActor.update({"system.mob.bodies.value": 0});
-                        await createRoutResultMessage(mobActor.name, success);
                         resolve();
                     }
                 }
             },
             default: "mob"
-        }, { classes: ["rout-check-dialog"] }).render(true);
-    });
-}
-
-async function createRoutResultMessage(actorName, success) {
-    const content = await renderTemplate(
-        "systems/witch-iron/templates/chat/rout-result.hbs",
-        { actor: actorName, success }
-    );
-    await ChatMessage.create({
-        user: game.user.id,
-        content,
-        speaker: ChatMessage.getSpeaker(),
-        flavor: "Rout Result",
-        flags: { "witch-iron": { messageType: "rout-result" } }
+        }).render(true);
     });
 }
 
@@ -547,20 +531,13 @@ export class HitLocationSelector {
                 await defenderActor.update({ "system.mob.bodies.value": remainingBodies });
             }
 
-            const oldScale = getMobScale(currentBodies);
-            const newScale = getMobScale(remainingBodies);
-            const scaleChange = scaleRank(newScale) < scaleRank(oldScale);
-
             const mobContent = await renderTemplate(
                 "systems/witch-iron/templates/chat/mob-injury-message.hbs",
                 {
                     attacker: combatData.attacker,
                     defender: combatData.defender,
                     killed: bodiesKilled,
-                    remaining: remainingBodies,
-                    damage: netDamage,
-                    scaleChange: scaleChange,
-                    newScale: newScale
+                    remaining: remainingBodies
                 }
             );
 
@@ -577,8 +554,7 @@ export class HitLocationSelector {
                 }
             });
 
-            setTimeout(() => attachMobInjuryHandlers(mobMessage.id), 50);
-
+            // Check if mob scale has been reduced and possibly trigger a rout check
             await handleMobScaleRout(defenderActor, currentBodies, remainingBodies);
 
             return mobMessage;
@@ -2649,27 +2625,6 @@ function attachInjuryMessageHandlers(messageId) {
     });
 }
 
-function attachMobInjuryHandlers(messageId) {
-    const messageElement = document.querySelector(`.message[data-message-id="${messageId}"]`);
-    if (!messageElement) return;
-    const toggle = messageElement.querySelector('.mob-details-toggle');
-    if (!toggle) return;
-    const content = messageElement.querySelector('.mob-details');
-    const icon = toggle.querySelector('i');
-    toggle.addEventListener('click', ev => {
-        ev.preventDefault();
-        if (!content) return;
-        const hidden = content.classList.contains('hidden');
-        if (hidden) {
-            content.classList.remove('hidden');
-            if (icon) icon.classList.replace('fa-chevron-down','fa-chevron-up');
-        } else {
-            content.classList.add('hidden');
-            if (icon) icon.classList.replace('fa-chevron-up','fa-chevron-down');
-        }
-    });
-}
-
 /**
  * Update battle wear buttons enabled/disabled state
  * @param {HTMLElement} messageElement The message element
@@ -3082,9 +3037,6 @@ async function updateActorBattleWear(message, attackerWear, defenderWear) {
 Hooks.on("renderChatMessage", (message, html, data) => {
     // Check if this is an injury message
     const messageType = message.getFlag("witch-iron", "messageType");
-    if (messageType === "mob-injury") {
-        setTimeout(() => attachMobInjuryHandlers(message.id), 20);
-    }
     if (messageType === "injury" || messageType === "deflection") {
         console.log(`Detected injury message being rendered: ${message.id}`);
         
