@@ -1809,8 +1809,10 @@ button.roll-skill:hover {
 }
 
 .witch-iron.chat-card .roll-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   align-items: center;
+  justify-items: center;
   width: 100%;
   gap: 10px;
   font-weight: normal;
