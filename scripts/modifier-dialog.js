@@ -17,17 +17,20 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
           </select>
         </div>
         <h3>Condition Modifiers</h3>
-        <div class="form-group">
-          <label><input type="checkbox" name="useBlind" ${blind ? "checked" : ""}/> Blind</label>
+        <div class="form-group modifier-row ${blind ? 'selected' : ''}" data-toggle="useBlind">
+          <label>Blind</label>
           <input type="number" name="blindRating" value="${blind}" min="0" />
+          <input type="hidden" name="useBlind" value="${blind ? 1 : 0}">
         </div>
-        <div class="form-group">
-          <label><input type="checkbox" name="useDeaf" ${deaf ? "checked" : ""}/> Deaf</label>
+        <div class="form-group modifier-row ${deaf ? 'selected' : ''}" data-toggle="useDeaf">
+          <label>Deaf</label>
           <input type="number" name="deafRating" value="${deaf}" min="0" />
+          <input type="hidden" name="useDeaf" value="${deaf ? 1 : 0}">
         </div>
-        <div class="form-group">
-          <label><input type="checkbox" name="usePain" checked/> Pain</label>
+        <div class="form-group modifier-row selected" data-toggle="usePain">
+          <label>Pain</label>
           <input type="number" name="painRating" value="${pain}" min="0" />
+          <input type="hidden" name="usePain" value="1">
         </div>
         <h3>Hits Modifiers</h3>
         <div class="form-group">
@@ -44,9 +47,9 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
           callback: html => {
             const form = html[0].querySelector("form");
             let situationalMod = Number(form.difficulty.value) || 0;
-            if (form.useBlind.checked) situationalMod -= 10 * (parseInt(form.blindRating.value) || 0);
-            if (form.useDeaf.checked) situationalMod -= 10 * (parseInt(form.deafRating.value) || 0);
-            if (form.usePain.checked) situationalMod -= 10 * (parseInt(form.painRating.value) || 0);
+            if (parseInt(form.useBlind.value)) situationalMod -= 10 * (parseInt(form.blindRating.value) || 0);
+            if (parseInt(form.useDeaf.value)) situationalMod -= 10 * (parseInt(form.deafRating.value) || 0);
+            if (parseInt(form.usePain.value)) situationalMod -= 10 * (parseInt(form.painRating.value) || 0);
             const additionalHits = parseInt(form.additionalHits.value) || 0;
             resolve({ situationalMod, additionalHits });
           }
@@ -56,7 +59,27 @@ export async function openModifierDialog(actor, {title="Roll Modifiers", default
           callback: () => resolve(null)
         }
       },
-      default: "roll"
+      default: "roll",
+      render: html => {
+        // Toggle rows when clicked
+        html.find('.modifier-row').on('click', ev => {
+          const row = $(ev.currentTarget);
+          const hidden = row.find('input[type="hidden"]');
+          row.toggleClass('selected');
+          hidden.val(row.hasClass('selected') ? 1 : 0);
+        });
+
+        // Support pressing Enter to confirm the roll
+        html.closest('.app.dialog').on('keydown.mod', ev => {
+          if (ev.key === 'Enter') {
+            ev.preventDefault();
+            html.closest('.app.dialog').find('button[data-button="roll"]').click();
+          }
+        });
+      },
+      close: html => {
+        html.closest('.app.dialog').off('keydown.mod');
+      }
     }, { classes: ["witch-iron", "modifier-dialog"] });
     dialog.render(true);
   });
