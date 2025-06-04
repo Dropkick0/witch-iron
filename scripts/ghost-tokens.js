@@ -3,9 +3,15 @@ export const FORMATION_SHAPES = [
   "doubleLine",
   "tripleLine",
   "column",
+  "doubleColumn",
+  "tripleColumn",
   "wedge",
   "echelonLeft",
+  "doubleEchelonLeft",
+  "tripleEchelonLeft",
   "echelonRight",
+  "doubleEchelonRight",
+  "tripleEchelonRight",
   "square",
   "diamond",
   "circle",
@@ -43,6 +49,21 @@ export function computeOffsets(count, start = 0, formation = "skirmish") {
       for (let i = 1; coords.length < needed; i++) add(0, i);
       break;
     }
+    case "doubleColumn": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(0, i);
+        if (coords.length < needed) add(1, i);
+      }
+      break;
+    }
+    case "tripleColumn": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(0, i);
+        if (coords.length < needed) add(1, i);
+        if (coords.length < needed) add(-1, i);
+      }
+      break;
+    }
     case "wedge": {
       for (let r = 1; coords.length < needed; r++) {
         for (let i = -r; i <= r && coords.length < needed; i++) add(i, r);
@@ -53,8 +74,38 @@ export function computeOffsets(count, start = 0, formation = "skirmish") {
       for (let i = 1; coords.length < needed; i++) add(-i, i);
       break;
     }
+    case "doubleEchelonLeft": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(-i, i);
+        if (coords.length < needed) add(-i + 1, i + 1);
+      }
+      break;
+    }
+    case "tripleEchelonLeft": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(-i, i);
+        if (coords.length < needed) add(-i + 1, i + 1);
+        if (coords.length < needed) add(-i - 1, i - 1);
+      }
+      break;
+    }
     case "echelonRight": {
       for (let i = 1; coords.length < needed; i++) add(i, i);
+      break;
+    }
+    case "doubleEchelonRight": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(i, i);
+        if (coords.length < needed) add(i + 1, i - 1);
+      }
+      break;
+    }
+    case "tripleEchelonRight": {
+      for (let i = 1; coords.length < needed; i++) {
+        add(i, i);
+        if (coords.length < needed) add(i + 1, i - 1);
+        if (coords.length < needed) add(i - 1, i + 1);
+      }
       break;
     }
     case "square": {
