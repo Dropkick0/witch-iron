@@ -3682,6 +3682,9 @@ button.roll-skill:hover {
   padding: 2px 4px;
   border-radius: 3px;
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .modifier-dialog .modifier-row:hover {
   background: var(--color-highlight);
