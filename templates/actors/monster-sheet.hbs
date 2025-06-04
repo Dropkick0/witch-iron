@@ -212,6 +212,12 @@
                   <label>Mob Attacks</label>
                   <span>{{system.derived.mobAttacks}}</span>
                 </div>
+                <div class="form-group">
+                  <label>Formation</label>
+                  <select name="system.mob.formation.value">
+                    {{selectOptions formations selected=system.mob.formation.value localize=false}}
+                  </select>
+                </div>
               {{/if}}
             </div>
           </div>

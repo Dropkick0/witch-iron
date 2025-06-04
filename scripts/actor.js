@@ -306,7 +306,8 @@ export class WitchIronActor extends Actor {
     }
     
     if (!systemData.derived) systemData.derived = {};
-    if (!systemData.mob) systemData.mob = { isMob: { value: false }, bodies: { value: 0 } };
+    if (!systemData.mob) systemData.mob = { isMob: { value: false }, bodies: { value: 0 }, formation: { value: "skirmish" } };
+    if (!systemData.mob.formation) systemData.mob.formation = { value: "skirmish" };
     if (!systemData.traits) systemData.traits = { specialQualities: [], flaw: { value: "" } };
     
     // Monster ability score based on Hit Dice from V3 table
