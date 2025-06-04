@@ -19,6 +19,7 @@
   ],
   "styles": [
     "styles/witch-iron.css",
+    "styles/card-common.css",
     "styles/combat-card.css",
     "styles/hit-location.css",
     "styles/injury-card.css",
