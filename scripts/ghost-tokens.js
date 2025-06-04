@@ -87,11 +87,30 @@ export async function deleteGhostTokens(token) {
   if (ids.length) await canvas.scene.deleteEmbeddedDocuments("Token", ids);
 }
 
-Hooks.on("createToken", (token) => spawnGhostTokens(token));
-Hooks.on("updateToken", (token) => updateGhostTokenPositions(token));
-Hooks.on("deleteToken", (token) => deleteGhostTokens(token));
-Hooks.on("updateActor", (actor) => {
-  const tokens = canvas.scene.tokens.filter(t => t.actor?.id === actor.id && t.getFlag("witch-iron", "isMobLeader"));
+Hooks.on("createToken", token => spawnGhostTokens(token));
+
+Hooks.on("updateToken", (token, changes) => {
+  if ("x" in changes || "y" in changes || "rotation" in changes) {
+    updateGhostTokenPositions(token);
+  }
+});
+
+Hooks.on("deleteToken", token => deleteGhostTokens(token));
+
+Hooks.on("updateActor", actor => {
+  const tokens = canvas.scene.tokens.filter(t => t.actor?.id === actor.id);
+  const isMob = actor.system?.mob?.isMob?.value;
   const bodies = actor.system?.mob?.bodies?.value || 1;
-  tokens.forEach(t => adjustGhostTokenCount(t, bodies - 1));
+  tokens.forEach(t => {
+    if (isMob) {
+      if (!t.getFlag("witch-iron", "isMobLeader")) {
+        spawnGhostTokens(t);
+      } else {
+        adjustGhostTokenCount(t, bodies - 1);
+      }
+    } else if (t.getFlag("witch-iron", "isMobLeader")) {
+      t.update({ "flags.witch-iron.isMobLeader": null, overlayEffect: "" });
+      deleteGhostTokens(t);
+    }
+  });
 });
