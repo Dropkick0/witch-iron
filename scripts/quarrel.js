@@ -53,10 +53,10 @@ async function clearPhysicalConditions(actor) {
   // Update the actor document
   await actor.update(updates);
 
-  // Also update any active tokens using this actor (covers unlinked monsters)
-  const tokens = actor.getActiveTokens(true);
+  // Determine which tokens should receive the update
+  const tokens = actor.isToken ? [actor.token] : actor.getActiveTokens(true);
   for (const token of tokens) {
-    if (token.actor) {
+    if (token?.actor) {
       await token.actor.update(updates);
       if (token.actor.sheet) {
         await token.actor.sheet.render(false);
@@ -81,10 +81,10 @@ async function updateActorAndTokens(actor, updates) {
   // Update the base actor
   await actor.update(updates);
 
-  // Update any active tokens derived from this actor
-  const tokens = actor.getActiveTokens(true);
+  // Determine relevant tokens (unlinked tokens only update themselves)
+  const tokens = actor.isToken ? [actor.token] : actor.getActiveTokens(true);
   for (const token of tokens) {
-    if (token.actor) {
+    if (token?.actor) {
       await token.actor.update(updates);
       if (token.actor.sheet) {
         await token.actor.sheet.render(false);
@@ -118,7 +118,8 @@ function refreshConditionDisplay(actor, condition, value) {
 
   updateHTML(actor.sheet);
 
-  for (const token of actor.getActiveTokens(true)) {
+  const tokens = actor.isToken ? [actor.token] : actor.getActiveTokens(true);
+  for (const token of tokens) {
     updateHTML(token.actor?.sheet);
   }
 }
@@ -391,19 +392,12 @@ class QuarrelTracker {
         // Log quarrel data for debugging
         console.log(`Resolving quarrel ${quarrelId}:`, quarrel);
         
-        // Get actor information
-        let initiatorActor = game.actors.get(quarrel.initiator.actorId);
-        let responderActor = game.actors.get(quarrel.responder.actorId);
+        // Get actor information, preferring token actors when available
+        const initiatorToken = quarrel.initiator.tokenId ? canvas.tokens.get(quarrel.initiator.tokenId) : null;
+        const responderToken = quarrel.responder.tokenId ? canvas.tokens.get(quarrel.responder.tokenId) : null;
 
-        // Fallback to token actors for unlinked tokens
-        if (!initiatorActor && quarrel.initiator.tokenId) {
-            const token = canvas.tokens.get(quarrel.initiator.tokenId);
-            initiatorActor = token?.actor || initiatorActor;
-        }
-        if (!responderActor && quarrel.responder.tokenId) {
-            const token = canvas.tokens.get(quarrel.responder.tokenId);
-            responderActor = token?.actor || responderActor;
-        }
+        let initiatorActor = initiatorToken?.actor || game.actors.get(quarrel.initiator.actorId);
+        let responderActor = responderToken?.actor || game.actors.get(quarrel.responder.actorId);
         
         // Validate both actors exist
         if (!initiatorActor || !responderActor) {
