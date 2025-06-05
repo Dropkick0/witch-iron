@@ -205,9 +205,11 @@ export async function syncGhostTiles(token, required, overrides = {}) {
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
   const doc = token.document ?? token;
+  const scaleX = doc.texture?.scaleX ?? 1;
+  const scaleY = doc.texture?.scaleY ?? 1;
   const baseOffsets = computeOffsets(required, 0, formation).map(o => ({
-    x: o.x * doc.width,
-    y: o.y * doc.height
+    x: o.x * doc.width * scaleX,
+    y: o.y * doc.height * scaleY
   }));
   const offsets = baseOffsets.map(o => ({
     x: o.x * cos - o.y * sin,
@@ -221,8 +223,6 @@ export async function syncGhostTiles(token, required, overrides = {}) {
   }
 
   const grid = canvas.scene.grid.size;
-  const scaleX = doc.texture?.scaleX ?? 1;
-  const scaleY = doc.texture?.scaleY ?? 1;
   const width = doc.width * grid * scaleX;
   const height = doc.height * grid * scaleY;
   const xBase = overrides.x ?? token.x;
@@ -285,6 +285,11 @@ Hooks.on("createToken", token => spawnGhostTokens(token));
 Hooks.on("updateToken", (token, changes) => {
   if ("x" in changes || "y" in changes || "rotation" in changes) {
     updateGhostTokenPositions(token, changes);
+  }
+  if ("width" in changes || "height" in changes ||
+      "texture.scaleX" in changes || "texture.scaleY" in changes) {
+    const tiles = canvas.scene.tiles.filter(t => t.getFlag("witch-iron", "ghostParent") === token.id);
+    if (tiles.length) syncGhostTiles(token, tiles.length);
   }
 });
 
