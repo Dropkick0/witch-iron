@@ -183,6 +183,8 @@ export class HitLocationSelector {
             combatId: data.combatId,
             weaponDamage: data.weaponDmg || 0,
             soakValues: {},
+            armorValues: {},
+            locations: ["head","torso","left-arm","right-arm","left-leg","right-leg"],
             defenderImg: "icons/svg/mystery-man.svg",
             applyHitCallback: (location, remainingHits) => {
                 this._applyHit(
@@ -211,10 +213,18 @@ export class HitLocationSelector {
                 dialogData.soakValues = {
                     head: Number(anat.head?.soak || 0),
                     torso: Number(anat.torso?.soak || 0),
-                    'left-arm': Number(anat.leftArm?.soak || 0),
-                    'right-arm': Number(anat.rightArm?.soak || 0),
-                    'left-leg': Number(anat.leftLeg?.soak || 0),
-                    'right-leg': Number(anat.rightLeg?.soak || 0)
+                    leftArm: Number(anat.leftArm?.soak || 0),
+                    rightArm: Number(anat.rightArm?.soak || 0),
+                    leftLeg: Number(anat.leftLeg?.soak || 0),
+                    rightLeg: Number(anat.rightLeg?.soak || 0)
+                };
+                dialogData.armorValues = {
+                    head: Number(anat.head?.armor || 0),
+                    torso: Number(anat.torso?.armor || 0),
+                    leftArm: Number(anat.leftArm?.armor || 0),
+                    rightArm: Number(anat.rightArm?.armor || 0),
+                    leftLeg: Number(anat.leftLeg?.armor || 0),
+                    rightLeg: Number(anat.rightLeg?.armor || 0)
                 };
             }
         }
@@ -1528,6 +1538,8 @@ export class HitLocationDialog extends Application {
         this.remainingHits = this.netHits;
         this.weaponDamage = data.weaponDamage || 0;
         this.soakValues = data.soakValues || {};
+        this.armorValues = data.armorValues || {};
+        this.locations = data.locations || ["head","torso","left-arm","right-arm","left-leg","right-leg"];
         this.defenderImg = data.defenderImg || "icons/svg/mystery-man.svg";
         
         console.log(`HitLocationDialog initialized with netHits: ${this.netHits}, remaining: ${this.remainingHits}`);
@@ -1556,22 +1568,31 @@ export class HitLocationDialog extends Application {
             template: "systems/witch-iron/templates/dialogs/hit-location-selector.hbs",
             width: 400,
             height: 600,
-            classes: ["witch-iron", "hit-location-dialog"],
+            classes: ["witch-iron", "hit-location-dialog", "defender-mode"],
             resizable: true
         });
     }
     
     /** @override */
     getData(options={}) {
-        const defaultLoc = 'torso';
-        const soak = this.soakValues[defaultLoc] || 0;
+        const damage = this.weaponDamage + this.remainingHits;
+        const locationData = {};
+        const map = { 'head':'head','torso':'torso','left-arm':'leftArm','right-arm':'rightArm','left-leg':'leftLeg','right-leg':'rightLeg' };
+        for (const loc of this.locations) {
+            const key = map[loc] || loc;
+            const soak = this.soakValues[key] || 0;
+            const armor = this.armorValues[key] || 0;
+            const net = Math.max(0, damage - soak);
+            locationData[loc] = { soak, armor, net };
+        }
         return {
             defenderName: this.data.defenderName || "Target",
             defenderImg: this.defenderImg,
             damageAmount: this.data.damageAmount || 0,
             netHits: this.netHits,
-            damagePreview: this.weaponDamage + this.netHits,
-            currentSoak: soak
+            damagePreview: damage,
+            phase: this.phase,
+            locations: locationData
         };
     }
 
@@ -1582,6 +1603,7 @@ export class HitLocationDialog extends Application {
     moveToAttackerPhase(initialLocation) {
         console.log("Moving to attacker phase");
         this.phase = "attacker";
+        this.element.removeClass('defender-mode').addClass('attacker-mode');
         
         // Hide defender phase elements
         this.element.find('.defender-phase').hide();
@@ -1798,11 +1820,16 @@ export class HitLocationDialog extends Application {
      * Update damage preview and soak text based on current state
      */
     updateDamagePreview() {
-        const loc = this.selectedLocation || 'torso';
-        const soak = this.soakValues[loc] || 0;
         const damage = this.weaponDamage + this.remainingHits;
-        this.element.find('#damage-preview').text(damage);
-        this.element.find('#location-soak').text(soak);
+        const map = { 'head':'head','torso':'torso','left-arm':'leftArm','right-arm':'rightArm','left-leg':'leftLeg','right-leg':'rightLeg' };
+        for (const loc of this.locations) {
+            const key = map[loc] || loc;
+            const soak = this.soakValues[key] || 0;
+            const net = Math.max(0, damage - soak);
+            this.element.find(`.location-value[data-location="${loc}"] .net-dmg`).text(net);
+            this.element.find(`.location-value[data-location="${loc}"] .soak`).text(this.soakValues[key] || 0);
+            this.element.find(`.location-value[data-location="${loc}"] .armor`).text(this.armorValues[key] || 0);
+        }
     }
     
     /**
