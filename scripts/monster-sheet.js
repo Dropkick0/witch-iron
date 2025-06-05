@@ -697,7 +697,6 @@ export class WitchIronMonsterSheet extends ActorSheet {
           await syncGhostTiles(token, bodies - 1);
         }
       }
-
       // Force update for all derived stats
       const html = $(this.element);
       this._updateDerivedDisplay(html);
