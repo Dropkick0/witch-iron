@@ -5,11 +5,18 @@
   bottom: 260px;
   width: 12.5vw;
   height: 25vh;
+  transform: scale(0.5);
+  transform-origin: bottom left;
+  transition: transform 0.2s ease;
   pointer-events: none;
   z-index: 100;
   color: #f5f3e6;
   font-family: var(--witchiron-font, serif);
   overflow: hidden;
+}
+
+#hit-location-hud.has-conditions {
+  transform: scale(1);
 }
 
 #hit-location-hud .body-container {
