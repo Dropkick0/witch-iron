@@ -78,7 +78,7 @@
 
 /* Position each label exactly as in the example */
 .head-label {
-    top: 15px;
+    top: 12px;
     left: 118px;
 }
 
@@ -260,12 +260,12 @@
     font-size: 0.75em;
 }
 
-.location-value.head { top: 10%; left: 50%; }
-.location-value.torso { top: 28%; left: 50%; }
-.location-value.left-arm { top: 40%; left: 24%; }
-.location-value.right-arm { top: 40%; left: 75%; }
-.location-value.left-leg { top: 68%; left: 41%; }
-.location-value.right-leg { top: 68%; left: 59%; }
+.location-value.head { top: 12%; left: 50%; }
+.location-value.torso { top: 34%; left: 50%; }
+.location-value.left-arm { top: 45%; left: 24%; }
+.location-value.right-arm { top: 45%; left: 75%; }
+.location-value.left-leg { top: 80%; left: 23%; }
+.location-value.right-leg { top: 80%; left: 77%; }
 
 .values-layer {
     position: absolute;
