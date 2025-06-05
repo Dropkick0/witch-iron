@@ -7,6 +7,77 @@ import { createItem } from "./utils.js";
 import { openModifierDialog } from "./modifier-dialog.js";
 import { FORMATION_SHAPES, syncGhostTiles } from "./ghost-tokens.js";
 
+const FA_ICONS = {
+  aflame: 'fa-fire',
+  bleed: 'fa-droplet',
+  poison: 'fa-skull-crossbones',
+  stress: 'fa-burst',
+  corruption: 'fa-biohazard',
+  blind: 'fa-eye-slash',
+  deaf: 'fa-ear-deaf',
+  pain: 'fa-hand-holding-medical',
+  fatigue: 'fa-face-downcast-sweat',
+  entangle: 'fa-link',
+  helpless: 'fa-skull',
+  stun: 'fa-bolt',
+  prone: 'fa-person-falling'
+};
+
+const CONDITION_INFO = {
+  aflame: {
+    name: 'Aflame',
+    effect: r => `Roll 1d6 each round. On ≤ ${r}, Hardship Quarrel vs ${r} or die.`
+  },
+  bleed: {
+    name: 'Bleed',
+    effect: r => `Roll 1d6 each round. On ≤ ${r}, Hardship Quarrel vs ${r} or die.`
+  },
+  poison: {
+    name: 'Poison',
+    effect: r => `Roll 1d6 each round. On ≤ ${r}, Hardship Quarrel vs ${r} or die.`
+  },
+  blind: {
+    name: 'Blind',
+    effect: r => `${r * 10}% penalty to sight checks (reduce 1/hour).`
+  },
+  deaf: {
+    name: 'Deaf',
+    effect: r => `${r * 10}% penalty to hearing & speech checks (reduce 1/hour).`
+  },
+  pain: {
+    name: 'Pain',
+    effect: r => `${r * 10}% penalty to all checks (reduce 1/hour).`
+  },
+  stress: {
+    name: 'Stress',
+    effect: r => `Every 3 stacks: Steel quarrel vs ${r} or gain Madness.`
+  },
+  corruption: {
+    name: 'Corruption',
+    effect: r => `Every 3 stacks: Steel quarrel vs ${r} or gain Mutation.`
+  },
+  fatigue: {
+    name: 'Fatigue',
+    effect: () => 'Takes up Encumbrance; removed by rest.'
+  },
+  entangle: {
+    name: 'Entangle',
+    effect: () => 'Prevents movement. Reduce 1 each round.'
+  },
+  helpless: {
+    name: 'Helpless',
+    effect: () => 'Prevents actions & movement; foes may inflict any Injury. Reduce 1/round.'
+  },
+  stun: {
+    name: 'Stun',
+    effect: () => 'Prevents actions. Reduce 1 each round.'
+  },
+  prone: {
+    name: 'Prone',
+    effect: () => '-20% to checks; foes +20% until you stand.'
+  }
+};
+
 /**
  * Monster sheet class for the Witch Iron system
  * @extends {ActorSheet}
@@ -126,7 +197,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
         
         if (type === 'weapon') {
           valueElement.text(weaponWear);
-        } else if (type.startsWith('armor-')) {
+        } else if (type && type.startsWith('armor-')) {
           const loc = type.split('-')[1];
           valueElement.text(armorWear[loc]);
         }
@@ -184,6 +255,27 @@ export class WitchIronMonsterSheet extends ActorSheet {
         (value > 0 ? context.currentConditions : context.zeroConditions).push(condObj);
       }
     }
+
+    // Prepare condition icons for HUD-style display
+    const hudConditions = [];
+    for (const [key, data] of Object.entries(conditionsData)) {
+      if (key === 'trauma') continue;
+      const value = Number(data?.value || 0);
+      if (value >= 1) {
+        const info = CONDITION_INFO[key];
+        const name = info?.name || this.capitalize(key);
+        const effect = info?.effect ? info.effect(value) : '';
+        const tooltip = `${name} ${value}${effect ? `: ${effect}` : ''}`;
+        hudConditions.push({
+          key,
+          value,
+          faIcon: FA_ICONS[key] || 'fa-exclamation-circle',
+          tooltip
+        });
+      }
+    }
+    hudConditions.sort((a, b) => a.key.localeCompare(b.key));
+    context.hudConditions = hudConditions;
 
     // Prepare armor types for select
     const armorTypesConfig = witchIronConfig.armorTypes || {};
@@ -923,7 +1015,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
       currentWear = this.actor.system.battleWear?.weapon?.value || 0;
       maxWear = this.actor.system.derived?.weaponBonusMax || 0;
       path = 'system.battleWear.weapon.value';
-    } else if (type.startsWith('armor-')) {
+    } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (ARMOR_LOCATIONS.includes(loc)) {
         currentWear = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
@@ -973,7 +1065,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     if (type === 'weapon') {
       currentWear = this.actor.system.battleWear?.weapon?.value || 0;
       path = 'system.battleWear.weapon.value';
-    } else if (type.startsWith('armor-')) {
+    } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (ARMOR_LOCATIONS.includes(loc)) {
         currentWear = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
@@ -1022,7 +1114,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     if (type === 'weapon') {
       currentWear = this.actor.system.battleWear?.weapon?.value || 0;
       path = 'system.battleWear.weapon.value';
-    } else if (type.startsWith('armor-')) {
+    } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (ARMOR_LOCATIONS.includes(loc)) {
         currentWear = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
@@ -1133,7 +1225,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
         if (type === 'weapon') {
             const newText = `${weaponWear}`;
             element.text(newText);
-        } else if (type.startsWith('armor-')) {
+        } else if (type && type.startsWith('armor-')) {
             const loc = type.split('-')[1];
             const newText = `${armorWear[loc]}`;
             element.text(newText);
