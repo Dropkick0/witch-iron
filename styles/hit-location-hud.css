@@ -3,8 +3,8 @@
   position: fixed;
   left: 10px;
   bottom: 260px;
-  width: 12.5vw;
-  height: 25vh;
+  width: 280px;
+  height: 370px;
   transform: scale(0.5);
   transform-origin: bottom left;
   transition: transform 0.2s ease;
