@@ -70,6 +70,33 @@ CONFIG.WITCH_IRON = {
       carouse: { label: "Carouse", ability: "personality" },
       coerce: { label: "Coerce", ability: "personality" }
     }
+  },
+
+  // Dropdown configuration values
+  sizes: {
+    tiny: "Tiny",
+    small: "Small",
+    medium: "Medium",
+    large: "Large",
+    huge: "Huge",
+    gigantic: "Gigantic"
+  },
+
+  weaponTypes: {
+    none: "None",
+    light: "Light",
+    medium: "Medium",
+    heavy: "Heavy",
+    superheavy: "Superheavy",
+    unarmed: "Unarmed"
+  },
+
+  armorTypes: {
+    none: "None",
+    light: "Light",
+    medium: "Medium",
+    heavy: "Heavy",
+    superheavy: "Superheavy"
   }
 };
 

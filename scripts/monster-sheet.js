@@ -171,15 +171,15 @@ export class WitchIronMonsterSheet extends ActorSheet {
 
     // Prepare armor types for select
     const armorTypesConfig = witchIronConfig.armorTypes || {};
-    context.armorTypes = Object.entries(armorTypesConfig).map(([key, label]) => ({ key, label }));
+    context.armorTypes = armorTypesConfig;
 
     // Prepare weapon types for select
     const weaponTypesConfig = witchIronConfig.weaponTypes || {};
-    context.weaponTypes = Object.entries(weaponTypesConfig).map(([key, label]) => ({ key, label }));
+    context.weaponTypes = weaponTypesConfig;
 
     // Prepare sizes for select
     const sizesConfig = witchIronConfig.sizes || {};
-    context.sizes = Object.entries(sizesConfig).map(([key, label]) => ({ key, label }));
+    context.sizes = sizesConfig;
 
     // Prepare formation options for select
     context.formations = FORMATION_SHAPES.reduce((obj, s) => {
