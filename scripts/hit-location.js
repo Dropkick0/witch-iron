@@ -199,7 +199,7 @@ export class HitLocationSelector {
         
         // Get battle wear data if we have attacker and defender names
         if (data.attacker && data.defender) {
-            dialogData.battleWear = await this._getBattleWearData(data.attacker, data.defender);
+            dialogData.battleWear = await this._getBattleWearData(data.attacker, data.defender, 'torso');
         }
         
         // Create and render a new dialog
@@ -474,7 +474,7 @@ export class HitLocationSelector {
         if (game.witch) game.witch.currentInjury = {};
         
         // Get battle wear data AND actor references from attacker and defender
-        const returnData = await this._getBattleWearData(combatData.attacker, combatData.defender);
+        const returnData = await this._getBattleWearData(combatData.attacker, combatData.defender, combatData.location.toLowerCase());
         const battleWearDataForTemplate = { attacker: returnData.attacker, defender: returnData.defender }; // Separate for template clarity
         const attackerActor = returnData.actors.attacker; // Use actor from _getBattleWearData
         const defenderActor = returnData.actors.defender; // Use actor from _getBattleWearData
@@ -682,7 +682,7 @@ export class HitLocationSelector {
      * @returns {object} Object containing battle wear data
      * @private
      */
-    static async _getBattleWearData(attackerName, defenderName) {
+    static async _getBattleWearData(attackerName, defenderName, location="torso") {
         // Find attacker and defender actors
         let attackerActor = null;
         let defenderActor = null;
@@ -709,6 +709,9 @@ export class HitLocationSelector {
         }
         
         // Default battle wear data object also holds actor refs
+        const locMap = { head: 'head', torso: 'torso', 'left-arm': 'leftArm', 'right-arm': 'rightArm', 'left-leg': 'leftLeg', 'right-leg': 'rightLeg' };
+        const locKey = locMap[location] || location;
+
         const returnData = {
             actors: {
                 attacker: attackerActor, // Store found attacker actor (or null)
@@ -770,16 +773,17 @@ export class HitLocationSelector {
         if (defenderActor) {
             // Get armor bonus and battle wear from the actor's derived data
             if (defenderActor.system?.derived) {
-                const actorArmorWear = defenderActor.system.battleWear?.armor?.value || 0;
+                const actorArmorWear = defenderActor.system.battleWear?.armor?.[locKey]?.value || 0;
                 const actorArmorMax = defenderActor.system.derived.armorBonusMax || 0;
-                const effectiveArmorBonus = defenderActor.system.derived.armorBonusEffective || 0;
+                const effectiveArmorBonus = defenderActor.system.derived.armorBonusEffective?.[locKey] || 0;
                 
                 // Calculate REMAINING wear capacity for the card controls
-                returnData.defender.maxWear = Math.max(0, actorArmorMax - actorArmorWear); 
+                returnData.defender.maxWear = Math.max(0, actorArmorMax - actorArmorWear);
                 returnData.defender.armorBonus = effectiveArmorBonus; // Store effective bonus
                 returnData.defender.currentWear = 0; // Start card interaction wear at 0
                 returnData.defender.actualWear = actorArmorWear; // Store actor's current wear
-
+                returnData.defender.location = locKey;
+                
                 console.log(`Defender ${defenderName}: Max Bonus=${actorArmorMax}, Current Wear=${actorArmorWear}, Remaining Card MaxWear=${returnData.defender.maxWear}, Effective Bonus=${effectiveArmorBonus}`);
 
             } else {
@@ -789,6 +793,7 @@ export class HitLocationSelector {
                      const armorBonus = parseInt(equippedArmor.system.soak?.bonus) || 0;
                      returnData.defender.maxWear = armorBonus; // Fallback: Max wear is total bonus
                      returnData.defender.armorBonus = armorBonus; // Fallback: Effective is total bonus
+                     returnData.defender.location = locKey;
                  }
             }
             
@@ -1132,8 +1137,11 @@ function updateBattleWearUI(messageElement, attackerWear, defenderWear) {
  * @param {number} attackerWearToAdd Amount of battle wear *added* in this interaction (from card)
  * @param {number} defenderWearToAdd Amount of battle wear *added* in this interaction (from card)
  */
-async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd) {
+async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, location="torso") {
     try {
+        // Normalize the location key used for actor data
+        const locMap = { head: 'head', torso: 'torso', 'left-arm': 'leftArm', 'right-arm': 'rightArm', 'left-leg': 'leftLeg', 'right-leg': 'rightLeg' };
+        const locKey = locMap[location] || location;
         // Log the battle wear application request
         console.log(`Applying battle wear ADDITION: Attacker +${attackerWearToAdd}, Defender +${defenderWearToAdd}`);
         console.log("Message object:", message);
@@ -1155,18 +1163,20 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd) {
             // Still update the flag to store the '0' values for this interaction if needed
             await message.update({
                 "flags.witch-iron.battleWear": {
-                    attacker: attackerWearToAdd, // Store the interaction's wear (0)
-                    defender: defenderWearToAdd  // Store the interaction's wear (0)
+                    attacker: attackerWearToAdd,
+                    defender: defenderWearToAdd,
+                    location: locKey
                 }
             });
             // Emit update so UI processing indicators are removed etc.
             if (game.socket) {
                 game.socket.emit("system.witch-iron.battleWearUpdate", {
                     messageId: message.id,
-                    attackerWear: attackerWearToAdd, // Send the interaction wear
-                    defenderWear: defenderWearToAdd, // Send the interaction wear
+                    attackerWear: attackerWearToAdd,
+                    defenderWear: defenderWearToAdd,
+                    location: locKey,
                     userId: game.user.id,
-                    completed: true // Indicate processing is done for this interaction
+                    completed: true
                 });
             }
             return true; // Return true as technically nothing failed
@@ -1324,7 +1334,8 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd) {
         await message.update({
             "flags.witch-iron.battleWear": {
                 attacker: attackerWearToAdd,
-                defender: defenderWearToAdd
+                defender: defenderWearToAdd,
+                location: locKey
             }
         });
         console.log(`Stored interaction wear (+${attackerWearToAdd}, +${defenderWearToAdd}) in message flags.`);
@@ -1345,14 +1356,14 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd) {
         }
 
         if (defenderActor) {
-            const currentDefenderWear = defenderActor.system.battleWear?.armor?.value || 0;
+            const currentDefenderWear = defenderActor.system.battleWear?.armor?.[locKey]?.value || 0;
             const defenderMaxWear = defenderActor.system.derived?.armorBonusMax || 0;
             newTotalDefenderWear = Math.min(currentDefenderWear + defenderWearToAdd, defenderMaxWear);
 
             console.log(`Updating ${defenderName}'s armor wear: ${currentDefenderWear} + ${defenderWearToAdd} -> ${newTotalDefenderWear} (Max: ${defenderMaxWear})`);
-            await defenderActor.update({
-                "system.battleWear.armor.value": newTotalDefenderWear
-            });
+            const updateObj = {};
+            updateObj[`system.battleWear.armor.${locKey}.value`] = newTotalDefenderWear;
+            await defenderActor.update(updateObj);
         }
 
         // Broadcast a custom socket message to notify all clients about the battle wear change *in this interaction*
@@ -1360,10 +1371,11 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd) {
         if (game.socket) {
             game.socket.emit("system.witch-iron.battleWearUpdate", {
                 messageId: message.id,
-                attackerWear: attackerWearToAdd, // Send the interaction wear
-                defenderWear: defenderWearToAdd, // Send the interaction wear
+                attackerWear: attackerWearToAdd,
+                defenderWear: defenderWearToAdd,
+                location: locKey,
                 userId: game.user.id,
-                completed: true // Indicate processing is done for this interaction
+                completed: true
             });
             console.log(`Broadcast interaction wear update (+${attackerWearToAdd}, +${defenderWearToAdd})`);
         }
@@ -1937,7 +1949,7 @@ async function createInjuryHandler(event) {
 
         // Apply battle wear *addition* first (updates actor sheets and stores interaction wear in flags)
         console.log(`Passing interaction wear to applyBattleWear: Attacker +${attackerWearToAdd}, Defender +${defenderWearToAdd}`);
-        const applySuccess = await applyBattleWear(message, attackerWearToAdd, defenderWearToAdd);
+        const applySuccess = await applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, location);
         if (!applySuccess) {
             console.error("Failed to apply battle wear, aborting injury creation.");
             // Potentially re-enable the button or show a more specific error
@@ -2581,20 +2593,24 @@ function attachInjuryMessageHandlers(messageId) {
                             console.log("User is GM - updating battle wear directly");
                             
                             // Update message flags and actors
+                            const locEl = messageElement.querySelector('.injury-row');
+                            const loc = locEl?.dataset.location?.toLowerCase() || 'torso';
                             await message.update({
                                 "flags.witch-iron.battleWear": {
                                     attacker: currentAttackerWear,
-                                    defender: currentDefenderWear
+                                    defender: currentDefenderWear,
+                                    location: loc
                                 }
                             });
-                            
-                            await updateActorBattleWear(message, currentAttackerWear, currentDefenderWear);
+
+                            await updateActorBattleWear(message, currentAttackerWear, currentDefenderWear, loc);
                             
                             // Broadcast to all clients that the update is complete
                             game.socket.emit("system.witch-iron.battleWearUpdate", {
                                 messageId: message.id,
                                 attackerWear: currentAttackerWear,
                                 defenderWear: currentDefenderWear,
+                                location: loc,
                                 userId: game.user.id,
                                 completed: true
                             });
@@ -2607,6 +2623,7 @@ function attachInjuryMessageHandlers(messageId) {
                                 messageId: messageId,
                                 attackerWear: currentAttackerWear,
                                 defenderWear: currentDefenderWear,
+                                location: loc,
                                 requesterId: game.user.id,
                                 timestamp: Date.now()
                             };
@@ -2933,7 +2950,7 @@ function updateDamageCalculationDetails(messageElement, calcData) {
  * @param {number} defenderWear Amount of battle wear for defender's armor
  * @returns {Promise} Promise that resolves when updates are complete
  */
-async function updateActorBattleWear(message, attackerWear, defenderWear) {
+async function updateActorBattleWear(message, attackerWear, defenderWear, location="torso") {
     // Get attacker and defender names from the message
     let attackerName = "Attacker";
     let defenderName = "Defender";
@@ -3004,7 +3021,7 @@ async function updateActorBattleWear(message, attackerWear, defenderWear) {
                 attackerActor.update({
                     "system.battleWear": {
                         weapon: { value: 0, max: 4 },
-                        armor: { value: 0, max: 4 }
+                        armor: { head:{value:0}, torso:{value:0}, leftArm:{value:0}, rightArm:{value:0}, leftLeg:{value:0}, rightLeg:{value:0} }
                     }
                 })
             );
@@ -3022,7 +3039,9 @@ async function updateActorBattleWear(message, attackerWear, defenderWear) {
     
     // Update defender
     if (defenderActor) {
-        console.log(`Updating ${defenderName}'s armor battle wear to ${defenderWear}`);
+        const locMap = { head:'head', torso:'torso', 'left-arm':'leftArm', 'right-arm':'rightArm', 'left-leg':'leftLeg', 'right-leg':'rightLeg' };
+        const locKey = locMap[location] || location;
+        console.log(`Updating ${defenderName}'s armor battle wear to ${defenderWear} at ${locKey}`);
         
         // Ensure the system is initialized
         if (!defenderActor.system.battleWear) {
@@ -3030,18 +3049,16 @@ async function updateActorBattleWear(message, attackerWear, defenderWear) {
                 defenderActor.update({
                     "system.battleWear": {
                         weapon: { value: 0, max: 4 },
-                        armor: { value: 0, max: 4 }
+                        armor: { head:{value:0}, torso:{value:0}, leftArm:{value:0}, rightArm:{value:0}, leftLeg:{value:0}, rightLeg:{value:0} }
                     }
                 })
             );
         }
         
         // Update the armor battle wear
-        updatePromises.push(
-            defenderActor.update({
-                "system.battleWear.armor.value": defenderWear
-            })
-        );
+        const updateObj = {};
+        updateObj[`system.battleWear.armor.${locKey}.value`] = defenderWear;
+        updatePromises.push(defenderActor.update(updateObj));
     } else {
         console.warn(`Could not find defender actor: ${defenderName}`);
     }
@@ -3246,14 +3263,15 @@ async function processBattleWearUpdateRequest(data) {
     await message.update({
         "flags.witch-iron.battleWear": {
             attacker: data.attackerWear,
-            defender: data.defenderWear
+            defender: data.defenderWear,
+            location: data.location
         }
     });
     
     console.log(`[DEBUG GM] Message flags updated for message ${data.messageId}`);
     
     // Update the actors
-    await updateActorBattleWear(message, data.attackerWear, data.defenderWear);
+    await updateActorBattleWear(message, data.attackerWear, data.defenderWear, data.location);
     
     console.log(`[DEBUG GM] Actor battle wear updated`);
     
@@ -3262,6 +3280,7 @@ async function processBattleWearUpdateRequest(data) {
         messageId: data.messageId,
         attackerWear: data.attackerWear,
         defenderWear: data.defenderWear,
+        location: data.location,
         userId: game.user.id,
         completed: true
     });

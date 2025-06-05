@@ -105,7 +105,14 @@ export class WitchIronMonsterSheet extends ActorSheet {
       
       // Update battle wear values
       const weaponWear = system.battleWear?.weapon?.value || 0;
-      const armorWear = system.battleWear?.armor?.value || 0;
+      const armorWear = {
+        head: system.battleWear?.armor?.head?.value || 0,
+        torso: system.battleWear?.armor?.torso?.value || 0,
+        leftArm: system.battleWear?.armor?.leftArm?.value || 0,
+        rightArm: system.battleWear?.armor?.rightArm?.value || 0,
+        leftLeg: system.battleWear?.armor?.leftLeg?.value || 0,
+        rightLeg: system.battleWear?.armor?.rightLeg?.value || 0
+      };
       
 //////       console.log(`Monster Sheet: Setting battle wear - Weapon: ${weaponWear}, Armor: ${armorWear}`);
       
@@ -119,10 +126,9 @@ export class WitchIronMonsterSheet extends ActorSheet {
         
         if (type === 'weapon') {
           valueElement.text(weaponWear);
-//////           console.log(`Set weapon wear to: ${weaponWear}`);
-        } else if (type === 'armor') {
-          valueElement.text(armorWear);
-//////           console.log(`Set armor wear to: ${armorWear}`);
+        } else if (type.startsWith('armor-')) {
+          const loc = type.split('-')[1];
+          valueElement.text(armorWear[loc]);
         }
       });
       
@@ -878,13 +884,26 @@ export class WitchIronMonsterSheet extends ActorSheet {
   async _onBattleWearPlus(event) {
     event.preventDefault();
     const button = event.currentTarget;
-    const type = button.dataset.type; // weapon or armor
-    
-    // Get current battle wear value
-    const currentWear = this.actor.system.battleWear?.[type]?.value || 0;
-    
-    // Get max wear
-    const maxWear = this.actor.system.derived?.[`${type}BonusMax`] || 0;
+    const type = button.dataset.type;
+
+    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+
+    let currentWear = 0;
+    let maxWear = 0;
+    let path = "";
+
+    if (type === 'weapon') {
+      currentWear = this.actor.system.battleWear?.weapon?.value || 0;
+      maxWear = this.actor.system.derived?.weaponBonusMax || 0;
+      path = 'system.battleWear.weapon.value';
+    } else if (type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      if (ARMOR_LOCATIONS.includes(loc)) {
+        currentWear = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        maxWear = this.actor.system.derived?.armorBonusMax || 0;
+        path = `system.battleWear.armor.${loc}.value`;
+      }
+    }
     
     // Don't exceed maximum
     if (currentWear >= maxWear) {
@@ -898,7 +917,9 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Prepare update data
     const updateData = {};
-    updateData[`system.battleWear.${type}.value`] = newWear;
+    if (path) {
+      updateData[path] = newWear;
+    }
     
     // Update the actor
     await this.actor.update(updateData);
@@ -915,10 +936,23 @@ export class WitchIronMonsterSheet extends ActorSheet {
   async _onBattleWearMinus(event) {
     event.preventDefault();
     const button = event.currentTarget;
-    const type = button.dataset.type; // weapon or armor
-    
-    // Get current battle wear value
-    const currentWear = this.actor.system.battleWear?.[type]?.value || 0;
+    const type = button.dataset.type;
+
+    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+
+    let currentWear = 0;
+    let path = "";
+
+    if (type === 'weapon') {
+      currentWear = this.actor.system.battleWear?.weapon?.value || 0;
+      path = 'system.battleWear.weapon.value';
+    } else if (type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      if (ARMOR_LOCATIONS.includes(loc)) {
+        currentWear = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        path = `system.battleWear.armor.${loc}.value`;
+      }
+    }
     
     // Don't go below zero
     if (currentWear <= 0) {
@@ -932,7 +966,9 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Prepare update data
     const updateData = {};
-    updateData[`system.battleWear.${type}.value`] = newWear;
+    if (path) {
+      updateData[path] = newWear;
+    }
     
     // Update the actor
     await this.actor.update(updateData);
@@ -949,10 +985,23 @@ export class WitchIronMonsterSheet extends ActorSheet {
   async _onBattleWearReset(event) {
     event.preventDefault();
     const button = event.currentTarget;
-    const type = button.dataset.type; // weapon or armor
-    
-    // Get current battle wear value
-    const currentWear = this.actor.system.battleWear?.[type]?.value || 0;
+    const type = button.dataset.type;
+
+    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+
+    let currentWear = 0;
+    let path = "";
+
+    if (type === 'weapon') {
+      currentWear = this.actor.system.battleWear?.weapon?.value || 0;
+      path = 'system.battleWear.weapon.value';
+    } else if (type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      if (ARMOR_LOCATIONS.includes(loc)) {
+        currentWear = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        path = `system.battleWear.armor.${loc}.value`;
+      }
+    }
     
     // Only do something if wear > 0
     if (currentWear <= 0) {
@@ -962,7 +1011,9 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Prepare update data
     const updateData = {};
-    updateData[`system.battleWear.${type}.value`] = 0;
+    if (path) {
+      updateData[path] = 0;
+    }
     
     // Update the actor
     await this.actor.update(updateData);
@@ -985,8 +1036,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     }
 
     const actorData = this.actor.system;
-    console.log("Updating battle wear displays - Weapon: " + (actorData.battleWear?.weapon?.value || 0) + 
-                ", Armor: " + (actorData.battleWear?.armor?.value || 0));
+    console.log("Updating battle wear displays - Weapon: " + (actorData.battleWear?.weapon?.value || 0));
+    console.log("Actor armor wear:", actorData.battleWear?.armor);
     console.log("Actor's full battleWear data:", actorData.battleWear);
     
     // Force actor to recalculate derived data
@@ -1003,21 +1054,27 @@ export class WitchIronMonsterSheet extends ActorSheet {
     // Get fresh battle wear values from the actor
     // Force default to 0 for both weapon and armor wear
     let weaponWear = actorData.battleWear?.weapon?.value;
-    let armorWear = actorData.battleWear?.armor?.value;
+    const armorWear = {};
+    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    for (const loc of ARMOR_LOCATIONS) {
+        armorWear[loc] = Number(actorData.battleWear?.armor?.[loc]?.value) || 0;
+    }
     
     // Ensure values are numbers and default to 0
     weaponWear = Number(weaponWear) || 0;
-    armorWear = Number(armorWear) || 0;
     
     // Get the current weapon and armor types
     const weaponType = actorData.stats.weaponType?.value || "unarmed";
     const armorType = actorData.stats.armorType?.value || "none";
     
     // If armor type is "none", force armor wear to 0
-    if (armorType === "none" && armorWear !== 0) {
-//////         console.log(`Armor type is "none", forcing armor wear from ${armorWear} to 0`);
-        armorWear = 0;
-        this.actor.update({"system.battleWear.armor.value": 0});
+    if (armorType === "none") {
+        for (const loc of ARMOR_LOCATIONS) {
+            if (armorWear[loc] !== 0) {
+                armorWear[loc] = 0;
+                this.actor.update({[`system.battleWear.armor.${loc}.value`]: 0});
+            }
+        }
     }
     
     // If values are unexpectedly high for a new monster, reset them to 0
@@ -1027,10 +1084,14 @@ export class WitchIronMonsterSheet extends ActorSheet {
         this.actor.update({"system.battleWear.weapon.value": 0});
     }
     
-    if (armorWear > 0 && !actorData.derived?.armorBonusMax) {
-//////         console.log(`Resetting unexpected armor wear value of ${armorWear} to 0`);
-        armorWear = 0;
-        this.actor.update({"system.battleWear.armor.value": 0});
+    if (!actorData.derived?.armorBonusMax) {
+        for (const loc of ARMOR_LOCATIONS) {
+            if (armorWear[loc] > 0) {
+//////         console.log(`Resetting unexpected armor wear value of ${armorWear[loc]} to 0`);
+                armorWear[loc] = 0;
+                this.actor.update({[`system.battleWear.armor.${loc}.value`]: 0});
+            }
+        }
     }
     
 //////     console.log(`Using weapon wear: ${weaponWear}, armor wear: ${armorWear}`);
@@ -1043,14 +1104,11 @@ export class WitchIronMonsterSheet extends ActorSheet {
 //////         console.log(`Processing element #${i}, type: ${type}, current text: '${currentText}'`);
         
         if (type === 'weapon') {
-            // Update weapon wear display
             const newText = `${weaponWear}`;
-//////             console.log(`Set weapon wear display to: ${newText} (was: ${currentText})`);
             element.text(newText);
-        } else if (type === 'armor') {
-            // Update armor wear display
-            const newText = `${armorWear}`;
-//////             console.log(`Set armor wear display to: ${newText} (was: ${currentText})`);
+        } else if (type.startsWith('armor-')) {
+            const loc = type.split('-')[1];
+            const newText = `${armorWear[loc]}`;
             element.text(newText);
         }
     });
@@ -1069,7 +1127,11 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Get current values
     const weaponWear = this.actor.system.battleWear?.weapon?.value || 0;
-    const armorWear = this.actor.system.battleWear?.armor?.value || 0;
+    const armorWear = {};
+    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    for (const loc of ARMOR_LOCATIONS) {
+        armorWear[loc] = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+    }
     
     // Get the current armor type
     const armorType = this.actor.system.stats.armorType?.value || "none";
@@ -1086,15 +1148,12 @@ export class WitchIronMonsterSheet extends ActorSheet {
     }
     
     // Update armor button states
-    const armorPlusBtn = this.element.find('.battle-wear-btn.plus[data-type="armor"]');
-    const armorMinusBtn = this.element.find('.battle-wear-btn.minus[data-type="armor"]');
-    
-    if (armorPlusBtn.length) {
-        // Disable the plus button if armor is at max OR if armor type is "none"
-        armorPlusBtn.prop('disabled', armorWear >= armorMax || armorType === "none");
-    }
-    if (armorMinusBtn.length) {
-        armorMinusBtn.prop('disabled', armorWear <= 0);
+    for (const loc of ARMOR_LOCATIONS) {
+        const plusBtn = this.element.find(`.battle-wear-btn.plus[data-type="armor-${loc}"]`);
+        const minusBtn = this.element.find(`.battle-wear-btn.minus[data-type="armor-${loc}"]`);
+        const wearVal = armorWear[loc];
+        if (plusBtn.length) plusBtn.prop('disabled', wearVal >= armorMax || armorType === "none");
+        if (minusBtn.length) minusBtn.prop('disabled', wearVal <= 0);
     }
     
 //////     console.log("Battle wear button states updated");

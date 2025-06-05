@@ -391,50 +391,77 @@ export class WitchIronActor extends Actor {
     
     // Add weapon and armor bonuses
     // Initialize battle wear if needed
+    const ARMOR_LOCATIONS = ["head", "torso", "leftArm", "rightArm", "leftLeg", "rightLeg"];
+
     if (!systemData.battleWear) {
-        systemData.battleWear = {
-            weapon: { value: 0 },
-            armor: { value: 0 }
-        };
+        systemData.battleWear = { weapon: { value: 0 }, armor: {} };
     }
-    
-    // Ensure battle wear values are always numbers and default to 0
-    if (typeof systemData.battleWear.weapon?.value !== 'number') {
-        systemData.battleWear.weapon = { value: 0 };
-    }
-    
-    if (typeof systemData.battleWear.armor?.value !== 'number') {
-        systemData.battleWear.armor = { value: 0 };
+
+    if (!systemData.battleWear.weapon) systemData.battleWear.weapon = { value: 0 };
+    if (!systemData.battleWear.armor) systemData.battleWear.armor = {};
+
+    for (const loc of ARMOR_LOCATIONS) {
+        if (typeof systemData.battleWear.armor[loc]?.value !== 'number') {
+            systemData.battleWear.armor[loc] = { value: 0 };
+        }
     }
     
     // Always reset battle wear to 0 for new monsters
     if (this.isNew) {
         systemData.battleWear.weapon.value = 0;
-        systemData.battleWear.armor.value = 0;
+        for (const loc of ARMOR_LOCATIONS) {
+            systemData.battleWear.armor[loc].value = 0;
+        }
 //////         console.log(`Initializing battle wear to 0 for new monster: ${this.name}`);
     }
 
     // Get battle wear values
     const weaponWear = Number(systemData.battleWear?.weapon?.value || 0);
-    const armorWear = Number(systemData.battleWear?.armor?.value || 0);
+    const armorWear = {};
+    for (const loc of ARMOR_LOCATIONS) {
+        armorWear[loc] = Number(systemData.battleWear.armor[loc]?.value || 0);
+    }
 
     // Calculate effective bonuses after battle wear
     const effectiveWeaponBonus = Math.max(0, weaponBonus - weaponWear);
-    const effectiveArmorBonus = Math.max(0, armorBonus - armorWear);
+    const effectiveArmorBonus = {};
+    for (const loc of ARMOR_LOCATIONS) {
+        effectiveArmorBonus[loc] = Math.max(0, armorBonus - armorWear[loc]);
+    }
 
 //////     console.log(`Weapon Wear: ${weaponWear}, Effective Weapon Bonus: ${effectiveWeaponBonus}`);
 //////     console.log(`Armor Wear: ${armorWear}, Effective Armor Bonus: ${effectiveArmorBonus}`);
     
-    // Special case: if armor type is "none" but battle wear is not 0, reset it
-    if (systemData.stats.armorType.value === "none" && armorWear !== 0) {
-//////         console.log(`Armor type is "none" but battle wear is ${armorWear}, resetting to 0`);
-        systemData.battleWear.armor.value = 0;
-        this.update({"system.battleWear.armor.value": 0});
+    // Special case: if armor type is "none" but any armor location has wear, reset it
+    if (systemData.stats.armorType.value === "none") {
+        let resetNeeded = false;
+        for (const loc of ARMOR_LOCATIONS) {
+            if (armorWear[loc] !== 0) { resetNeeded = true; break; }
+        }
+        if (resetNeeded) {
+//////         console.log(`Armor type is "none" but battle wear present, resetting to 0`);
+            for (const loc of ARMOR_LOCATIONS) {
+                systemData.battleWear.armor[loc].value = 0;
+            }
+            this.update({"system.battleWear.armor": systemData.battleWear.armor});
+        }
     }
 
     // Add weapon and armor bonuses (adjusted for battle wear)
     const damageValue = baseDamage + effectiveWeaponBonus;
-    const soakValue = baseSoak + effectiveArmorBonus;
+    const soakValue = baseSoak + effectiveArmorBonus.torso;
+
+    const locationSoak = {};
+    for (const loc of ARMOR_LOCATIONS) {
+        locationSoak[loc] = baseSoak + effectiveArmorBonus[loc];
+    }
+
+    if (!systemData.anatomy) systemData.anatomy = {};
+    for (const loc of ARMOR_LOCATIONS) {
+        if (!systemData.anatomy[loc]) systemData.anatomy[loc] = {};
+        systemData.anatomy[loc].soak = locationSoak[loc];
+        systemData.anatomy[loc].armor = effectiveArmorBonus[loc];
+    }
 
 //////     console.log(`Final damage value (base + effective weapon): ${damageValue}`);
 //////     console.log(`Final soak value (base + effective armor): ${soakValue}`);
@@ -443,6 +470,7 @@ export class WitchIronActor extends Actor {
     systemData.derived.abilityBonus = abilityBonus;
     systemData.derived.damageValue = damageValue;
     systemData.derived.soakValue = soakValue;
+    systemData.derived.locationSoak = locationSoak;
     systemData.derived.plusHits = plusHits;
 
     // Store weapon and armor bonuses for battle wear calculations
