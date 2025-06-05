@@ -2138,9 +2138,6 @@ async function createArmorBattleWearResultMessage(injuryData, finalDamage, armor
                     <div class="location-col">${specificLocation}: ${effect}</div>
                     <!-- Removed effect-col as it's combined -->
                 </div>
-                <div class="injury-description">
-                    ${severityLabel} ${specificLocation} Injury
-                </div>
             </div>
             `}
         </div>
