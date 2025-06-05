@@ -5,11 +5,18 @@
   bottom: 260px;
   width: 12.5vw;
   height: 25vh;
+  transform: scale(0.5);
+  transform-origin: bottom left;
+  transition: transform 0.2s ease;
   pointer-events: none;
   z-index: 100;
   color: #f5f3e6;
   font-family: var(--witchiron-font, serif);
   overflow: hidden;
+}
+
+#hit-location-hud.has-conditions {
+  transform: scale(1);
 }
 
 #hit-location-hud .body-container {
@@ -37,12 +44,12 @@
   font-size: 0.75em;
 }
 
-#hit-location-hud .location-value.head { top: 10px; left: 120px; }
-#hit-location-hud .location-value.torso { top: 95px; left: 120px; }
-#hit-location-hud .location-value.leftArm { top: 135px; left: 45px; }
-#hit-location-hud .location-value.rightArm { top: 135px; left: 180px; }
-#hit-location-hud .location-value.leftLeg { top: 255px; left: 55px; }
-#hit-location-hud .location-value.rightLeg { top: 255px; left: 170px; }
+#hit-location-hud .location-value.head { top: 15px; left: 118px; }
+#hit-location-hud .location-value.torso { top: 100px; left: 118px; }
+#hit-location-hud .location-value.leftArm { top: 140px; left: 38px; }
+#hit-location-hud .location-value.rightArm { top: 140px; left: 185px; }
+#hit-location-hud .location-value.leftLeg { top: 270px; left: 38px; }
+#hit-location-hud .location-value.rightLeg { top: 270px; left: 185px; }
 
 #hit-location-hud .conditions {
   position: absolute;
@@ -52,6 +59,7 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
+  z-index: 1;
 }
 
 #hit-location-hud .condition {
