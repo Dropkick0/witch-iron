@@ -525,7 +525,7 @@ export class HitLocationSelector {
         const soakText = `${defenderAbilityBonus}(${armorBonus})`;   // Use effective armor bonus
 
         // --- Mob handling: convert damage into body losses ---
-        if (defenderActor?.system?.mob?.isMob?.value) {
+        if (defenderActor?.system?.mob?.isMob?.value && (defenderActor.system.mob.bodies.value || 0) >= 5) {
             const currentBodies = defenderActor.system.mob.bodies.value || 0;
             const bodiesKilled = Math.floor(netDamage / 5);
             const remainingBodies = Math.max(0, currentBodies - bodiesKilled);
