@@ -22,6 +22,7 @@ export class HitLocationHUD {
     console.log('Witch Iron | Hit Location HUD initializing');
     this.container = document.createElement('div');
     this.container.id = 'hit-location-hud';
+    this.container.classList.add('hit-hud');
     const uiLeft = document.getElementById('ui-left');
     if (uiLeft) uiLeft.appendChild(this.container);
     else document.body.appendChild(this.container);
@@ -88,7 +89,7 @@ export class HitLocationHUD {
     const data = { actor, anatomy, trauma, conditions };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
     this.container.innerHTML = html;
-    if (conditions.length > 0) this.container.classList.add('has-conditions');
-    else this.container.classList.remove('has-conditions');
+    if (conditions.length > 5) this.container.classList.add('big');
+    else this.container.classList.remove('big');
   }
 }

@@ -1,122 +1,82 @@
 /* Hit Location HUD Styles */
-#hit-location-hud {
-  position: fixed;
-  left: 10px;
-  bottom: 260px;
-  width: 280px;
-  pointer-events: none;
-  z-index: 100;
+
+.hit-hud {
+  width: 22vmin;
+  max-width: 240px;
+  margin: .25rem 0;
+  position: relative;
+  flex: 0 0 auto!important;
   color: #f5f3e6;
   font-family: var(--witchiron-font, serif);
 }
 
-#hit-location-hud .hud-wrapper {
-  position: relative;
+.hit-hud.big {
+  width: 30vmin;
+  max-width: 300px;
+}
+
+.hud-inner {
   width: 100%;
-  padding-top: 132%;
-  overflow: hidden;
-}
-
-#hit-location-hud .hud-inner {
-  position: absolute;
-  inset: 0;
-  transform: scale(0.5);
-  transform-origin: bottom left;
-  transition: transform 0.2s ease;
-}
-
-#hit-location-hud.has-conditions .hud-inner {
-  transform: scale(1);
-}
-
-#hit-location-hud .hud-inner {
+  padding-top: 130%;
   position: relative;
-  width: 100%;
-  height: 100%;
 }
 
-#hit-location-hud .body-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-#hit-location-hud .layer {
+.body-container {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-#hit-location-hud .background-layer { z-index: 1; }
-#hit-location-hud .values-layer { z-index: 2; }
-
-/* ensure the silhouette fills the container so overlays align correctly */
-#hit-location-hud .body-outline {
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-#hit-location-hud .body-outline svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-#hit-location-hud .location-value {
+.layer {
   position: absolute;
-  font-size: 0.85em;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.background-layer { z-index: 1; }
+.values-layer { z-index: 2; font-weight: 700; font-size: 0.85rem; }
+.conditions-layer {
+  z-index: 3;
+  gap: .15rem;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  pointer-events: auto;
+}
+
+.location-value {
+  position: absolute;
   text-align: center;
   line-height: 1.1;
   pointer-events: none;
-  z-index: 2;
 }
 
-#hit-location-hud .location-value .trauma {
+.location-value .trauma {
   display: block;
   color: #e04b4b;
   font-size: 0.75em;
 }
 
-#hit-location-hud .location-value.head { top: 15px; left: 118px; }
-#hit-location-hud .location-value.torso { top: 100px; left: 118px; }
-#hit-location-hud .location-value.leftArm { top: 140px; left: 38px; }
-#hit-location-hud .location-value.rightArm { top: 140px; left: 185px; }
-#hit-location-hud .location-value.leftLeg { top: 270px; left: 38px; }
-#hit-location-hud .location-value.rightLeg { top: 270px; left: 185px; }
+.location-value.head { top: 15px; left: 118px; }
+.location-value.torso { top: 100px; left: 118px; }
+.location-value.leftArm { top: 140px; left: 38px; }
+.location-value.rightArm { top: 140px; left: 185px; }
+.location-value.leftLeg { top: 270px; left: 38px; }
+.location-value.rightLeg { top: 270px; left: 185px; }
 
-#hit-location-hud .conditions-overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: flex-start;
-  gap: 4px;
-  z-index: 3;
-  pointer-events: none;
-}
-
-#hit-location-hud .condition {
+.condition {
   position: relative;
-  width: 24px;
-  height: 24px;
-  z-index: 2;
+  background: var(--color-border-dark);
+  color: #fff;
+  padding: 1px 4px 1px 20px;
+  border-radius: 3px;
+  font-size: .65rem;
 }
 
-#hit-location-hud .condition img,
-#hit-location-hud .condition i {
-  width: 100%;
-  height: 100%;
-}
-
-#hit-location-hud .condition .value {
+.condition i {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
-  background: rgba(0, 0, 0, 0.75);
-  border-radius: 8px;
-  font-size: 0.65em;
-  padding: 0 3px;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
 }
