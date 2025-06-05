@@ -19,22 +19,26 @@
   transform: scale(1);
 }
 
+#hit-location-hud .hud-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 #hit-location-hud .body-container {
-  display: grid;
+  position: relative;
   width: 100%;
   height: 100%;
 }
 
 #hit-location-hud .layer {
-  grid-area: 1 / 1;
+  position: absolute;
+  inset: 0;
   pointer-events: none;
 }
 
 #hit-location-hud .background-layer { z-index: 1; }
-#hit-location-hud .values-layer {
-  position: relative;
-  z-index: 2;
-}
+#hit-location-hud .values-layer { z-index: 2; }
 
 /* ensure the silhouette fills the container so overlays align correctly */
 #hit-location-hud .body-outline {
@@ -72,12 +76,13 @@
 #hit-location-hud .location-value.rightLeg { top: 270px; left: 185px; }
 
 #hit-location-hud .conditions-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
   align-items: flex-start;
-  justify-self: end;
-  align-self: start;
   gap: 4px;
   z-index: 3;
   pointer-events: none;
