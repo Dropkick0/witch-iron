@@ -3847,3 +3847,28 @@ button.roll-skill:hover {
 .witch-iron.sheet.monster .weapon-wear-container .wear-max {
   font-size: 0.8rem;
 }
+
+.witch-iron.sheet.monster .conditions-layer {
+  z-index: 3;
+  gap: .15rem;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  pointer-events: auto;
+}
+
+.witch-iron.sheet.monster .condition {
+  position: relative;
+  background: var(--color-border-dark);
+  color: #fff;
+  padding: 1px 4px 1px 20px;
+  border-radius: 3px;
+  font-size: .65rem;
+}
+
+.witch-iron.sheet.monster .condition i {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
