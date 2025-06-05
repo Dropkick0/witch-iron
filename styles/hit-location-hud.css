@@ -21,8 +21,21 @@
 
 #hit-location-hud .body-container {
   position: relative;
+  display: grid;
+  grid-template: 1fr / 1fr;
   width: 100%;
   height: 100%;
+}
+
+#hit-location-hud .layer {
+  grid-area: 1 / 1;
+  pointer-events: none;
+}
+
+#hit-location-hud .background-layer { z-index: 1; }
+#hit-location-hud .values-layer {
+  z-index: 2;
+  position: relative;
 }
 
 /* ensure the silhouette fills the container so overlays align correctly */
@@ -63,15 +76,15 @@
 #hit-location-hud .location-value.leftLeg { top: 270px; left: 38px; }
 #hit-location-hud .location-value.rightLeg { top: 270px; left: 185px; }
 
-#hit-location-hud .conditions {
-  position: absolute;
-  top: 0;
-  right: 0;
+#hit-location-hud .conditions-overlay {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
   gap: 4px;
-  z-index: 1;
+  justify-self: end;
+  align-self: start;
+  z-index: 3;
   pointer-events: none;
 }
 
