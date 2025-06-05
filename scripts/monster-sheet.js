@@ -228,7 +228,34 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Add items categorized by type
     context.injuries = actorData.items.filter(item => item.type === 'injury');
-    
+
+    // Hit location data for soak display
+    const anatomy = this.actor.system.anatomy || {};
+    const trauma = this.actor.system.conditions?.trauma || {};
+    const rb = Number(this.actor.system.attributes?.robustness?.bonus || 0);
+    const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const soakTooltips = {};
+    const traumaTooltips = {};
+    for (const loc of LOCS) {
+      const wearVal = Number(this.actor.system.battleWear?.armor?.[loc]?.value || 0);
+      const locData = anatomy[loc] || {};
+      const soak = Number(locData.soak || 0);
+      const av = Number(locData.armor || 0);
+      const other = soak - rb - (av - wearVal);
+      const otherVal = other > 0 ? other : 0;
+      soakTooltips[loc] = `${rb} + ${otherVal} + (${av} - ${wearVal}) = ${soak}`;
+
+      const rating = Number(trauma[loc]?.value || 0);
+      if (rating > 0) {
+        const locLabel = loc.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
+        traumaTooltips[loc] = `Trauma (${locLabel}) ${rating}: ${rating * 20}% penalty to checks involving ${locLabel}.`;
+      }
+    }
+    context.anatomy = anatomy;
+    context.trauma = trauma;
+    context.soakTooltips = soakTooltips;
+    context.traumaTooltips = traumaTooltips;
+
     return context;
   }
 
@@ -1045,7 +1072,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     const battleWearElements = html.find('.battle-wear-value');
     console.log(`Found ${battleWearElements.length} battle wear value elements`);
-    
+
     if (battleWearElements.length === 0) {
         console.warn("No battle wear elements found in the sheet");
         return;
@@ -1112,6 +1139,33 @@ export class WitchIronMonsterSheet extends ActorSheet {
             element.text(newText);
         }
     });
+
+    // Update soak and trauma displays
+    const anatomy = actorData.anatomy || {};
+    const trauma = actorData.conditions?.trauma || {};
+    const rb = Number(actorData.attributes?.robustness?.bonus || 0);
+    for (const loc of ARMOR_LOCATIONS) {
+        const locEl = html.find(`.location-value.${loc}`);
+        if (!locEl.length) continue;
+        const soak = Number(anatomy[loc]?.soak || 0);
+        const av = Number(anatomy[loc]?.armor || 0);
+        const wearVal = armorWear[loc];
+        const other = soak - rb - (av - wearVal);
+        const otherVal = other > 0 ? other : 0;
+        locEl.attr('title', `${rb} + ${otherVal} + (${av} - ${wearVal}) = ${soak}`);
+        locEl.find('.soak').text(soak);
+        locEl.find('.armor').text(av);
+        const tVal = Number(trauma[loc]?.value || 0);
+        const traumaSpan = locEl.find('.trauma');
+        if (tVal > 0) {
+            const locLabel = loc.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
+            traumaSpan.show();
+            traumaSpan.attr('title', `Trauma (${locLabel}) ${tVal}: ${tVal * 20}% penalty to checks involving ${locLabel}.`);
+            traumaSpan.find('.trauma-value').text(tVal);
+        } else {
+            traumaSpan.hide();
+        }
+    }
     
     // Update button states based on current values
     this._updateBattleWearButtonStates();
@@ -1137,8 +1191,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const armorType = this.actor.system.stats.armorType?.value || "none";
     
     // Update weapon button states
-    const weaponPlusBtn = this.element.find('.battle-wear-btn.plus[data-type="weapon"]');
-    const weaponMinusBtn = this.element.find('.battle-wear-btn.minus[data-type="weapon"]');
+    const weaponPlusBtn = this.element.find('.battle-wear-plus[data-type="weapon"]');
+    const weaponMinusBtn = this.element.find('.battle-wear-minus[data-type="weapon"]');
     
     if (weaponPlusBtn.length) {
         weaponPlusBtn.prop('disabled', weaponWear >= weaponMax);
@@ -1149,8 +1203,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Update armor button states
     for (const loc of ARMOR_LOCATIONS) {
-        const plusBtn = this.element.find(`.battle-wear-btn.plus[data-type="armor-${loc}"]`);
-        const minusBtn = this.element.find(`.battle-wear-btn.minus[data-type="armor-${loc}"]`);
+        const plusBtn = this.element.find(`.battle-wear-plus[data-type="armor-${loc}"]`);
+        const minusBtn = this.element.find(`.battle-wear-minus[data-type="armor-${loc}"]`);
         const wearVal = armorWear[loc];
         if (plusBtn.length) plusBtn.prop('disabled', wearVal >= armorMax || armorType === "none");
         if (minusBtn.length) minusBtn.prop('disabled', wearVal <= 0);
