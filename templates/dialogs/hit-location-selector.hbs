@@ -1,6 +1,6 @@
 <div class="hit-location-selector">
     <h2>Select Hit Location</h2>
-    <div class="defender-info">
+    <div class="defender-info defender-phase">
         <img src="{{defenderImg}}" alt="{{defenderName}}">
         <div class="defender-name">{{defenderName}}</div>
     </div>
@@ -23,8 +23,10 @@
                 <p>Net Hits: <strong id="net-hits-remaining">{{netHits}}</strong></p>
                 <button class="undo-move-btn" disabled>Undo Last Move</button>
             </div>
-            <div class="damage-preview">Damage: <strong id="damage-preview">{{damagePreview}}</strong></div>
-            <div class="soak-display">Soak: <strong id="location-soak">{{currentSoak}}</strong></div>
+            <div class="defender-info attacker-phase">
+                <img src="{{defenderImg}}" alt="{{defenderName}}">
+                <div class="defender-name">{{defenderName}}</div>
+            </div>
         </div>
     </div>
     
@@ -60,6 +62,14 @@
                          C115,170 120,190 125,230"
                       stroke="#693731" stroke-width="15" fill="none" class="body-part right-leg-part" data-location="right-leg" />
             </svg>
+        </div>
+        <div class="location-values">
+            <div class="location-value head"><span id="soak-head">{{soakValues.head}}</span>({{armorValues.head}}) <span class="net-damage" id="net-dmg-head">{{netDamage.head}}</span></div>
+            <div class="location-value torso"><span id="soak-torso">{{soakValues.torso}}</span>({{armorValues.torso}}) <span class="net-damage" id="net-dmg-torso">{{netDamage.torso}}</span></div>
+            <div class="location-value left-arm"><span id="soak-left-arm">{{lookup soakValues 'left-arm'}}</span>({{lookup armorValues 'left-arm'}}) <span class="net-damage" id="net-dmg-left-arm">{{lookup netDamage 'left-arm'}}</span></div>
+            <div class="location-value right-arm"><span id="soak-right-arm">{{lookup soakValues 'right-arm'}}</span>({{lookup armorValues 'right-arm'}}) <span class="net-damage" id="net-dmg-right-arm">{{lookup netDamage 'right-arm'}}</span></div>
+            <div class="location-value left-leg"><span id="soak-left-leg">{{lookup soakValues 'left-leg'}}</span>({{lookup armorValues 'left-leg'}}) <span class="net-damage" id="net-dmg-left-leg">{{lookup netDamage 'left-leg'}}</span></div>
+            <div class="location-value right-leg"><span id="soak-right-leg">{{lookup soakValues 'right-leg'}}</span>({{lookup armorValues 'right-leg'}}) <span class="net-damage" id="net-dmg-right-leg">{{lookup netDamage 'right-leg'}}</span></div>
         </div>
         
         <!-- Labels (clickable) -->

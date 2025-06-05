@@ -216,6 +216,14 @@ export class HitLocationSelector {
                     'left-leg': Number(anat.leftLeg?.soak || 0),
                     'right-leg': Number(anat.rightLeg?.soak || 0)
                 };
+                dialogData.armorValues = {
+                    head: Number(anat.head?.armor || 0),
+                    torso: Number(anat.torso?.armor || 0),
+                    'left-arm': Number(anat.leftArm?.armor || 0),
+                    'right-arm': Number(anat.rightArm?.armor || 0),
+                    'left-leg': Number(anat.leftLeg?.armor || 0),
+                    'right-leg': Number(anat.rightLeg?.armor || 0)
+                };
             }
         }
         
@@ -1502,7 +1510,9 @@ export class HitLocationDialog extends Application {
         this.remainingHits = this.netHits;
         this.weaponDamage = data.weaponDamage || 0;
         this.soakValues = data.soakValues || {};
+        this.armorValues = data.armorValues || {};
         this.defenderImg = data.defenderImg || "icons/svg/mystery-man.svg";
+        this.locations = ['head', 'torso', 'left-arm', 'right-arm', 'left-leg', 'right-leg'];
         
         console.log(`HitLocationDialog initialized with netHits: ${this.netHits}, remaining: ${this.remainingHits}`);
         
@@ -1537,15 +1547,20 @@ export class HitLocationDialog extends Application {
     
     /** @override */
     getData(options={}) {
-        const defaultLoc = 'torso';
-        const soak = this.soakValues[defaultLoc] || 0;
+        const predicted = this.weaponDamage + this.netHits;
+        const netDamage = {};
+        for (const loc of this.locations) {
+            const soak = this.soakValues[loc] || 0;
+            netDamage[loc] = Math.max(predicted - soak, 0);
+        }
         return {
             defenderName: this.data.defenderName || "Target",
             defenderImg: this.defenderImg,
             damageAmount: this.data.damageAmount || 0,
             netHits: this.netHits,
-            damagePreview: this.weaponDamage + this.netHits,
-            currentSoak: soak
+            soakValues: this.soakValues,
+            armorValues: this.armorValues,
+            netDamage
         };
     }
 
@@ -1772,11 +1787,12 @@ export class HitLocationDialog extends Application {
      * Update damage preview and soak text based on current state
      */
     updateDamagePreview() {
-        const loc = this.selectedLocation || 'torso';
-        const soak = this.soakValues[loc] || 0;
         const damage = this.weaponDamage + this.remainingHits;
-        this.element.find('#damage-preview').text(damage);
-        this.element.find('#location-soak').text(soak);
+        for (const loc of this.locations) {
+            const soak = this.soakValues[loc] || 0;
+            const net = Math.max(damage - soak, 0);
+            this.element.find(`#net-dmg-${loc}`).text(net);
+        }
     }
     
     /**
