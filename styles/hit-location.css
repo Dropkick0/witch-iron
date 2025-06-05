@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 }
 
 .hit-location-selector h2 {
@@ -214,4 +215,69 @@
 
 .random-location-btn:hover, .confirm-location-btn:hover {
     background: rgba(143, 55, 48, 0.9) !important;
-} 
+}
+
+.defender-info {
+    text-align: center;
+}
+
+.defender-phase .defender-info {
+    position: absolute;
+    top: 35px;
+    left: 5px;
+}
+
+.attacker-phase .defender-info {
+    margin-top: 4px;
+}
+
+.defender-info img {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #000;
+}
+
+.defender-info .defender-name {
+    font-size: 0.8em;
+}
+
+.damage-preview, .soak-display {
+    font-size: 0.9em;
+    color: #000;
+    margin-top: 3px;
+}
+
+.location-values {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* Location value overlays */
+.location-value {
+    position: absolute;
+    font-size: 0.9rem;
+    color: var(--color-crimson);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    line-height: 1.1;
+    pointer-events: none;
+}
+
+.location-value .net-damage {
+    display: none;
+    color: #000;
+    font-size: 0.75em;
+}
+
+.attacker-phase .location-value .net-damage {
+    display: block;
+}
+
+.location-value.head { top: 10%; left: 50%; }
+.location-value.torso { top: 28%; left: 50%; }
+.location-value.left-arm { top: 40%; left: 24%; }
+.location-value.right-arm { top: 40%; left: 75%; }
+.location-value.left-leg { top: 68%; left: 41%; }
+.location-value.right-leg { top: 68%; left: 59%; }
+
