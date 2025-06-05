@@ -1164,7 +1164,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
       const content = `
         <div class="witch-iron chat-card condition-card">
           <div class="card-header">
-            <i class="fas fa-bed"></i>
+            <i class="fa-solid fa-face-downcast-sweat"></i>
             <h3>${actor.name} - Fatigue ${rating}</h3>
           </div>
           <div class="card-content">
@@ -1227,7 +1227,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
       const content = `
         <div class="witch-iron chat-card condition-card">
           <div class="card-header">
-            <i class="fas fa-bone"></i>
+            <i class="fa-solid fa-bone-break"></i>
             <h3>${actor.name} - Trauma (${locLabel}) ${rating}</h3>
           </div>
           <div class="card-content">
