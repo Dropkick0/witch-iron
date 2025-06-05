@@ -2960,6 +2960,19 @@ button.roll-skill:hover {
   margin-bottom: 10px;
 }
 
+/* Layout container for stats fields and hit location wear */
+.witch-iron.sheet.monster .monster-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  align-items: start;
+}
+
+.witch-iron.sheet.monster .monster-battlewear {
+  grid-row: span 2;
+  text-align: center;
+}
+
 .witch-iron.sheet.monster .stats-content .grid-2col .form-group {
   margin: 0;
 }
@@ -3784,4 +3797,66 @@ button.roll-skill:hover {
 }
 .witch-iron.sheet .conditions-list details.zero-conditions:not([open]) .toggle-arrow {
   transform: rotate(0deg);
+}
+
+/* Hit location wear layout on monster sheet */
+.witch-iron.sheet.monster .hit-hud {
+  width: 360px;
+  max-width: 360px;
+  margin: 0 auto 10px;
+}
+
+.witch-iron.sheet.monster .hit-hud .wear-controls {
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  pointer-events: auto;
+}
+
+.witch-iron.sheet.monster .hit-hud .battle-wear-minus,
+.witch-iron.sheet.monster .hit-hud .battle-wear-plus {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  padding: 0;
+  line-height: 1;
+}
+
+.witch-iron.sheet.monster .hit-hud .battle-wear-value {
+  width: 20px;
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.witch-iron.sheet.monster .hit-hud .wear-max {
+  font-size: 0.65rem;
+}
+
+.witch-iron.sheet.monster .weapon-wear-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  margin-top: 6px;
+}
+
+.witch-iron.sheet.monster .weapon-wear-container .battle-wear-minus,
+.witch-iron.sheet.monster .weapon-wear-container .battle-wear-plus {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  line-height: 1;
+}
+
+.witch-iron.sheet.monster .weapon-wear-container .battle-wear-value {
+  width: 25px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.witch-iron.sheet.monster .weapon-wear-container .wear-max {
+  font-size: 0.8rem;
 }
