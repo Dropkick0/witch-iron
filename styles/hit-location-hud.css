@@ -61,12 +61,12 @@
   font-size: 0.75em;
 }
 
-.location-value.head { top: 8%; left: 48%; }
-.location-value.torso { top: 29%; left: 48%; }
-.location-value.leftArm { top: 38%; left: 27%; }
-.location-value.rightArm { top: 38%; left: 69%; }
-.location-value.leftLeg { top: 66%; left: 40%; }
-.location-value.rightLeg { top: 66%; left: 56%; }
+.location-value.head { top: 8%; left: 49%; }
+.location-value.torso { top: 28%; left: 49%; }
+.location-value.leftArm { top: 40%; left: 24%; }
+.location-value.rightArm { top: 40%; left: 72%; }
+.location-value.leftLeg { top: 68%; left: 42%; }
+.location-value.rightLeg { top: 68%; left: 54%; }
 
 .condition {
   position: relative;
