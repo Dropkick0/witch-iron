@@ -1633,7 +1633,8 @@ export class HitLocationDialog extends Application {
         });
         
         // Force redraw of the UI
-        this.element.find('.attacker-phase, .attacker-buttons').css('display', 'block');
+        this.element.find('.attacker-phase').css('display', 'block');
+        this.element.find('.attacker-buttons').css('display', 'flex');
         
         // Update available move buttons
         this.updateAvailableMoves();
