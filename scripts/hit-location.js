@@ -1154,6 +1154,17 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, lo
         attackerWearToAdd = Math.max(0, parseInt(attackerWearToAdd) || 0);
         defenderWearToAdd = Math.max(0, parseInt(defenderWearToAdd) || 0);
 
+        // Normalize the location string to the actor data key used for armor
+        const locMap = {
+            head: "head",
+            torso: "torso",
+            "left-arm": "leftArm",
+            "right-arm": "rightArm",
+            "left-leg": "leftLeg",
+            "right-leg": "rightLeg"
+        };
+        const locKey = locMap[location] || location;
+
         // If both wear values are 0, nothing to add
         if (attackerWearToAdd === 0 && defenderWearToAdd === 0) {
             console.log("No battle wear to add in this interaction");
@@ -1162,7 +1173,7 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, lo
                 "flags.witch-iron.battleWear": {
                     attacker: attackerWearToAdd,
                     defender: defenderWearToAdd,
-                    location: location
+                    location: locKey
                 }
             });
             // Emit update so UI processing indicators are removed etc.
@@ -1171,7 +1182,7 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, lo
                     messageId: message.id,
                     attackerWear: attackerWearToAdd,
                     defenderWear: defenderWearToAdd,
-                    location: location,
+                    location: locKey,
                     userId: game.user.id,
                     completed: true
                 });
