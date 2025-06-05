@@ -1,21 +1,87 @@
-const CONDITION_ICONS = {
-  aflame: 'icons/svg/fire.svg',
-  bleed: 'icons/svg/blood.svg',
-  poison: 'icons/svg/poison.svg',
-  stress: 'icons/svg/burst.svg',
-  corruption: 'icons/svg/bone.svg',
-  blind: 'icons/svg/eye.svg',
-  deaf: 'icons/svg/deaf.svg',
-  pain: 'icons/svg/daze.svg'
-};
-
 const FA_ICONS = {
+  aflame: 'fa-fire',
+  bleed: 'fa-droplet',
+  poison: 'fa-skull-crossbones',
+  stress: 'fa-burst',
+  corruption: 'fa-biohazard',
+  blind: 'fa-eye-slash',
+  deaf: 'fa-ear-deaf',
+  pain: 'fa-hand-holding-medical',
   fatigue: 'fa-face-downcast-sweat',
   entangle: 'fa-link',
   helpless: 'fa-skull',
   stun: 'fa-bolt',
   prone: 'fa-person-falling'
 };
+
+const CONDITION_INFO = {
+  aflame: {
+    name: 'Aflame',
+    effect: (r) =>
+      `Smoldering Flesh. Roll d6 each round, on <= ${r} make a Hardship Quarrel vs ${r} to remove all Aflame, Bleed or Poison or die.`
+  },
+  bleed: {
+    name: 'Bleed',
+    effect: (r) =>
+      `Deep Gashes. Roll d6 each round, on <= ${r} make a Hardship Quarrel vs ${r} to remove all Aflame, Bleed or Poison or die.`
+  },
+  poison: {
+    name: 'Poison',
+    effect: (r) =>
+      `Vile Toxins. Roll d6 each round, on <= ${r} make a Hardship Quarrel vs ${r} to remove all Aflame, Bleed or Poison or die.`
+  },
+  stress: {
+    name: 'Stress',
+    effect: (r) =>
+      `Profane Thoughts. On three stacks make a Hardship or Steel Quarrel vs ${r} or become changed.`
+  },
+  corruption: {
+    name: 'Corruption',
+    effect: (r) =>
+      `Traitorous Flesh. On three stacks make a Hardship or Steel Quarrel vs ${r} or become changed.`
+  },
+  blind: {
+    name: 'Blind',
+    effect: (r) =>
+      `Retina Overload. -${r * 10}% to sight-based checks. Reduces by one each hour.`
+  },
+  deaf: {
+    name: 'Deaf',
+    effect: (r) =>
+      `Ringing in Ears. -${r * 10}% to hearing and speech checks. Reduces by one each hour.`
+  },
+  pain: {
+    name: 'Pain',
+    effect: (r) =>
+      `Agony. -${r * 10}% to all checks. Reduces by one each hour.`
+  },
+  fatigue: {
+    name: 'Fatigue',
+    effect: () =>
+      'Muscle Exhaustion. Occupies Encumbrance slots; removed by rest if not from a lingering quarrel.'
+  },
+  entangle: {
+    name: 'Entangle',
+    effect: () => 'Restricts movement. Reduces by one each round or slip out.'
+  },
+  helpless: {
+    name: 'Helpless',
+    effect: () =>
+      'Prevents actions and movement. Opponents can inflict any injury while in melee.'
+  },
+  stun: {
+    name: 'Stun',
+    effect: () => 'Prevents actions. Reduced by smelling salts.'
+  },
+  prone: {
+    name: 'Prone',
+    effect: () => '-20% to checks and enemies gain +20%. Spend an action to stand.'
+  }
+};
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 export class HitLocationHUD {
   static init() {
@@ -75,21 +141,32 @@ export class HitLocationHUD {
       if (key === 'trauma') continue;
       const value = Number(data?.value || 0);
       if (value >= 1) {
+        const info = CONDITION_INFO[key] || { name: capitalize(key), effect: () => '' };
+        const effectText = typeof info.effect === 'function' ? info.effect(value) : info.effect;
         conditions.push({
           key,
           value,
-          icon: CONDITION_ICONS[key] || null,
-          faIcon: FA_ICONS[key] || 'fa-exclamation-circle'
+          faIcon: FA_ICONS[key] || 'fa-exclamation-circle',
+          tooltip: `${info.name} (${value}) - ${effectText}`
         });
       }
     }
 
     conditions.sort((a, b) => a.key.localeCompare(b.key));
 
-    const data = { actor, anatomy, trauma, conditions };
+    const soakTooltips = {};
+    const rb = actor.system?.attributes?.robustness?.bonus || 0;
+    const wear = actor.system?.battleWear?.armor?.value || 0;
+    for (const loc of ['head','torso','leftArm','rightArm','leftLeg','rightLeg']) {
+      const part = anatomy[loc] || {};
+      const soak = Number(part.soak || 0);
+      const av = Number(part.armor || 0);
+      const other = soak - rb - (av - wear);
+      soakTooltips[loc] = `Soak = ${rb} + ${other} + (${av} - ${wear}) = ${soak}`;
+    }
+
+    const data = { actor, anatomy, trauma, conditions, soakTooltips };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
     this.container.innerHTML = html;
-    if (conditions.length > 5) this.container.classList.add('big');
-    else this.container.classList.remove('big');
   }
 }
