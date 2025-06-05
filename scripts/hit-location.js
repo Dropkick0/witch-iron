@@ -172,34 +172,51 @@ export class HitLocationSelector {
         console.log(`Opening dialog with ${netHits} net hits`);
         
         // Create dialog data
-            const dialogData = {
+        const dialogData = {
             attacker: data.attacker,
             defender: data.defender,
-                damageAmount: data.damage || 0,
+            damageAmount: data.damage || 0,
             defenderName: data.defender || "Target",
             netHits: netHits,
             remainingHits: netHits,
-                autoApply: true,
+            autoApply: true,
             combatId: data.combatId,
-                applyHitCallback: (location, remainingHits) => {
-                    // Apply the hit with the selected location and remaining hits
+            weaponDamage: data.weaponDmg || 0,
+            soakValues: {},
+            defenderImg: "icons/svg/mystery-man.svg",
+            applyHitCallback: (location, remainingHits) => {
                 this._applyHit(
-                    data.attacker, 
-                    data.defender, 
-                    data.damage, 
-                    location, 
-                    data.messageId, 
-                    remainingHits, 
+                    data.attacker,
+                    data.defender,
+                    data.damage,
+                    location,
+                    data.messageId,
+                    remainingHits,
                     data.combatId,
-                    data.weaponDmg || 0,  // Pass weapon damage
-                    data.soak || 0        // Pass soak
+                    data.weaponDmg || 0,
+                    data.soak || 0
                 );
             }
         };
         
         // Get battle wear data if we have attacker and defender names
         if (data.attacker && data.defender) {
-            dialogData.battleWear = await this._getBattleWearData(data.attacker, data.defender, 'torso');
+            const bwData = await this._getBattleWearData(data.attacker, data.defender, 'torso');
+            dialogData.battleWear = { attacker: bwData.attacker, defender: bwData.defender };
+
+            const defActor = bwData.actors.defender;
+            if (defActor) {
+                dialogData.defenderImg = bwData.defender.tokenImg;
+                const anat = defActor.system?.anatomy || {};
+                dialogData.soakValues = {
+                    head: Number(anat.head?.soak || 0),
+                    torso: Number(anat.torso?.soak || 0),
+                    'left-arm': Number(anat.leftArm?.soak || 0),
+                    'right-arm': Number(anat.rightArm?.soak || 0),
+                    'left-leg': Number(anat.leftLeg?.soak || 0),
+                    'right-leg': Number(anat.rightLeg?.soak || 0)
+                };
+            }
         }
         
         // Create and render a new dialog
@@ -609,6 +626,7 @@ export class HitLocationSelector {
         const fullEffect = HitLocationSelector._generateInjuryEffect(combatData.location.toLowerCase().replace(' ', '-'), netDamage);
         const effect = HitLocationSelector._trimEffectName(fullEffect);
         const description = this._generateInjuryDescription(combatData.location, netDamage, fullEffect);
+        
         
         // Retrieve the specific location details stored by _generateInjuryEffect
         const specificLocation = game.witch?.currentInjury?.specificLocation || null;
@@ -1507,6 +1525,9 @@ export class HitLocationDialog extends Application {
         // Ensure netHits is properly parsed as a number
         this.netHits = parseInt(data.netHits) || 0;
         this.remainingHits = this.netHits;
+        this.weaponDamage = data.weaponDamage || 0;
+        this.soakValues = data.soakValues || {};
+        this.defenderImg = data.defenderImg || "icons/svg/mystery-man.svg";
         
         console.log(`HitLocationDialog initialized with netHits: ${this.netHits}, remaining: ${this.remainingHits}`);
         
@@ -1541,10 +1562,15 @@ export class HitLocationDialog extends Application {
     
     /** @override */
     getData(options={}) {
+        const defaultLoc = 'torso';
+        const soak = this.soakValues[defaultLoc] || 0;
         return {
             defenderName: this.data.defenderName || "Target",
+            defenderImg: this.defenderImg,
             damageAmount: this.data.damageAmount || 0,
-            netHits: this.netHits
+            netHits: this.netHits,
+            damagePreview: this.weaponDamage + this.netHits,
+            currentSoak: soak
         };
     }
 
@@ -1588,6 +1614,9 @@ export class HitLocationDialog extends Application {
         
         // Update available move buttons
         this.updateAvailableMoves();
+
+        // Update damage preview and soak display
+        this.updateDamagePreview();
     }
     
     /**
@@ -1612,6 +1641,8 @@ export class HitLocationDialog extends Application {
         selectedPart.addClass('selected');
         
         this.selectedLocation = location;
+
+        this.updateDamagePreview();
         
         // Format the location name for display
         const displayLocation = this.formatLocationName(location);
@@ -1692,9 +1723,11 @@ export class HitLocationDialog extends Application {
         // Update remaining hits
         this.remainingHits -= this.moveCost;
         this.element.find('#net-hits-remaining').text(this.remainingHits);
-        
+
         // Select the new location
         this.selectLocationInAttackerPhase(targetLocation);
+
+        this.updateDamagePreview();
     }
     
     /**
@@ -1719,11 +1752,13 @@ export class HitLocationDialog extends Application {
         
         // Update the selected location
         this.selectedLocation = location;
-        
+
         // Update display
         const displayLocation = this.formatLocationName(location);
         this.element.find('#selected-location').text(displayLocation);
-        
+
+        this.updateDamagePreview();
+
         // Update available moves
         this.updateAvailableMoves();
     }
@@ -1740,9 +1775,11 @@ export class HitLocationDialog extends Application {
         // Refund the net hits
         this.remainingHits += this.moveCost;
         this.element.find('#net-hits-remaining').text(this.remainingHits);
-        
+
         // Select the previous location
         this.selectLocationInAttackerPhase(previousLocation);
+
+        this.updateDamagePreview();
     }
     
     /**
@@ -1751,9 +1788,20 @@ export class HitLocationDialog extends Application {
      * @returns {string} The formatted location name
      */
     formatLocationName(location) {
-        return location.split('-').map(word => 
+        return location.split('-').map(word =>
             word.charAt(0).toUpperCase() + word.slice(1)
         ).join(' ');
+    }
+
+    /**
+     * Update damage preview and soak text based on current state
+     */
+    updateDamagePreview() {
+        const loc = this.selectedLocation || 'torso';
+        const soak = this.soakValues[loc] || 0;
+        const damage = this.weaponDamage + this.remainingHits;
+        this.element.find('#damage-preview').text(damage);
+        this.element.find('#location-soak').text(soak);
     }
     
     /**
@@ -1781,8 +1829,10 @@ export class HitLocationDialog extends Application {
     /** @override */
     activateListeners(html) {
         super.activateListeners(html);
-        
+
         console.log("Activating listeners for hit location dialog");
+
+        this.updateDamagePreview();
         
         // Location labels for defender phase
         const locationLabels = html.find('.location-label');
@@ -2049,6 +2099,17 @@ async function createInjuryHandler(event) {
         let injuryName;
         if (finalDamage > 0) {
             let base = fullInjuryEffect.split('|')[0];
+            base = base.split(',')[0];
+            base = base.replace(/[*‡]/g, '').trim();
+            injuryName = `${base} ${displayLocation}`;
+        } else {
+            injuryName = `Attack Deflected by ${displayLocation}`;
+        }
+
+        // Build the injury name using the first part of the effect if damage > 0
+        let injuryName;
+        if (finalDamage > 0) {
+            let base = injuryEffect.split('|')[0];
             base = base.split(',')[0];
             base = base.replace(/[*‡]/g, '').trim();
             injuryName = `${base} ${displayLocation}`;

@@ -1,5 +1,9 @@
 <div class="hit-location-selector">
     <h2>Select Hit Location</h2>
+    <div class="defender-info">
+        <img src="{{defenderImg}}" alt="{{defenderName}}">
+        <div class="defender-name">{{defenderName}}</div>
+    </div>
     
     <div class="hit-location-phase defender-phase">
         <div class="compact-info" style="color: #000;">
@@ -19,6 +23,8 @@
                 <p>Net Hits: <strong id="net-hits-remaining">{{netHits}}</strong></p>
                 <button class="undo-move-btn" disabled>Undo Last Move</button>
             </div>
+            <div class="damage-preview">Damage: <strong id="damage-preview">{{damagePreview}}</strong></div>
+            <div class="soak-display">Soak: <strong id="location-soak">{{currentSoak}}</strong></div>
         </div>
     </div>
     
