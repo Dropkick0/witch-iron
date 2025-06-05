@@ -2,12 +2,12 @@
     <h2>Select Hit Location</h2>
     <div class="defender-info">
         <img src="{{defenderImg}}" alt="{{defenderName}}">
-        <div class="defender-name">{{defenderName}}</div>
+        <span class="defender-name">{{defenderName}}</span>
+        <span class="damage-amount">{{damageAmount}} dmg</span>
     </div>
     
     <div class="hit-location-phase defender-phase">
         <div class="compact-info" style="color: #000;">
-            <p><strong id="damage-amount">{{damageAmount}}</strong> damage to <strong id="defender-name">{{defenderName}}</strong></p>
             {{#if battleWear}}
             <div class="battle-wear-info">
                 <p>Weapon Wear: <strong>{{battleWear.attacker.currentWear}}/{{battleWear.attacker.maxWear}}</strong> | Armor Wear: <strong>{{battleWear.defender.currentWear}}/{{battleWear.defender.maxWear}}</strong></p>
