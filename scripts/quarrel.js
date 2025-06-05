@@ -2330,6 +2330,41 @@ async function handleLuckClick(event) {
     }
 }
 
+async function applyConditionEffects(result) {
+    if (!result.condition) return;
+
+    const initiatorActor = game.actors.get(result.initiator?.actorId);
+    const responderActor = game.actors.get(result.responder?.actorId);
+
+    if (result.initiatorOutcome === 'Victory') {
+        if (initiatorActor) {
+            canvas.tokens.placeables
+                .filter(t => t.actor?.id === initiatorActor.id)
+                .forEach(t => t.actor?.toggleStatusEffect('dead', { active: true, overlay: true }));
+        }
+
+        if (['stress','corruption'].includes(result.condition) && responderActor) {
+            const wpPath = 'system.attributes.willpower.value';
+            const currentWP = foundry.utils.getProperty(responderActor, wpPath) || 0;
+            const updateData = {
+                [wpPath]: Math.max(currentWP - 10, 0),
+                [`system.conditions.${result.condition}.value`]: 0
+            };
+            await updateActorAndTokens(responderActor, updateData);
+            refreshConditionDisplay(responderActor, result.condition, 0);
+        }
+    } else if (result.responderOutcome === 'Victory') {
+        if (responderActor) {
+            if (['aflame','bleed','poison'].includes(result.condition)) {
+                await clearPhysicalConditions(responderActor);
+            } else if (!['stress','corruption'].includes(result.condition)) {
+                const updateData = { [`system.conditions.${result.condition}.value`]: 0 };
+                await updateActorAndTokens(responderActor, updateData);
+            }
+        }
+    }
+}
+
 async function handleRollModification(messageId, newHits) {
     // Update pending quarrels and selected checks
     if (quarrelTracker.selectedCheck && quarrelTracker.selectedCheck.messageId === messageId) {
@@ -2390,6 +2425,8 @@ async function handleRollModification(messageId, newHits) {
             data.initiatorOutcome = "VictoryAtACost";
             data.responderOutcome = "VictoryAtACost";
         }
+
+        await applyConditionEffects(data);
 
         const html = await renderTemplate("systems/witch-iron/templates/chat/quarrel-result.hbs", {
             result: data,
