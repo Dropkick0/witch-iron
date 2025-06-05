@@ -151,11 +151,49 @@
               
               <div class="form-group battle-wear-controls">
                 <label>Armor Battle Wear (Max: {{system.derived.armorBonusMax}})</label>
-                <div class="battle-wear-control">
-                  <button type="button" class="battle-wear-minus" data-type="armor"><i class="fas fa-minus"></i></button>
-                  <span class="battle-wear-value" data-type="armor">{{system.battleWear.armor.value}}</span>
-                  <button type="button" class="battle-wear-plus" data-type="armor"><i class="fas fa-plus"></i></button>
-                  <button type="button" class="battle-wear-reset" data-type="armor"><i class="fas fa-undo"></i></button>
+                <div class="grid grid-2col">
+                  <div class="battle-wear-control">
+                    <span class="location-label">Head</span>
+                    <button type="button" class="battle-wear-minus" data-type="armor-head"><i class="fas fa-minus"></i></button>
+                    <span class="battle-wear-value" data-type="armor-head">{{system.battleWear.armor.head.value}}</span>
+                    <button type="button" class="battle-wear-plus" data-type="armor-head"><i class="fas fa-plus"></i></button>
+                    <button type="button" class="battle-wear-reset" data-type="armor-head"><i class="fas fa-undo"></i></button>
+                  </div>
+                  <div class="battle-wear-control">
+                    <span class="location-label">Torso</span>
+                    <button type="button" class="battle-wear-minus" data-type="armor-torso"><i class="fas fa-minus"></i></button>
+                    <span class="battle-wear-value" data-type="armor-torso">{{system.battleWear.armor.torso.value}}</span>
+                    <button type="button" class="battle-wear-plus" data-type="armor-torso"><i class="fas fa-plus"></i></button>
+                    <button type="button" class="battle-wear-reset" data-type="armor-torso"><i class="fas fa-undo"></i></button>
+                  </div>
+                  <div class="battle-wear-control">
+                    <span class="location-label">Left Arm</span>
+                    <button type="button" class="battle-wear-minus" data-type="armor-leftArm"><i class="fas fa-minus"></i></button>
+                    <span class="battle-wear-value" data-type="armor-leftArm">{{system.battleWear.armor.leftArm.value}}</span>
+                    <button type="button" class="battle-wear-plus" data-type="armor-leftArm"><i class="fas fa-plus"></i></button>
+                    <button type="button" class="battle-wear-reset" data-type="armor-leftArm"><i class="fas fa-undo"></i></button>
+                  </div>
+                  <div class="battle-wear-control">
+                    <span class="location-label">Right Arm</span>
+                    <button type="button" class="battle-wear-minus" data-type="armor-rightArm"><i class="fas fa-minus"></i></button>
+                    <span class="battle-wear-value" data-type="armor-rightArm">{{system.battleWear.armor.rightArm.value}}</span>
+                    <button type="button" class="battle-wear-plus" data-type="armor-rightArm"><i class="fas fa-plus"></i></button>
+                    <button type="button" class="battle-wear-reset" data-type="armor-rightArm"><i class="fas fa-undo"></i></button>
+                  </div>
+                  <div class="battle-wear-control">
+                    <span class="location-label">Left Leg</span>
+                    <button type="button" class="battle-wear-minus" data-type="armor-leftLeg"><i class="fas fa-minus"></i></button>
+                    <span class="battle-wear-value" data-type="armor-leftLeg">{{system.battleWear.armor.leftLeg.value}}</span>
+                    <button type="button" class="battle-wear-plus" data-type="armor-leftLeg"><i class="fas fa-plus"></i></button>
+                    <button type="button" class="battle-wear-reset" data-type="armor-leftLeg"><i class="fas fa-undo"></i></button>
+                  </div>
+                  <div class="battle-wear-control">
+                    <span class="location-label">Right Leg</span>
+                    <button type="button" class="battle-wear-minus" data-type="armor-rightLeg"><i class="fas fa-minus"></i></button>
+                    <span class="battle-wear-value" data-type="armor-rightLeg">{{system.battleWear.armor.rightLeg.value}}</span>
+                    <button type="button" class="battle-wear-plus" data-type="armor-rightLeg"><i class="fas fa-plus"></i></button>
+                    <button type="button" class="battle-wear-reset" data-type="armor-rightLeg"><i class="fas fa-undo"></i></button>
+                  </div>
                 </div>
               </div>
             </div>

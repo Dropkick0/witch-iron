@@ -125,15 +125,17 @@ export class HitLocationHUD {
 
     // Calculate per-location soak tooltip text
     const rb = Number(actor.system?.attributes?.robustness?.bonus || 0);
-    const wear = Number(actor.system?.battleWear?.armor?.value || 0);
+    const wear = {};
     const soakTooltips = {};
-    for (const loc of ["head","torso","leftArm","rightArm","leftLeg","rightLeg"]) {
+    const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    for (const loc of LOCS) {
+      wear[loc] = Number(actor.system?.battleWear?.armor?.[loc]?.value || 0);
       const locData = anatomy[loc] || {};
       const soak = Number(locData.soak || 0);
       const av = Number(locData.armor || 0);
-      const other = soak - rb - (av - wear);
+      const other = soak - rb - (av - wear[loc]);
       const otherVal = other > 0 ? other : 0;
-      soakTooltips[loc] = `${rb} + ${otherVal} + (${av} - ${wear}) = ${soak}`;
+      soakTooltips[loc] = `${rb} + ${otherVal} + (${av} - ${wear[loc]}) = ${soak}`;
     }
 
     const condObj = actor.system?.conditions || {};
