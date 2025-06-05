@@ -285,15 +285,30 @@
             </div>
             <!-- Conditions UI -->
             <div class="conditions-list">
-              <h2>Conditions</h2>
-              {{#each conditions as |condition key|}}
-              <div class="condition-row flexrow" data-condition="{{key}}">
-                <button type="button" class="condition-name cond-quarrel">{{condition.label}}</button>
+              <h2>Current Conditions</h2>
+              {{#each currentConditions}}
+              <div class="condition-row flexrow" data-condition="{{this.key}}">
+                <button type="button" class="condition-name cond-quarrel">{{this.label}}</button>
                 <button type="button" class="cond-minus"><i class="fas fa-minus"></i></button>
-                <input type="number" class="cond-value" value="{{condition.value}}" min="0" />
+                <input type="number" class="cond-value" value="{{this.value}}" min="0" />
                 <button type="button" class="cond-plus"><i class="fas fa-plus"></i></button>
               </div>
               {{/each}}
+
+              <details class="zero-conditions">
+                <summary class="btn">
+                  <i class="fas fa-caret-right toggle-arrow"></i>
+                  Other Conditions
+                </summary>
+                {{#each zeroConditions}}
+                <div class="condition-row flexrow" data-condition="{{this.key}}">
+                  <button type="button" class="condition-name cond-quarrel">{{this.label}}</button>
+                  <button type="button" class="cond-minus"><i class="fas fa-minus"></i></button>
+                  <input type="number" class="cond-value" value="{{this.value}}" min="0" />
+                  <button type="button" class="cond-plus"><i class="fas fa-plus"></i></button>
+                </div>
+                {{/each}}
+              </details>
             </div>
           </div>
         </div>
