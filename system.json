@@ -22,6 +22,7 @@
     "styles/card-common.css",
     "styles/combat-card.css",
     "styles/hit-location.css",
+    "styles/hit-location-hud.css",
     "styles/injury-card.css",
     "styles/condition-card.css",
     "styles/casualty-cards.css"
