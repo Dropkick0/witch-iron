@@ -3,8 +3,8 @@
   position: fixed;
   left: 10px;
   bottom: 260px;
-  width: 12.5vw;
-  height: 25vh;
+  width: 280px;
+  height: 370px;
   transform: scale(0.5);
   transform-origin: bottom left;
   transition: transform 0.2s ease;
@@ -25,6 +25,16 @@
   height: 100%;
 }
 
+/* ensure the silhouette fills the container so overlays align correctly */
+#hit-location-hud .body-outline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 #hit-location-hud .body-outline svg {
   width: 100%;
   height: 100%;
@@ -36,6 +46,8 @@
   font-size: 0.85em;
   text-align: center;
   line-height: 1.1;
+  pointer-events: none;
+  z-index: 2;
 }
 
 #hit-location-hud .location-value .trauma {
@@ -60,12 +72,14 @@
   align-items: flex-end;
   gap: 4px;
   z-index: 1;
+  pointer-events: none;
 }
 
 #hit-location-hud .condition {
   position: relative;
   width: 24px;
   height: 24px;
+  z-index: 2;
 }
 
 #hit-location-hud .condition img,
