@@ -1,0 +1,45 @@
+<div class="hit-location-hud-content">
+  {{#if actor}}
+  <h3>{{actor.name}}</h3>
+  <ul>
+    <li class="location head {{#if actor.system.anatomy.head.lost}}lost{{/if}}">
+      <span>Head</span>
+      <span>{{actor.system.anatomy.head.armor}}/{{actor.system.anatomy.head.soak}}</span>
+    </li>
+    <li class="location torso {{#if actor.system.anatomy.torso.lost}}lost{{/if}}">
+      <span>Torso</span>
+      <span>{{actor.system.anatomy.torso.armor}}/{{actor.system.anatomy.torso.soak}}</span>
+    </li>
+    <li class="location left-arm {{#if actor.system.anatomy.leftArm.lost}}lost{{/if}}">
+      <span>Left Arm</span>
+      <span>{{actor.system.anatomy.leftArm.armor}}/{{actor.system.anatomy.leftArm.soak}}</span>
+    </li>
+    <li class="location right-arm {{#if actor.system.anatomy.rightArm.lost}}lost{{/if}}">
+      <span>Right Arm</span>
+      <span>{{actor.system.anatomy.rightArm.armor}}/{{actor.system.anatomy.rightArm.soak}}</span>
+    </li>
+    <li class="location left-leg {{#if actor.system.anatomy.leftLeg.lost}}lost{{/if}}">
+      <span>Left Leg</span>
+      <span>{{actor.system.anatomy.leftLeg.armor}}/{{actor.system.anatomy.leftLeg.soak}}</span>
+    </li>
+    <li class="location right-leg {{#if actor.system.anatomy.rightLeg.lost}}lost{{/if}}">
+      <span>Right Leg</span>
+      <span>{{actor.system.anatomy.rightLeg.armor}}/{{actor.system.anatomy.rightLeg.soak}}</span>
+    </li>
+  </ul>
+  <h4>Conditions</h4>
+  <ul>
+    {{#each conditions}}
+    <li>{{capitalize key}}: {{this.value}}</li>
+    {{/each}}
+  </ul>
+  <h4>Injuries</h4>
+  <ul>
+    {{#each injuries}}
+    <li>{{name}}</li>
+    {{/each}}
+  </ul>
+  {{else}}
+  <p>No actor selected</p>
+  {{/if}}
+</div>
