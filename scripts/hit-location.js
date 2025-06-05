@@ -1821,13 +1821,33 @@ export class HitLocationDialog extends Application {
      * Update damage preview and soak text based on current state
      */
     updateDamagePreview() {
-        const damage = this.weaponDamage + this.remainingHits;
         const map = { 'head':'head','torso':'torso','left-arm':'leftArm','right-arm':'rightArm','left-leg':'leftLeg','right-leg':'rightLeg' };
+
         for (const loc of this.locations) {
             const key = map[loc] || loc;
             const soak = this.soakValues[key] || 0;
+            let hits;
+            let show = true;
+
+            if (this.phase === 'defender') {
+                hits = this.netHits;
+            } else {
+                if (loc === this.selectedLocation) {
+                    hits = this.remainingHits;
+                } else if ((this.adjacencyMap[this.selectedLocation] || []).includes(loc)) {
+                    hits = Math.max(this.remainingHits - this.moveCost, 0);
+                } else {
+                    show = false;
+                    hits = this.remainingHits;
+                }
+            }
+
+            const damage = this.weaponDamage + hits;
             const net = Math.max(0, damage - soak);
-            this.element.find(`.location-value[data-location="${loc}"] .net-dmg`).text(net);
+
+            const value = show ? net : '';
+
+            this.element.find(`.location-value[data-location="${loc}"] .net-dmg`).text(value);
             this.element.find(`.location-value[data-location="${loc}"] .soak`).text(this.soakValues[key] || 0);
             this.element.find(`.location-value[data-location="${loc}"] .armor`).text(this.armorValues[key] || 0);
         }
