@@ -5,7 +5,7 @@
 import { manualQuarrel } from "./quarrel.js";
 import { createItem } from "./utils.js";
 import { openModifierDialog } from "./modifier-dialog.js";
-import { FORMATION_SHAPES } from "./ghost-tokens.js";
+import { FORMATION_SHAPES, syncGhostTiles } from "./ghost-tokens.js";
 
 /**
  * Monster sheet class for the Witch Iron system
@@ -690,6 +690,13 @@ export class WitchIronMonsterSheet extends ActorSheet {
       }));
       if (updates.length) await canvas.scene.updateEmbeddedDocuments('Token', updates);
 
+      // Adjust any ghost tiles for mob leaders
+      const bodies = this.actor.system.mob?.bodies?.value || 1;
+      for (const token of active) {
+        if (token.getFlag('witch-iron', 'isMobLeader')) {
+          await syncGhostTiles(token, bodies - 1);
+        }
+      }
       // Force update for all derived stats
       const html = $(this.element);
       this._updateDerivedDisplay(html);
