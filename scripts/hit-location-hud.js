@@ -81,6 +81,8 @@ export class HitLocationHUD {
       }
     }
 
+    conditions.sort((a, b) => a.key.localeCompare(b.key));
+
     const data = { actor, anatomy, trauma, conditions };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
     this.container.innerHTML = html;
