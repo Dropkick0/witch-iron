@@ -219,15 +219,15 @@
 
 .defender-info {
     text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.defender-mode .defender-info {
+.defender-mode .defender-info,
+.attacker-mode .defender-info {
     align-self: flex-start;
     margin: 5px 0 5px 5px;
-}
-
-.attacker-mode .defender-info {
-    margin: 5px auto;
 }
 
 .defender-info img {
@@ -238,6 +238,12 @@
 
 .defender-info .defender-name {
     font-size: 0.8em;
+}
+
+.defender-info .damage-amount {
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-left: 5px;
 }
 
 .damage-preview, .soak-display {

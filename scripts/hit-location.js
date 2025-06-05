@@ -1633,7 +1633,8 @@ export class HitLocationDialog extends Application {
         });
         
         // Force redraw of the UI
-        this.element.find('.attacker-phase, .attacker-buttons').css('display', 'block');
+        this.element.find('.attacker-phase').css('display', 'block');
+        this.element.find('.attacker-buttons').css('display', 'flex');
         
         // Update available move buttons
         this.updateAvailableMoves();
@@ -1820,13 +1821,35 @@ export class HitLocationDialog extends Application {
      * Update damage preview and soak text based on current state
      */
     updateDamagePreview() {
-        const damage = this.weaponDamage + this.remainingHits;
+        const baseDamage = this.weaponDamage + this.remainingHits;
         const map = { 'head':'head','torso':'torso','left-arm':'leftArm','right-arm':'rightArm','left-leg':'leftLeg','right-leg':'rightLeg' };
         for (const loc of this.locations) {
             const key = map[loc] || loc;
             const soak = this.soakValues[key] || 0;
-            const net = Math.max(0, damage - soak);
-            this.element.find(`.location-value[data-location="${loc}"] .net-dmg`).text(net);
+
+            let net = '';
+            if (this.phase === 'attacker') {
+                const selected = this.selectedLocation;
+                const adj = this.adjacencyMap[selected] || [];
+                if (loc === selected) {
+                    net = Math.max(0, baseDamage - soak);
+                } else if (adj.includes(loc) && this.remainingHits >= this.moveCost) {
+                    const projected = this.weaponDamage + this.remainingHits - this.moveCost;
+                    net = Math.max(0, projected - soak);
+                }
+            } else {
+                net = Math.max(0, baseDamage - soak);
+            }
+
+            const dmgElem = this.element.find(`.location-value[data-location="${loc}"] .net-dmg`);
+            if (net === '') {
+                dmgElem.text('');
+                dmgElem.css('visibility', 'hidden');
+            } else {
+                dmgElem.text(net);
+                dmgElem.css('visibility', 'visible');
+            }
+
             this.element.find(`.location-value[data-location="${loc}"] .soak`).text(this.soakValues[key] || 0);
             this.element.find(`.location-value[data-location="${loc}"] .armor`).text(this.armorValues[key] || 0);
         }
