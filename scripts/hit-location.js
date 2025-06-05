@@ -468,6 +468,20 @@ export class HitLocationSelector {
         
         return effect;
     }
+
+    /**
+     * Remove the leading descriptor from an injury effect string
+     * e.g. "Severed, Lost Leg|Bleed 5" -> "Lost Leg|Bleed 5"
+     * @param {string} effect The raw effect text
+     * @returns {string} The effect text without the descriptor
+     * @private
+     */
+    static _trimEffectName(effect) {
+        if (!effect) return effect;
+        const commaIndex = effect.indexOf(',');
+        if (commaIndex === -1) return effect.trim();
+        return effect.slice(commaIndex + 1).trim();
+    }
     
     /**
      * Create an injury message in chat
@@ -610,8 +624,9 @@ export class HitLocationSelector {
         const messageType = isDeflected ? "deflection" : "injury";
         
         // Generate injury effect first so we can use it for the description
-        const effect = HitLocationSelector._generateInjuryEffect(combatData.location.toLowerCase().replace(' ', '-'), netDamage);
-        const description = this._generateInjuryDescription(combatData.location, netDamage, effect);
+        const fullEffect = HitLocationSelector._generateInjuryEffect(combatData.location.toLowerCase().replace(' ', '-'), netDamage);
+        const effect = HitLocationSelector._trimEffectName(fullEffect);
+        const description = this._generateInjuryDescription(combatData.location, netDamage, fullEffect);
         
         // Retrieve the specific location details stored by _generateInjuryEffect
         const specificLocation = game.witch?.currentInjury?.specificLocation || null;
@@ -641,8 +656,8 @@ export class HitLocationSelector {
             weapon: weaponBonusMax || "-", // Keep Max weapon bonus for details section display
             soak: defenderAbilityBonus + armorBonusMax || 0, // Keep Max soak for details section display
             netHits: netHits,
-            description: description, 
-            effect: effect, 
+            description: description,
+            effect: effect,
             isDeflected: isDeflected,
             battleWear: battleWearDataForTemplate, // Battle wear data for the card controls
             abilityBonus: attackerAbilityBonus,
@@ -669,7 +684,7 @@ export class HitLocationSelector {
                         defender: combatData.defender,
                         location: combatData.location,
                         damage: netDamage,
-                        effect: HitLocationSelector._generateInjuryEffect(combatData.location.toLowerCase().replace(' ', '-'), netDamage),
+                        effect: effect,
                         netHits: netHits,
                         weaponDmg: weaponBonus,
                         abilityDmg: attackerAbilityBonus,
@@ -881,12 +896,13 @@ export class HitLocationSelector {
           .toLowerCase()
           .replace(/\s+/g, "");
         // Build the system data for the new injury item
+        const trimmedEffect = HitLocationSelector._trimEffectName(injuryEffect);
         const system = {
           description: `Injury to the ${specificLocation} with ${damage} damage.`,
           // Use the specific injury key so the dropdown selects the exact location
           location: locationKey,
           severity: { value: damage, label: damage < 4 ? "Minor" : damage < 7 ? "Major" : "Severe" },
-          effect: injuryEffect,
+          effect: trimmedEffect,
           conditions,
           medicalOption: sheetMedOption,
           treatmentDifficulty,
@@ -2077,12 +2093,13 @@ async function createInjuryHandler(event) {
         const displayLocation = specificLocation || location;
 
         // Generate effect based on location and *final damage*
-        const injuryEffect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), finalDamage);
+        const fullInjuryEffect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), finalDamage);
+        const injuryEffect = HitLocationSelector._trimEffectName(fullInjuryEffect);
 
         // Build the injury name using the first part of the effect if damage > 0
         let injuryName;
         if (finalDamage > 0) {
-            let base = injuryEffect.split('|')[0];
+            let base = fullInjuryEffect.split('|')[0];
             base = base.split(',')[0];
             base = base.replace(/[*‡]/g, '').trim();
             injuryName = `${base} ${displayLocation}`;
@@ -2152,7 +2169,8 @@ async function createArmorBattleWearResultMessage(injuryData, finalDamage, armor
     // Generate effect based on location and final damage
     const location = injuryData.location;
     const specificLocation = injuryData.specificLocation || location; // Use specific if available
-    const effect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), finalDamage);
+    const fullEffect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), finalDamage);
+    const effect = HitLocationSelector._trimEffectName(fullEffect);
 
     // Create HTML content for the message, REMOVING the collapsible damage details section
     const content = `
@@ -2333,7 +2351,8 @@ function updatePotentialInjury(cardElement) {
     console.log(`Final potential damage: ${exactDamage} (${exactSeverity}), range: ${minDamage}-${maxDamage}`);
     
     // Get the effect based on the expected damage
-    const effect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), exactDamage);
+    const fullEffect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), exactDamage);
+    const effect = HitLocationSelector._trimEffectName(fullEffect);
     
     // Update the injury display in the main card area
     updateInjuryDisplay(cardElement, exactDamage, location, effect, exactSeverity);
@@ -2345,7 +2364,7 @@ function updatePotentialInjury(cardElement) {
         injuryButton.dataset.severity = exactDamage.toString();
         
         // Update the description attribute using the effect's first segment
-        let descBase = effect.split('|')[0];
+        let descBase = fullEffect.split('|')[0];
         descBase = descBase.split(',')[0];
         descBase = descBase.replace(/[*‡]/g, '').trim();
         injuryButton.dataset.description = `${descBase} ${location}`;
@@ -2898,6 +2917,8 @@ function updateInjuryDisplayForTab(messageElement, tabType = 'avg') {
         effect = HitLocationSelector._generateInjuryEffect(location.toLowerCase().replace(' ', '-'), finalDamage);
     }
 
+    const trimmedEffect = HitLocationSelector._trimEffectName(effect);
+
     const severityLabel = getPotentialInjurySeverity(finalDamage);
 
     // --- Update UI Displays ---
@@ -2913,10 +2934,10 @@ function updateInjuryDisplayForTab(messageElement, tabType = 'avg') {
             if (finalDamage <= 0) {
                  locationCol.innerHTML = `<span class="deflected">Deflected!</span>`;
             } else {
-                 locationCol.textContent = `${displayLocation}: ${effect}`; // Combine location and effect
+                 locationCol.textContent = `${displayLocation}: ${trimmedEffect}`; // Combine location and effect
             }
         }
-         console.log(`[DEBUG Update Effect] Final Damage: ${finalDamage}, Specific Loc: ${displayLocation}, Calculated Effect: ${effect}`);
+         console.log(`[DEBUG Update Effect] Final Damage: ${finalDamage}, Specific Loc: ${displayLocation}, Calculated Effect: ${trimmedEffect}`);
     } else {
         console.warn(`[DEBUG] Could not find injury row in message ${messageId}`);
     }
@@ -2934,7 +2955,7 @@ function updateInjuryDisplayForTab(messageElement, tabType = 'avg') {
          } else {
              injuryButton.dataset.description = "Deflected";
          }
-         injuryButton.dataset.effect = effect;
+         injuryButton.dataset.effect = trimmedEffect;
          injuryButton.dataset.combatId = combatId;
 
          // Update button text based on interaction armor wear
