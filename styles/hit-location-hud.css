@@ -10,10 +10,6 @@
   font-family: var(--witchiron-font, serif);
 }
 
-.hit-hud.big {
-  width: 30vmin;
-  max-width: 300px;
-}
 
 .hud-inner {
   width: 100%;

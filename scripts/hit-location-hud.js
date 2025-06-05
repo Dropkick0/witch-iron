@@ -85,7 +85,5 @@ export class HitLocationHUD {
     const data = { actor, anatomy, trauma, conditions };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
     this.container.innerHTML = html;
-    if (conditions.length > 5) this.container.classList.add('big');
-    else this.container.classList.remove('big');
   }
 }
