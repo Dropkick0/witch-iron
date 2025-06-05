@@ -654,14 +654,42 @@ export class WitchIronMonsterSheet extends ActorSheet {
   async _onSizeChange(event) {
     const select = event.currentTarget;
     const newSize = select.value;
-    
+
 //////     console.log(`Size changed to ${newSize}`);
-    
+
     try {
       // Update the actor with the new size value
       await this.actor.update({ 'system.stats.size.value': newSize });
-//////       console.log("Updated actor with new size:", newSize);
-      
+
+      const sizeMap = {
+        tiny: { width: 1, height: 1, scale: 1 / 3 },
+        small: { width: 1, height: 1, scale: 2 / 3 },
+        medium: { width: 1, height: 1, scale: 1 },
+        large: { width: 2, height: 2, scale: 1 },
+        huge: { width: 4, height: 4, scale: 1 },
+        gigantic: { width: 8, height: 8, scale: 1 }
+      };
+      const data = sizeMap[newSize] || sizeMap.medium;
+
+      // Update the prototype token
+      await this.actor.update({
+        'prototypeToken.width': data.width,
+        'prototypeToken.height': data.height,
+        'prototypeToken.texture.scaleX': data.scale,
+        'prototypeToken.texture.scaleY': data.scale
+      });
+
+      // Update active tokens on the canvas
+      const active = this.actor.getActiveTokens();
+      const updates = active.map(t => ({
+        _id: t.id,
+        width: data.width,
+        height: data.height,
+        'texture.scaleX': data.scale,
+        'texture.scaleY': data.scale
+      }));
+      if (updates.length) await canvas.scene.updateEmbeddedDocuments('Token', updates);
+
       // Force update for all derived stats
       const html = $(this.element);
       this._updateDerivedDisplay(html);
