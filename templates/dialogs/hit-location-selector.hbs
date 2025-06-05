@@ -23,11 +23,9 @@
                 <p>Net Hits: <strong id="net-hits-remaining">{{netHits}}</strong></p>
                 <button class="undo-move-btn" disabled>Undo Last Move</button>
             </div>
-            <div class="damage-preview">Damage: <strong id="damage-preview">{{damagePreview}}</strong></div>
-            <div class="soak-display">Soak: <strong id="location-soak">{{currentSoak}}</strong></div>
         </div>
     </div>
-    
+
     <div class="hit-location-body">
         <!-- Body Silhouette -->
         <div class="body-outline">
@@ -60,6 +58,40 @@
                          C115,170 120,190 125,230"
                       stroke="#693731" stroke-width="15" fill="none" class="body-part right-leg-part" data-location="right-leg" />
             </svg>
+        </div>
+        <div class="values-layer">
+            <div class="location-value head" data-location="head">
+                <span class="soak">{{locations.head.soak}}</span>(<span class="armor">{{locations.head.armor}}</span>)
+                {{#if (eq phase 'attacker')}}<span class="net-dmg">{{locations.head.net}}</span>{{/if}}
+            </div>
+            <div class="location-value torso" data-location="torso">
+                <span class="soak">{{locations.torso.soak}}</span>(<span class="armor">{{locations.torso.armor}}</span>)
+                {{#if (eq phase 'attacker')}}<span class="net-dmg">{{locations.torso.net}}</span>{{/if}}
+            </div>
+            <div class="location-value left-arm" data-location="left-arm">
+                {{#with (lookup locations 'left-arm') as |loc|}}
+                <span class="soak">{{loc.soak}}</span>(<span class="armor">{{loc.armor}}</span>)
+                {{#if (eq ../phase 'attacker')}}<span class="net-dmg">{{loc.net}}</span>{{/if}}
+                {{/with}}
+            </div>
+            <div class="location-value right-arm" data-location="right-arm">
+                {{#with (lookup locations 'right-arm') as |loc|}}
+                <span class="soak">{{loc.soak}}</span>(<span class="armor">{{loc.armor}}</span>)
+                {{#if (eq ../phase 'attacker')}}<span class="net-dmg">{{loc.net}}</span>{{/if}}
+                {{/with}}
+            </div>
+            <div class="location-value left-leg" data-location="left-leg">
+                {{#with (lookup locations 'left-leg') as |loc|}}
+                <span class="soak">{{loc.soak}}</span>(<span class="armor">{{loc.armor}}</span>)
+                {{#if (eq ../phase 'attacker')}}<span class="net-dmg">{{loc.net}}</span>{{/if}}
+                {{/with}}
+            </div>
+            <div class="location-value right-leg" data-location="right-leg">
+                {{#with (lookup locations 'right-leg') as |loc|}}
+                <span class="soak">{{loc.soak}}</span>(<span class="armor">{{loc.armor}}</span>)
+                {{#if (eq ../phase 'attacker')}}<span class="net-dmg">{{loc.net}}</span>{{/if}}
+                {{/with}}
+            </div>
         </div>
         
         <!-- Labels (clickable) -->

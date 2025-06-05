@@ -218,10 +218,16 @@
 }
 
 .defender-info {
-    position: absolute;
-    top: 5px;
-    right: 5px;
     text-align: center;
+}
+
+.defender-mode .defender-info {
+    align-self: flex-start;
+    margin: 5px 0 5px 5px;
+}
+
+.attacker-mode .defender-info {
+    margin: 5px auto;
 }
 
 .defender-info img {
@@ -238,4 +244,31 @@
     font-size: 0.9em;
     color: #000;
     margin-top: 3px;
+}
+
+.location-value {
+    position: absolute;
+    font-size: 0.9rem;
+    color: var(--color-crimson);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+}
+
+.location-value .net-dmg {
+    display: block;
+    font-size: 0.75em;
+}
+
+.location-value.head { top: 10%; left: 50%; }
+.location-value.torso { top: 28%; left: 50%; }
+.location-value.left-arm { top: 40%; left: 24%; }
+.location-value.right-arm { top: 40%; left: 75%; }
+.location-value.left-leg { top: 68%; left: 41%; }
+.location-value.right-leg { top: 68%; left: 59%; }
+
+.values-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
 }
