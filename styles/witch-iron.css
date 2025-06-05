@@ -3765,3 +3765,23 @@ button.roll-skill:hover {
   background: rgba(50, 50, 50, 0.8);
   color: var(--color-surface-light);
 }
+
+/* Collapsible list for zero rating conditions */
+.witch-iron.sheet .conditions-list details.zero-conditions summary.btn {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: var(--tertiary-color);
+  border: 1px solid var(--color-border);
+  padding: 0.5em 0.75em;
+  margin-top: 0.5em;
+  border-radius: 3px;
+}
+.witch-iron.sheet .conditions-list details.zero-conditions .toggle-arrow {
+  margin-right: 0.5em;
+  transition: transform 0.2s ease;
+  transform: rotate(90deg);
+}
+.witch-iron.sheet .conditions-list details.zero-conditions:not([open]) .toggle-arrow {
+  transform: rotate(0deg);
+}

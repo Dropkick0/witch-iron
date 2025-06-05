@@ -148,24 +148,34 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const witchIronConfig = CONFIG.WITCH_IRON || {};
     context.config = witchIronConfig;
 
-    // Prepare conditions for the #each helper
+    // Prepare conditions for display
     context.conditions = {};
+    context.currentConditions = [];
+    context.zeroConditions = [];
     const conditionsData = actorData.system.conditions || {};
     for (const condKey in conditionsData) {
       if (condKey === "trauma" && typeof conditionsData.trauma === "object") {
         for (const loc in conditionsData.trauma) {
           const key = `trauma.${loc}`;
           const labelLoc = loc.replace(/([A-Z])/g, " $1");
-          context.conditions[key] = {
+          const value = conditionsData.trauma[loc].value;
+          const condObj = {
+            key,
             label: `Trauma (${this.capitalize(labelLoc)})`,
-            value: conditionsData.trauma[loc].value
+            value
           };
+          context.conditions[key] = condObj;
+          (value > 0 ? context.currentConditions : context.zeroConditions).push(condObj);
         }
       } else {
-        context.conditions[condKey] = {
+        const value = conditionsData[condKey].value;
+        const condObj = {
+          key: condKey,
           label: this.capitalize(condKey),
-          value: conditionsData[condKey].value
+          value
         };
+        context.conditions[condKey] = condObj;
+        (value > 0 ? context.currentConditions : context.zeroConditions).push(condObj);
       }
     }
 
