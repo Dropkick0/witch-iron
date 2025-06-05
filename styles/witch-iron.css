@@ -3788,8 +3788,8 @@ button.roll-skill:hover {
 
 /* Hit location wear layout on monster sheet */
 .witch-iron.sheet.monster .hit-hud {
-  width: 360px;
-  max-width: 360px;
+  width: 180px;
+  max-width: 180px;
   margin: 0 auto 10px;
 }
 
@@ -3846,20 +3846,4 @@ button.roll-skill:hover {
 
 .witch-iron.sheet.monster .weapon-wear-container .wear-max {
   font-size: 0.8rem;
-}
-
-/* Layout grid for monster stats and hit HUD */
-.witch-iron.sheet.monster .monster-stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 10px;
-  align-items: start;
-  margin-bottom: 10px;
-}
-
-.witch-iron.sheet.monster .monster-stats-grid .monster-battlewear {
-  grid-row: span 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }

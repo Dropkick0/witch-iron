@@ -106,36 +106,39 @@
         <div class="tab" data-group="primary" data-tab="stats">
           <div class="stats-content">
             <h2>Monster Stats</h2>
-            <div class="monster-stats-grid">
-              <div class="form-group hit-dice">
+            <div class="grid grid-2col">
+              <div class="form-group">
                 <label>Hit Dice</label>
                 <select name="system.stats.hitDice.value">
                   {{selectOptions hitDiceOptions selected=system.stats.hitDice.value localize=false}}
                 </select>
               </div>
-
-              <div class="form-group weapon-type">
-                <label>Weapon Type</label>
-                <select name="system.stats.weaponType.value">
-                  {{selectOptions weaponTypes selected=system.stats.weaponType.value localize=false}}
-                </select>
-              </div>
-
-              <div class="form-group size">
+              
+              <div class="form-group">
                 <label>Size</label>
                 <select name="system.stats.size.value">
                   {{selectOptions sizes selected=system.stats.size.value localize=false}}
                 </select>
               </div>
-
-              <div class="form-group armor-type">
+            </div>
+            
+            <div class="grid grid-2col">
+              <div class="form-group">
+                <label>Weapon Type</label>
+                <select name="system.stats.weaponType.value">
+                  {{selectOptions weaponTypes selected=system.stats.weaponType.value localize=false}}
+                </select>
+              </div>
+              
+              <div class="form-group">
                 <label>Armor Type</label>
                 <select name="system.stats.armorType.value">
                   {{selectOptions armorTypes selected=system.stats.armorType.value localize=false}}
                 </select>
               </div>
+            </div>
 
-              <div class="monster-battlewear">
+            <div class="monster-battlewear">
               <div class="hit-hud monster-wear-layout">
                 <div class="hud-inner">
                   <div class="body-container">
