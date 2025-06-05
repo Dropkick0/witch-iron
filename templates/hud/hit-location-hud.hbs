@@ -1,6 +1,6 @@
 {{#if actor}}
 <div class="body-container">
-  <div class="body-outline">
+  <div class="body-outline layer background-layer">
     <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
       <path d="M100,50 C120,50 120,60 120,70 L120,110 C120,130 110,140 100,150 C90,140 80,130 80,110 L80,70 C80,60 80,50 100,50Z" fill="#693731" />
       <circle cx="100" cy="35" r="15" fill="#693731" />
@@ -10,43 +10,45 @@
       <path d="M110,150 C115,170 120,190 125,230" stroke="#693731" stroke-width="15" fill="none" />
     </svg>
   </div>
-  <div class="location-value head">
-    {{anatomy.head.armor}}/{{anatomy.head.soak}}
-    {{#if trauma.head.value}}
-    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.head.value}}</span>
-    {{/if}}
+  <div class="values-layer layer">
+    <div class="location-value head">
+      {{anatomy.head.armor}}/{{anatomy.head.soak}}
+      {{#if trauma.head.value}}
+      <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.head.value}}</span>
+      {{/if}}
+    </div>
+    <div class="location-value torso">
+      {{anatomy.torso.armor}}/{{anatomy.torso.soak}}
+      {{#if trauma.torso.value}}
+      <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.torso.value}}</span>
+      {{/if}}
+    </div>
+    <div class="location-value leftArm">
+      {{anatomy.leftArm.armor}}/{{anatomy.leftArm.soak}}
+      {{#if trauma.leftArm.value}}
+      <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.leftArm.value}}</span>
+      {{/if}}
+    </div>
+    <div class="location-value rightArm">
+      {{anatomy.rightArm.armor}}/{{anatomy.rightArm.soak}}
+      {{#if trauma.rightArm.value}}
+      <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.rightArm.value}}</span>
+      {{/if}}
+    </div>
+    <div class="location-value leftLeg">
+      {{anatomy.leftLeg.armor}}/{{anatomy.leftLeg.soak}}
+      {{#if trauma.leftLeg.value}}
+      <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.leftLeg.value}}</span>
+      {{/if}}
+    </div>
+    <div class="location-value rightLeg">
+      {{anatomy.rightLeg.armor}}/{{anatomy.rightLeg.soak}}
+      {{#if trauma.rightLeg.value}}
+      <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.rightLeg.value}}</span>
+      {{/if}}
+    </div>
   </div>
-  <div class="location-value torso">
-    {{anatomy.torso.armor}}/{{anatomy.torso.soak}}
-    {{#if trauma.torso.value}}
-    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.torso.value}}</span>
-    {{/if}}
-  </div>
-  <div class="location-value leftArm">
-    {{anatomy.leftArm.armor}}/{{anatomy.leftArm.soak}}
-    {{#if trauma.leftArm.value}}
-    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.leftArm.value}}</span>
-    {{/if}}
-  </div>
-  <div class="location-value rightArm">
-    {{anatomy.rightArm.armor}}/{{anatomy.rightArm.soak}}
-    {{#if trauma.rightArm.value}}
-    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.rightArm.value}}</span>
-    {{/if}}
-  </div>
-  <div class="location-value leftLeg">
-    {{anatomy.leftLeg.armor}}/{{anatomy.leftLeg.soak}}
-    {{#if trauma.leftLeg.value}}
-    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.leftLeg.value}}</span>
-    {{/if}}
-  </div>
-  <div class="location-value rightLeg">
-    {{anatomy.rightLeg.armor}}/{{anatomy.rightLeg.soak}}
-    {{#if trauma.rightLeg.value}}
-    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.rightLeg.value}}</span>
-    {{/if}}
-  </div>
-  <div class="conditions">
+  <div class="conditions-overlay layer">
     {{#each conditions}}
     <div class="condition" title="{{capitalize key}}">
       {{#if icon}}

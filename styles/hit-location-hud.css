@@ -25,6 +25,15 @@
   height: 100%;
 }
 
+#hit-location-hud .layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+#hit-location-hud .background-layer { z-index: 1; }
+#hit-location-hud .values-layer { z-index: 2; }
+
 /* ensure the silhouette fills the container so overlays align correctly */
 #hit-location-hud .body-outline {
   position: absolute;
@@ -63,15 +72,16 @@
 #hit-location-hud .location-value.leftLeg { top: 270px; left: 38px; }
 #hit-location-hud .location-value.rightLeg { top: 270px; left: 185px; }
 
-#hit-location-hud .conditions {
+#hit-location-hud .conditions-overlay {
   position: absolute;
   top: 0;
   right: 0;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
   gap: 4px;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
 }
 
