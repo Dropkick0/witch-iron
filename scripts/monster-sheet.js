@@ -693,8 +693,9 @@ export class WitchIronMonsterSheet extends ActorSheet {
       // Adjust any ghost tiles for mob leaders
       const bodies = this.actor.system.mob?.bodies?.value || 1;
       for (const token of active) {
-        if (token.getFlag('witch-iron', 'isMobLeader')) {
-          await syncGhostTiles(token, bodies - 1);
+        const doc = token.document ?? token;
+        if (doc.getFlag('witch-iron', 'isMobLeader')) {
+          await syncGhostTiles(doc, bodies - 1);
         }
       }
       // Force update for all derived stats
