@@ -1,15 +1,12 @@
-const CONDITION_ICONS = {
-  aflame: 'icons/svg/fire.svg',
-  bleed: 'icons/svg/blood.svg',
-  poison: 'icons/svg/poison.svg',
-  stress: 'icons/svg/burst.svg',
-  corruption: 'icons/svg/bone.svg',
-  blind: 'icons/svg/eye.svg',
-  deaf: 'icons/svg/deaf.svg',
-  pain: 'icons/svg/daze.svg'
-};
-
 const FA_ICONS = {
+  aflame: 'fa-fire',
+  bleed: 'fa-droplet',
+  poison: 'fa-skull-crossbones',
+  stress: 'fa-burst',
+  corruption: 'fa-biohazard',
+  blind: 'fa-eye-slash',
+  deaf: 'fa-ear-deaf',
+  pain: 'fa-hand-holding-medical',
   fatigue: 'fa-face-downcast-sweat',
   entangle: 'fa-link',
   helpless: 'fa-skull',
@@ -78,7 +75,6 @@ export class HitLocationHUD {
         conditions.push({
           key,
           value,
-          icon: CONDITION_ICONS[key] || null,
           faIcon: FA_ICONS[key] || 'fa-exclamation-circle'
         });
       }
@@ -89,7 +85,5 @@ export class HitLocationHUD {
     const data = { actor, anatomy, trauma, conditions };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
     this.container.innerHTML = html;
-    if (conditions.length > 5) this.container.classList.add('big');
-    else this.container.classList.remove('big');
   }
 }

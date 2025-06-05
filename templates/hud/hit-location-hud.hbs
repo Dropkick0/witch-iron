@@ -52,11 +52,7 @@
     <div class="layer conditions-layer">
       {{#each conditions}}
       <div class="condition" title="{{capitalize key}}">
-        {{#if icon}}
-        <img src="{{icon}}" alt="{{key}}" />
-        {{else}}
         <i class="fas {{faIcon}}"></i>
-        {{/if}}
         <span class="value">{{value}}</span>
       </div>
       {{/each}}
