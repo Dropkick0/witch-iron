@@ -359,6 +359,7 @@
 .witch-iron.chat-card.injury-card .severity-col {
     text-align: center;
     font-weight: bold;
+    width: 20px;
 }
 
 .witch-iron.chat-card.injury-card .effect-col {
