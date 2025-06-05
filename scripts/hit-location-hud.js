@@ -10,7 +10,7 @@ const CONDITION_ICONS = {
 };
 
 const FA_ICONS = {
-  fatigue: 'fa-bed',
+  fatigue: 'fa-face-downcast-sweat',
   entangle: 'fa-link',
   helpless: 'fa-skull',
   stun: 'fa-bolt',
