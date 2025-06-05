@@ -47,6 +47,9 @@
 
 .location-value {
   position: absolute;
+  font-size: 0.9rem;
+  color: var(--color-crimson);
+  transform: translate(-50%, -50%);
   text-align: center;
   line-height: 1.1;
   pointer-events: none;
@@ -58,12 +61,12 @@
   font-size: 0.75em;
 }
 
-.location-value.head { top: 15px; left: 118px; }
-.location-value.torso { top: 100px; left: 118px; }
-.location-value.leftArm { top: 140px; left: 38px; }
-.location-value.rightArm { top: 140px; left: 185px; }
-.location-value.leftLeg { top: 270px; left: 38px; }
-.location-value.rightLeg { top: 270px; left: 185px; }
+.location-value.head { top: 8%; left: 48%; }
+.location-value.torso { top: 29%; left: 48%; }
+.location-value.leftArm { top: 38%; left: 27%; }
+.location-value.rightArm { top: 38%; left: 69%; }
+.location-value.leftLeg { top: 66%; left: 40%; }
+.location-value.rightLeg { top: 66%; left: 56%; }
 
 .condition {
   position: relative;
