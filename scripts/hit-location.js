@@ -474,7 +474,11 @@ export class HitLocationSelector {
         if (game.witch) game.witch.currentInjury = {};
         
         // Get battle wear data AND actor references from attacker and defender
-        const returnData = await this._getBattleWearData(combatData.attacker, combatData.defender, combatData.location.toLowerCase());
+        const returnData = await this._getBattleWearData(
+            combatData.attacker,
+            combatData.defender,
+            combatData.location.toLowerCase().replace(/\s+/g, "-")
+        );
         const battleWearDataForTemplate = { attacker: returnData.attacker, defender: returnData.defender }; // Separate for template clarity
         const attackerActor = returnData.actors.attacker; // Use actor from _getBattleWearData
         const defenderActor = returnData.actors.defender; // Use actor from _getBattleWearData
@@ -710,7 +714,8 @@ export class HitLocationSelector {
         
         // Default battle wear data object also holds actor refs
         const locMap = { head: 'head', torso: 'torso', 'left-arm': 'leftArm', 'right-arm': 'rightArm', 'left-leg': 'leftLeg', 'right-leg': 'rightLeg' };
-        const locKey = locMap[location] || location;
+        const normalizedLocation = String(location).toLowerCase().replace(/\s+/g, '-');
+        const locKey = locMap[normalizedLocation] || normalizedLocation;
 
         const returnData = {
             actors: {
@@ -1154,7 +1159,8 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, lo
         attackerWearToAdd = Math.max(0, parseInt(attackerWearToAdd) || 0);
         defenderWearToAdd = Math.max(0, parseInt(defenderWearToAdd) || 0);
 
-        // Normalize the location string to the actor data key used for armor
+        // Normalize the location string to match actor data keys
+        // e.g. "left arm" -> "leftArm"
         const locMap = {
             head: "head",
             torso: "torso",
@@ -1163,7 +1169,8 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, lo
             "left-leg": "leftLeg",
             "right-leg": "rightLeg"
         };
-        const locKey = locMap[location] || location;
+        const normalizedLocation = String(location).toLowerCase().replace(/\s+/g, "-");
+        const locKey = locMap[normalizedLocation] || normalizedLocation;
 
         // If both wear values are 0, nothing to add
         if (attackerWearToAdd === 0 && defenderWearToAdd === 0) {
@@ -3048,7 +3055,8 @@ async function updateActorBattleWear(message, attackerWear, defenderWear, locati
     // Update defender
     if (defenderActor) {
         const locMap = { head:'head', torso:'torso', 'left-arm':'leftArm', 'right-arm':'rightArm', 'left-leg':'leftLeg', 'right-leg':'rightLeg' };
-        const locKey = locMap[location] || location;
+        const normalizedLocation = String(location).toLowerCase().replace(/\s+/g, '-');
+        const locKey = locMap[normalizedLocation] || normalizedLocation;
         console.log(`Updating ${defenderName}'s armor battle wear to ${defenderWear} at ${locKey}`);
         
         // Ensure the system is initialized
