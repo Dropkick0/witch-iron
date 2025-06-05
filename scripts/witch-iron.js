@@ -14,6 +14,7 @@ import { WitchIronInjurySheet } from "./injury-sheet.js";
 import { initQuarrel, manualQuarrel, quarrelTracker } from "./quarrel.js";
 import { HitLocationSelector } from "./hit-location.js";
 import { InjuryTables } from "./injury-tables.js";
+import { HitLocationHUD } from "./hit-location-hud.js";
 import { registerCommonHandlebarsHelpers } from "./handlebars-helpers.js";
 import { FORMATION_SHAPES } from "./ghost-tokens.js";
 import "./ghost-tokens.js";
@@ -205,6 +206,9 @@ Hooks.once("init", function() {
 Hooks.once("ready", function() {
   // Any code that should run when Foundry is fully loaded
   console.log("Witch Iron | System Ready");
+
+  // Initialize the hit location HUD
+  HitLocationHUD.init();
   
   // Debug: Log all actors and their types
   console.log("ACTOR TYPES DEBUG:");
@@ -426,4 +430,4 @@ Hooks.on("renderDialog", (dialog, html, data) => {
 });
 
 // Export classes for module use
-export { WitchIronActor, WitchIronItem, WitchIronDescendantSheet, WitchIronMonsterSheet, WitchIronInjurySheet };
+export { WitchIronActor, WitchIronItem, WitchIronDescendantSheet, WitchIronMonsterSheet, WitchIronInjurySheet, HitLocationHUD };
