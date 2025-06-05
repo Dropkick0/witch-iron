@@ -1,45 +1,62 @@
-<div class="hit-location-hud-content">
-  {{#if actor}}
-  <h3>{{actor.name}}</h3>
-  <ul>
-    <li class="location head {{#if actor.system.anatomy.head.lost}}lost{{/if}}">
-      <span>Head</span>
-      <span>{{actor.system.anatomy.head.armor}}/{{actor.system.anatomy.head.soak}}</span>
-    </li>
-    <li class="location torso {{#if actor.system.anatomy.torso.lost}}lost{{/if}}">
-      <span>Torso</span>
-      <span>{{actor.system.anatomy.torso.armor}}/{{actor.system.anatomy.torso.soak}}</span>
-    </li>
-    <li class="location left-arm {{#if actor.system.anatomy.leftArm.lost}}lost{{/if}}">
-      <span>Left Arm</span>
-      <span>{{actor.system.anatomy.leftArm.armor}}/{{actor.system.anatomy.leftArm.soak}}</span>
-    </li>
-    <li class="location right-arm {{#if actor.system.anatomy.rightArm.lost}}lost{{/if}}">
-      <span>Right Arm</span>
-      <span>{{actor.system.anatomy.rightArm.armor}}/{{actor.system.anatomy.rightArm.soak}}</span>
-    </li>
-    <li class="location left-leg {{#if actor.system.anatomy.leftLeg.lost}}lost{{/if}}">
-      <span>Left Leg</span>
-      <span>{{actor.system.anatomy.leftLeg.armor}}/{{actor.system.anatomy.leftLeg.soak}}</span>
-    </li>
-    <li class="location right-leg {{#if actor.system.anatomy.rightLeg.lost}}lost{{/if}}">
-      <span>Right Leg</span>
-      <span>{{actor.system.anatomy.rightLeg.armor}}/{{actor.system.anatomy.rightLeg.soak}}</span>
-    </li>
-  </ul>
-  <h4>Conditions</h4>
-  <ul>
+{{#if actor}}
+<div class="body-container">
+  <div class="body-outline">
+    <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100,50 C120,50 120,60 120,70 L120,110 C120,130 110,140 100,150 C90,140 80,130 80,110 L80,70 C80,60 80,50 100,50Z" fill="#693731" />
+      <circle cx="100" cy="35" r="15" fill="#693731" />
+      <path d="M80,70 C70,75 55,90 50,110 C45,130 45,140 55,150" stroke="#693731" stroke-width="16" fill="none" />
+      <path d="M120,70 C130,75 145,90 150,110 C155,130 155,140 145,150" stroke="#693731" stroke-width="16" fill="none" />
+      <path d="M90,150 C85,170 80,190 75,230" stroke="#693731" stroke-width="15" fill="none" />
+      <path d="M110,150 C115,170 120,190 125,230" stroke="#693731" stroke-width="15" fill="none" />
+    </svg>
+  </div>
+  <div class="location-value head">
+    {{anatomy.head.armor}}/{{anatomy.head.soak}}
+    {{#if trauma.head.value}}
+    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.head.value}}</span>
+    {{/if}}
+  </div>
+  <div class="location-value torso">
+    {{anatomy.torso.armor}}/{{anatomy.torso.soak}}
+    {{#if trauma.torso.value}}
+    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.torso.value}}</span>
+    {{/if}}
+  </div>
+  <div class="location-value leftArm">
+    {{anatomy.leftArm.armor}}/{{anatomy.leftArm.soak}}
+    {{#if trauma.leftArm.value}}
+    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.leftArm.value}}</span>
+    {{/if}}
+  </div>
+  <div class="location-value rightArm">
+    {{anatomy.rightArm.armor}}/{{anatomy.rightArm.soak}}
+    {{#if trauma.rightArm.value}}
+    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.rightArm.value}}</span>
+    {{/if}}
+  </div>
+  <div class="location-value leftLeg">
+    {{anatomy.leftLeg.armor}}/{{anatomy.leftLeg.soak}}
+    {{#if trauma.leftLeg.value}}
+    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.leftLeg.value}}</span>
+    {{/if}}
+  </div>
+  <div class="location-value rightLeg">
+    {{anatomy.rightLeg.armor}}/{{anatomy.rightLeg.soak}}
+    {{#if trauma.rightLeg.value}}
+    <span class="trauma"><i class="fas fa-biohazard"></i>{{trauma.rightLeg.value}}</span>
+    {{/if}}
+  </div>
+  <div class="conditions">
     {{#each conditions}}
-    <li>{{capitalize key}}: {{this.value}}</li>
+    <div class="condition" title="{{capitalize key}}">
+      {{#if icon}}
+      <img src="{{icon}}" alt="{{key}}" />
+      {{else}}
+      <i class="fas {{faIcon}}"></i>
+      {{/if}}
+      <span class="value">{{value}}</span>
+    </div>
     {{/each}}
-  </ul>
-  <h4>Injuries</h4>
-  <ul>
-    {{#each injuries}}
-    <li>{{name}}</li>
-    {{/each}}
-  </ul>
-  {{else}}
-  <p>No actor selected</p>
-  {{/if}}
+  </div>
 </div>
+{{/if}}
