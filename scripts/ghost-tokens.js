@@ -204,7 +204,12 @@ export async function syncGhostTiles(token, required, overrides = {}) {
   const rad = (rot * Math.PI) / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
-  const offsets = computeOffsets(required, 0, formation).map(o => ({
+  const doc = token.document ?? token;
+  const baseOffsets = computeOffsets(required, 0, formation).map(o => ({
+    x: o.x * doc.width,
+    y: o.y * doc.height
+  }));
+  const offsets = baseOffsets.map(o => ({
     x: o.x * cos - o.y * sin,
     y: o.x * sin + o.y * cos
   }));
@@ -216,7 +221,6 @@ export async function syncGhostTiles(token, required, overrides = {}) {
   }
 
   const grid = canvas.scene.grid.size;
-  const doc = token.document ?? token;
   const width = doc.width * grid;
   const height = doc.height * grid;
   const xBase = overrides.x ?? token.x;
