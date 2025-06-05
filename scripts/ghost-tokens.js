@@ -221,8 +221,10 @@ export async function syncGhostTiles(token, required, overrides = {}) {
   }
 
   const grid = canvas.scene.grid.size;
-  const width = doc.width * grid;
-  const height = doc.height * grid;
+  const scaleX = doc.texture?.scaleX ?? 1;
+  const scaleY = doc.texture?.scaleY ?? 1;
+  const width = doc.width * grid * scaleX;
+  const height = doc.height * grid * scaleY;
   const xBase = overrides.x ?? token.x;
   const yBase = overrides.y ?? token.y;
   const rotation = overrides.rotation ?? token.rotation;
