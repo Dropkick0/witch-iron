@@ -22,7 +22,9 @@ export class HitLocationHUD {
     console.log('Witch Iron | Hit Location HUD initializing');
     this.container = document.createElement('div');
     this.container.id = 'hit-location-hud';
-    document.body.appendChild(this.container);
+    const uiLeft = document.getElementById('ui-left');
+    if (uiLeft) uiLeft.appendChild(this.container);
+    else document.body.appendChild(this.container);
 
     this.currentActor = null;
 
