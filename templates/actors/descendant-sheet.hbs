@@ -39,6 +39,7 @@
     <a class="item" data-tab="equipment">Equipment</a>
     <a class="item" data-tab="character">Character</a>
     <a class="item" data-tab="notes">Notes</a>
+    <a class="item" data-tab="injuries">Injuries</a>
   </nav>
 
   <div class="sheet-content flexrow">
@@ -613,9 +614,9 @@
       <div class="tab equipment" data-group="primary" data-tab="equipment">
         <section class="equipment-container">
           <div class="inventory-list">
-            <!-- Weapons -->
+            <!-- Attacks -->
             <div class="inventory-section">
-              <h2>Weapons <button type="button" class="create-item" data-type="weapon"><i class="fas fa-plus"></i></button></h2>
+              <h2>Attacks <button type="button" class="create-item" data-type="weapon"><i class="fas fa-plus"></i></button></h2>
               <div class="items-list">
                 <div class="inventory-header flexrow">
                   <div class="item-name">Name</div>
@@ -625,7 +626,7 @@
                 </div>
                 {{#each weapons as |item id|}}
                 <div class="item flexrow" data-item-id="{{item._id}}">
-                  <div class="item-name">{{item.name}}</div>
+                  <div class="item-name item-roll">{{item.name}}</div>
                   <div class="item-damage">{{item.system.damage}}</div>
                   <div class="item-weight">{{item.system.encumbrance.value}}</div>
                   <div class="item-controls">
@@ -769,6 +770,165 @@
             <textarea name="system.notes" rows="20">{{system.notes}}</textarea>
           </div>
         </section>
+      </div>
+
+      {{!-- Injuries Tab --}}
+      <div class="tab" data-group="primary" data-tab="injuries">
+        <div class="monster-battlewear">
+          <h2 class="battle-wear-heading">Battle Wear</h2>
+          <div class="weapon-wear-container">
+            <span class="weapon-wear-label"><strong>Weapon Wear</strong></span>
+            <button type="button" class="battle-wear-minus" data-type="weapon"><i class="fas fa-minus"></i></button>
+            <span class="battle-wear-value" data-type="weapon">{{system.battleWear.weapon.value}}</span>/<span class="wear-max">{{system.derived.weaponBonusMax}}</span>
+            <button type="button" class="battle-wear-plus" data-type="weapon"><i class="fas fa-plus"></i></button>
+          </div>
+          <div class="hit-hud monster-wear-layout">
+            <span class="wear-label">Armor Wear</span>
+            <div class="hud-inner">
+              <div class="body-container">
+                <div class="layer background-layer">
+                  <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100,50 C120,50 120,60 120,70 L120,110 C120,130 110,140 100,150 C90,140 80,130 80,110 L80,70 C80,60 80,50 100,50Z" fill="#693731" />
+                    <circle cx="100" cy="35" r="15" fill="#693731" />
+                    <path d="M80,70 C70,75 55,90 50,110 C45,130 45,140 55,150" stroke="#693731" stroke-width="16" fill="none" />
+                    <path d="M120,70 C130,75 145,90 150,110 C155,130 155,140 145,150" stroke="#693731" stroke-width="16" fill="none" />
+                    <path d="M90,150 C85,170 80,190 75,230" stroke="#693731" stroke-width="15" fill="none" />
+                    <path d="M110,150 C115,170 120,190 125,230" stroke="#693731" stroke-width="15" fill="none" />
+                  </svg>
+                </div>
+                <div class="layer values-layer">
+                  <div class="location-value head" title="{{soakTooltips.head}}">
+                    <span class="soak">{{anatomy.head.soak}}</span>(<span class="armor">{{anatomy.head.armor}}</span>)
+                    {{#if trauma.head.value}}
+                    <span class="trauma" title="{{traumaTooltips.head}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.head.value}}</span></span>
+                    {{/if}}
+                    <div class="wear-controls">
+                      <button type="button" class="battle-wear-minus" data-type="armor-head"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-head">{{system.battleWear.armor.head.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-head"><i class="fas fa-plus"></i></button>
+                    </div>
+                  </div>
+                  <div class="location-value torso" title="{{soakTooltips.torso}}">
+                    <span class="soak">{{anatomy.torso.soak}}</span>(<span class="armor">{{anatomy.torso.armor}}</span>)
+                    {{#if trauma.torso.value}}
+                    <span class="trauma" title="{{traumaTooltips.torso}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.torso.value}}</span></span>
+                    {{/if}}
+                    <div class="wear-controls">
+                      <button type="button" class="battle-wear-minus" data-type="armor-torso"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-torso">{{system.battleWear.armor.torso.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-torso"><i class="fas fa-plus"></i></button>
+                    </div>
+                  </div>
+                  <div class="location-value leftArm" title="{{soakTooltips.leftArm}}">
+                    <span class="soak">{{anatomy.leftArm.soak}}</span>(<span class="armor">{{anatomy.leftArm.armor}}</span>)
+                    {{#if trauma.leftArm.value}}
+                    <span class="trauma" title="{{traumaTooltips.leftArm}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.leftArm.value}}</span></span>
+                    {{/if}}
+                    <div class="wear-controls">
+                      <button type="button" class="battle-wear-minus" data-type="armor-leftArm"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-leftArm">{{system.battleWear.armor.leftArm.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-leftArm"><i class="fas fa-plus"></i></button>
+                    </div>
+                  </div>
+                  <div class="location-value rightArm" title="{{soakTooltips.rightArm}}">
+                    <span class="soak">{{anatomy.rightArm.soak}}</span>(<span class="armor">{{anatomy.rightArm.armor}}</span>)
+                    {{#if trauma.rightArm.value}}
+                    <span class="trauma" title="{{traumaTooltips.rightArm}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.rightArm.value}}</span></span>
+                    {{/if}}
+                    <div class="wear-controls">
+                      <button type="button" class="battle-wear-minus" data-type="armor-rightArm"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-rightArm">{{system.battleWear.armor.rightArm.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-rightArm"><i class="fas fa-plus"></i></button>
+                    </div>
+                  </div>
+                  <div class="location-value leftLeg" title="{{soakTooltips.leftLeg}}">
+                    <span class="soak">{{anatomy.leftLeg.soak}}</span>(<span class="armor">{{anatomy.leftLeg.armor}}</span>)
+                    {{#if trauma.leftLeg.value}}
+                    <span class="trauma" title="{{traumaTooltips.leftLeg}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.leftLeg.value}}</span></span>
+                    {{/if}}
+                    <div class="wear-controls">
+                      <button type="button" class="battle-wear-minus" data-type="armor-leftLeg"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-leftLeg">{{system.battleWear.armor.leftLeg.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-leftLeg"><i class="fas fa-plus"></i></button>
+                    </div>
+                  </div>
+                  <div class="location-value rightLeg" title="{{soakTooltips.rightLeg}}">
+                    <span class="soak">{{anatomy.rightLeg.soak}}</span>(<span class="armor">{{anatomy.rightLeg.armor}}</span>)
+                    {{#if trauma.rightLeg.value}}
+                    <span class="trauma" title="{{traumaTooltips.rightLeg}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.rightLeg.value}}</span></span>
+                    {{/if}}
+                    <div class="wear-controls">
+                      <button type="button" class="battle-wear-minus" data-type="armor-rightLeg"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-rightLeg">{{system.battleWear.armor.rightLeg.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-rightLeg"><i class="fas fa-plus"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div class="layer conditions-layer">
+                  {{#each hudConditions}}
+                  <div class="condition" title="{{tooltip}}">
+                    <i class="fas {{faIcon}}"></i>
+                    <span class="value">{{value}}</span>
+                  </div>
+                  {{/each}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="injuries-list">
+          <h2>Injuries</h2>
+          <div class="items-header flexrow">
+            <span class="injury-name">Name</span>
+            <span class="injury-severity">Severity</span>
+            <span class="injury-effect">Effect</span>
+            <span class="item-controls"></span>
+          </div>
+
+          <ol class="items-list">
+            {{#each injuries as |injury id|}}
+            <li class="item flexrow" data-item-id="{{injury._id}}">
+              <div class="injury-name">{{injury.name}}</div>
+              <div class="injury-severity">{{injury.system.severity.value}}</div>
+              <div class="injury-effect">{{injury.system.effect}}</div>
+              <div class="item-controls">
+                <a class="item-control item-edit" title="Edit Injury"><i class="fas fa-edit"></i></a>
+                <a class="item-control item-delete" title="Delete Injury"><i class="fas fa-trash"></i></a>
+              </div>
+            </li>
+            {{/each}}
+          </ol>
+
+          <div class="item-create">
+            <button type="button" class="create-injury" data-type="injury"><i class="fas fa-plus"></i> Add Injury</button>
+          </div>
+          <div class="conditions-list">
+            <h2>Current Conditions</h2>
+            {{#each currentConditions}}
+            <div class="condition-row flexrow" data-condition="{{this.key}}">
+              <button type="button" class="condition-name cond-quarrel">{{this.label}}</button>
+              <button type="button" class="cond-minus"><i class="fas fa-minus"></i></button>
+              <input type="number" class="cond-value" value="{{this.value}}" min="0" />
+              <button type="button" class="cond-plus"><i class="fas fa-plus"></i></button>
+            </div>
+            {{/each}}
+
+            <details class="zero-conditions">
+              <summary class="btn">
+                <i class="fas fa-caret-right toggle-arrow"></i>
+                Other Conditions
+              </summary>
+              {{#each zeroConditions}}
+              <div class="condition-row flexrow" data-condition="{{this.key}}">
+                <button type="button" class="condition-name cond-quarrel">{{this.label}}</button>
+                <button type="button" class="cond-minus"><i class="fas fa-minus"></i></button>
+                <input type="number" class="cond-value" value="{{this.value}}" min="0" />
+                <button type="button" class="cond-plus"><i class="fas fa-plus"></i></button>
+              </div>
+              {{/each}}
+            </details>
+          </div>
+        </div>
       </div>
     </section>
   </div>
