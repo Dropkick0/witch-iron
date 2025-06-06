@@ -78,8 +78,8 @@ export class HitLocationHUD {
     this.container.id = 'hit-location-hud';
     this.container.classList.add('hit-hud');
     const uiLeft = document.getElementById('ui-left');
-    if (uiLeft) uiLeft.appendChild(this.container);
-    else document.body.appendChild(this.container);
+    if (uiLeft) uiLeft.prepend(this.container);
+    else document.body.prepend(this.container);
 
     this.currentActor = null;
 
