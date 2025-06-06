@@ -28,7 +28,26 @@
           <label class="resource-label">Damage</label>
           <input type="text" name="system.damage.value" value="{{system.damage.value}}" placeholder="e.g., 1d6+2"/>
         </div>
-        
+
+        <div class="resource">
+          <label class="resource-label">Damage Bonus</label>
+          <input type="number" name="system.damage.bonus" value="{{system.damage.bonus}}" data-dtype="Number"/>
+        </div>
+
+        <div class="resource">
+          <label class="resource-label">Skill</label>
+          <select name="system.skill">
+            {{#each skillOptions as |label key|}}
+            <option value="{{key}}" {{#if (eq ../system.skill key)}}selected="selected"{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <div class="resource">
+          <label class="resource-label">Specialization</label>
+          <input type="text" name="system.specialization" value="{{system.specialization}}"/>
+        </div>
+
         <div class="resource">
           <label class="resource-label">Encumbrance</label>
           <input type="number" name="system.encumbrance.value" value="{{system.encumbrance.value}}" data-dtype="Number"/>
