@@ -324,6 +324,11 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Add items categorized by type
     context.injuries = actorData.items.filter(item => item.type === 'injury');
+    context.weapons = actorData.items.filter(item => item.type === 'weapon');
+
+    // Label for the default monster weapon based on configured weapon types
+    const wtKey = system.stats.weaponType?.value || 'unarmed';
+    context.defaultWeaponLabel = context.weaponTypes?.[wtKey] || wtKey;
 
     // Hit location data for soak display
     const anatomy = this.actor.system.anatomy || {};
@@ -381,6 +386,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     
     // Monster action buttons
     html.find('.monster-action.melee-attack').click(this._onMeleeAttack.bind(this));
+    html.find('.monster-action.weapon-attack').click(this._onWeaponAttack.bind(this));
+    html.find('.create-weapon').click(this._onItemCreate.bind(this));
     html.find('.monster-action.specialized-roll').click(this._rollSpecializedCheck.bind(this));
     
     // Battle wear buttons
@@ -930,6 +937,21 @@ export class WitchIronMonsterSheet extends ActorSheet {
         isCombatCheck: true,
         additionalHits: opts.additionalHits
       });
+    }
+  }
+
+  /**
+   * Handle attack with an item weapon
+   * @param {Event} event The originating click event
+   * @private
+   */
+  async _onWeaponAttack(event) {
+    event.preventDefault();
+    const li = event.currentTarget.closest(".item");
+    if (!li) return;
+    const item = this.actor.items.get(li.dataset.itemId);
+    if (item && typeof item.roll === "function") {
+      await item.roll();
     }
   }
 
