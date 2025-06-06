@@ -79,33 +79,33 @@
 
 /* Position each label exactly as in the example */
 .head-label {
-    top: 19px;
-    left: 118px;
+  top: 12px;
+  left: 118px;
 }
 
 .torso-label {
-    top: 100px;
-    left: 118px;
+  top: 94px;
+  left: 118px;
 }
 
 .left-arm-label {
-    top: 142px;
-    left: -19px;
+  top: 131px;
+  left: -19px;
 }
 
 .right-arm-label {
-    top: 142px;
-    left: 238px;
+  top: 131px;
+  left: 238px;
 }
 
 .left-leg-label {
-    top: 270px;
-    left: 25px;
+  top: 252px;
+  left: 24px;
 }
 
 .right-leg-label {
-    top: 270px;
-    left: 198px;
+  top: 252px;
+  left: 199px;
 }
 
 /* Compact info styling */
