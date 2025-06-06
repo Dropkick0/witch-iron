@@ -28,7 +28,27 @@
           <label class="resource-label">Protection</label>
           <input type="number" name="system.protection.value" value="{{system.protection.value}}" data-dtype="Number"/>
         </div>
-        
+
+        <div class="resource">
+          <label class="resource-label">Locations</label>
+          <div class="flexcol">
+            {{#each locationOptions as |label key|}}
+            <label class="checkbox"><input type="checkbox" name="system.locations.{{key}}" {{#if (lookup ../system.locations key)}}checked{{/if}}> {{label}}</label>
+            {{/each}}
+          </div>
+        </div>
+
+        <div class="resource">
+          <label class="resource-label">Wear by Location</label>
+          <div class="flexrow wrap">
+            {{#each locationOptions as |label key|}}
+            <label class="nowrap">{{label}}
+              <input type="number" name="system.wear.{{key}}.value" value="{{lookup ../system.wear key}.value}}" data-dtype="Number" class="short"/>
+            </label>
+            {{/each}}
+          </div>
+        </div>
+
         <div class="resource">
           <label class="resource-label">Encumbrance</label>
           <input type="number" name="system.encumbrance.value" value="{{system.encumbrance.value}}" data-dtype="Number"/>

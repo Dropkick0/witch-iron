@@ -83,7 +83,30 @@ export class WitchIronItemSheet extends ItemSheet {
         "impaired": "Impaired"
       };
     }
-    
+
+    // Weapon specific options
+    if (context.item.type === 'weapon') {
+      const skillOpts = {};
+      for (const [cat, skills] of Object.entries(CONFIG.WITCH_IRON.skills)) {
+        for (const [key, val] of Object.entries(skills)) {
+          skillOpts[key] = val.label;
+        }
+      }
+      context.skillOptions = skillOpts;
+    }
+
+    // Armor location options
+    if (context.item.type === 'armor') {
+      context.locationOptions = {
+        head: 'Head',
+        torso: 'Torso',
+        leftArm: 'Left Arm',
+        rightArm: 'Right Arm',
+        leftLeg: 'Left Leg',
+        rightLeg: 'Right Leg'
+      };
+    }
+
     return context;
   }
 
@@ -131,14 +154,27 @@ export class WitchIronItemSheet extends ItemSheet {
    * Prepare weapon specific data
    */
   _prepareWeaponData(context) {
-    // Add weapon specific data if needed
+    if (!context.system.damage) context.system.damage = { value: "", bonus: 0 };
+    if (typeof context.system.damage.bonus !== 'number') {
+      context.system.damage.bonus = Number(context.system.damage.bonus) || 0;
+    }
+    if (!context.system.skill) context.system.skill = 'melee';
+    if (context.system.specialization === undefined) context.system.specialization = '';
+    if (!context.system.wear) context.system.wear = { value: 0 };
   }
 
   /** 
    * Prepare armor specific data
    */
   _prepareArmorData(context) {
-    // Add armor specific data if needed
+    const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    if (!context.system.protection) context.system.protection = { value: 0 };
+    if (!context.system.locations) context.system.locations = {};
+    if (!context.system.wear) context.system.wear = {};
+    for (const loc of LOCS) {
+      if (context.system.locations[loc] === undefined) context.system.locations[loc] = false;
+      if (!context.system.wear[loc]) context.system.wear[loc] = { value: 0 };
+    }
   }
 
   /**

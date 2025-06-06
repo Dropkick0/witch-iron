@@ -795,6 +795,27 @@
   resize: vertical;
 }
 
+/* Item sheet resource blocks */
+.witch-iron.sheet.item .resource {
+  margin-bottom: 10px;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 3px;
+}
+
+.witch-iron.sheet.item .resource label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.witch-iron.sheet.item .resource input,
+.witch-iron.sheet.item .resource textarea,
+.witch-iron.sheet.item .resource select {
+  width: 100%;
+  padding: 4px;
+}
+
 /* ----------------------------------------- */
 /*  Chat Message Styles                      */
 /* ----------------------------------------- */
