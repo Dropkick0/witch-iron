@@ -240,11 +240,6 @@
     font-size: 0.8em;
 }
 
-.defender-info .damage-amount {
-    font-size: 0.9em;
-    font-weight: bold;
-    margin-left: 5px;
-}
 
 .damage-preview, .soak-display {
     font-size: 0.9em;
@@ -264,6 +259,8 @@
 .location-value .net-dmg {
     display: block;
     font-size: 0.75em;
+    font-weight: bold;
+    color: #a52a2a;
 }
 
 .location-value.head { top: 12%; left: 50%; }
