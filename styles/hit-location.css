@@ -270,6 +270,28 @@
 .location-value.left-leg { top: 81%; left: 23%; }
 .location-value.right-leg { top: 81%; left: 77%; }
 
+/* Ensure dialog values override HUD styles */
+.hit-location-selector .location-value {
+    position: absolute;
+    font-size: 0.9rem;
+    color: var(--color-crimson);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+}
+.hit-location-selector .location-value .net-dmg {
+    display: block;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: #a52a2a;
+}
+.hit-location-selector .location-value.head { top: 12%; left: 50%; }
+.hit-location-selector .location-value.torso { top: 34%; left: 50%; }
+.hit-location-selector .location-value.left-arm { top: 45%; left: 24%; }
+.hit-location-selector .location-value.right-arm { top: 45%; left: 75%; }
+.hit-location-selector .location-value.left-leg { top: 80%; left: 23%; }
+.hit-location-selector .location-value.right-leg { top: 80%; left: 77%; }
+
 .values-layer {
     position: absolute;
     inset: 0;
