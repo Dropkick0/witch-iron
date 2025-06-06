@@ -26,10 +26,17 @@ export class WitchIronDescendantSheet extends ActorSheet {
     const result = await super._render(force, options);
     const uiRight = document.getElementById("ui-right");
     const rightWidth = uiRight ? uiRight.offsetWidth : 0;
+
+    // Center the sheet within the HUD width (minus the right sidebar)
+    const hudWidth = window.innerWidth - rightWidth;
+    let left = hudWidth / 2 - this.position.width / 2;
+
+    // Prevent the sheet from overlapping the right sidebar or hugging the left
     const maxLeft = window.innerWidth - rightWidth - this.position.width - 10;
-    if (this.position.left > maxLeft) {
-      this.setPosition({ left: Math.max(maxLeft, 100) });
-    }
+    left = Math.min(left, maxLeft);
+    left = Math.max(left, 100);
+
+    this.setPosition({ left });
     return result;
   }
 
