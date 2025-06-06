@@ -1,10 +1,6 @@
 /**
  * Hit Location Selection Module for Witch Iron
  */
-// Default hit locations
-export const DEFAULT_HIT_LOCATIONS = ["head","torso","left-arm","right-arm","left-leg","right-leg"];
-export function getHitLocationKeys(sys){const anat=sys?.anatomy;if(anat && Object.keys(anat).length>0)return Object.keys(anat);return DEFAULT_HIT_LOCATIONS.slice();}
-
 
 // Import the injury tables
 import { rollOnInjuryTable, getFullInjuryName, getInjuryEffect } from './injury-tables.js';
@@ -188,7 +184,7 @@ export class HitLocationSelector {
             weaponDamage: data.weaponDmg || 0,
             soakValues: {},
             armorValues: {},
-            locations: [],
+            locations: ["head","torso","left-arm","right-arm","left-leg","right-leg"],
             defenderImg: "icons/svg/mystery-man.svg",
             applyHitCallback: (location, remainingHits) => {
                 this._applyHit(
@@ -214,15 +210,22 @@ export class HitLocationSelector {
             if (defActor) {
                 dialogData.defenderImg = bwData.defender.tokenImg;
                 const anat = defActor.system?.anatomy || {};
-                dialogData.locations = getHitLocationKeys(defActor.system);
-                dialogData.soakValues = {};
-                dialogData.armorValues = {};
-                for (const loc of dialogData.locations) {
-                    dialogData.soakValues[loc] = Number(anat[loc]?.soak || 0);
-                    dialogData.armorValues[loc] = Number(anat[loc]?.armor || 0);
-                }
-            } else {
-                dialogData.locations = getHitLocationKeys({});
+                dialogData.soakValues = {
+                    head: Number(anat.head?.soak || 0),
+                    torso: Number(anat.torso?.soak || 0),
+                    leftArm: Number(anat.leftArm?.soak || 0),
+                    rightArm: Number(anat.rightArm?.soak || 0),
+                    leftLeg: Number(anat.leftLeg?.soak || 0),
+                    rightLeg: Number(anat.rightLeg?.soak || 0)
+                };
+                dialogData.armorValues = {
+                    head: Number(anat.head?.armor || 0),
+                    torso: Number(anat.torso?.armor || 0),
+                    leftArm: Number(anat.leftArm?.armor || 0),
+                    rightArm: Number(anat.rightArm?.armor || 0),
+                    leftLeg: Number(anat.leftLeg?.armor || 0),
+                    rightLeg: Number(anat.rightLeg?.armor || 0)
+                };
             }
         }
         
@@ -540,7 +543,8 @@ export class HitLocationSelector {
         
         if (defenderActor) {
             defenderAbilityBonus = defenderActor.system?.derived?.abilityBonus || 3;
-            const locKey = normalizedLocation.replace(/-([a-z])/g, m => m[1].toUpperCase());
+            const locMap = { head:'head', torso:'torso', 'left-arm':'leftArm', 'right-arm':'rightArm', 'left-leg':'leftLeg', 'right-leg':'rightLeg' };
+            const locKey = locMap[normalizedLocation] || normalizedLocation;
             armorBonus = defenderActor.system?.derived?.armorBonusEffective?.[locKey] || 0;
             armorBonusMax = defenderActor.system?.derived?.armorBonusMax || 0;
             console.log(`Defender ${combatData.defender} - Ability: ${defenderAbilityBonus}, Effective Armor: ${armorBonus}, Max Armor: ${armorBonusMax}`);
@@ -754,8 +758,9 @@ export class HitLocationSelector {
         }
         
         // Default battle wear data object also holds actor refs
+        const locMap = { head: 'head', torso: 'torso', 'left-arm': 'leftArm', 'right-arm': 'rightArm', 'left-leg': 'leftLeg', 'right-leg': 'rightLeg' };
         const normalizedLocation = String(location).toLowerCase().replace(/\s+/g, '-');
-        const locKey = normalizedLocation.replace(/-([a-z])/g, m => m[1].toUpperCase());
+        const locKey = locMap[normalizedLocation] || normalizedLocation;
 
         const returnData = {
             actors: {
@@ -1212,8 +1217,16 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, lo
 
         // Normalize the location string to match actor data keys
         // e.g. "left arm" -> "leftArm"
+        const locMap = {
+            head: "head",
+            torso: "torso",
+            "left-arm": "leftArm",
+            "right-arm": "rightArm",
+            "left-leg": "leftLeg",
+            "right-leg": "rightLeg"
+        };
         const normalizedLocation = String(location).toLowerCase().replace(/\s+/g, "-");
-        const locKey = normalizedLocation.replace(/-([a-z])/g, m => m[1].toUpperCase());
+        const locKey = locMap[normalizedLocation] || normalizedLocation;
 
         // If both wear values are 0, nothing to add
         if (attackerWearToAdd === 0 && defenderWearToAdd === 0) {
@@ -1526,15 +1539,20 @@ export class HitLocationDialog extends Application {
         this.weaponDamage = data.weaponDamage || 0;
         this.soakValues = data.soakValues || {};
         this.armorValues = data.armorValues || {};
-        this.locations = (data.locations && data.locations.length) ? data.locations : DEFAULT_HIT_LOCATIONS.slice();
+        this.locations = data.locations || ["head","torso","left-arm","right-arm","left-leg","right-leg"];
         this.defenderImg = data.defenderImg || "icons/svg/mystery-man.svg";
         
         console.log(`HitLocationDialog initialized with netHits: ${this.netHits}, remaining: ${this.remainingHits}`);
         
         // Define adjacency map (which locations can be moved between)
-        this.adjacencyMap = {};
-        this.locations.forEach(loc => { if (loc === 'torso') return; this.adjacencyMap[loc] = ['torso']; });
-        if (this.locations.includes('torso')) this.adjacencyMap['torso'] = this.locations.filter(l => l !== 'torso');
+        this.adjacencyMap = {
+            'head': ['torso'],
+            'torso': ['head', 'left-arm', 'right-arm', 'left-leg', 'right-leg'],
+            'left-arm': ['torso'],
+            'right-arm': ['torso'],
+            'left-leg': ['torso'],
+            'right-leg': ['torso']
+        };
         
         // Movement cost
         this.moveCost = 2;
@@ -1559,8 +1577,7 @@ export class HitLocationDialog extends Application {
     getData(options={}) {
         const damage = this.weaponDamage + this.remainingHits;
         const locationData = {};
-        const map = {};
-        this.locations.forEach(l => { map[l] = l.replace(/-([a-z])/g, m => m[1].toUpperCase()); });
+        const map = { 'head':'head','torso':'torso','left-arm':'leftArm','right-arm':'rightArm','left-leg':'leftLeg','right-leg':'rightLeg' };
         for (const loc of this.locations) {
             const key = map[loc] || loc;
             const soak = this.soakValues[key] || 0;
@@ -1782,8 +1799,7 @@ export class HitLocationDialog extends Application {
      * Update damage preview and soak text based on current state
      */
     updateDamagePreview() {
-        const map = {};
-        this.locations.forEach(l => { map[l] = l.replace(/-([a-z])/g, m => m[1].toUpperCase()); });
+        const map = { 'head':'head','torso':'torso','left-arm':'leftArm','right-arm':'rightArm','left-leg':'leftLeg','right-leg':'rightLeg' };
 
         for (const loc of this.locations) {
             const key = map[loc] || loc;
@@ -1906,7 +1922,7 @@ export class HitLocationDialog extends Application {
         const randomButton = html.find('.random-location-btn');
         randomButton.on('click', (event) => {
             event.preventDefault();
-            const locations = DEFAULT_HIT_LOCATIONS;
+            const locations = ['head', 'torso', 'left-arm', 'right-arm', 'left-leg', 'right-leg'];
             const randomIndex = Math.floor(Math.random() * locations.length);
             const randomLocation = locations[randomIndex];
             
