@@ -1,3 +1,7 @@
+// Default hit locations for actors
+const DEFAULT_HIT_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+function getHitLocationKeys(sysData){const anat=sysData?.anatomy; if(anat && Object.keys(anat).length>0) return Object.keys(anat); return DEFAULT_HIT_LOCATIONS.slice();}
+
 const FA_ICONS = {
   aflame: 'fa-fire',
   bleed: 'fa-droplet',
@@ -156,7 +160,8 @@ export class HitLocationHUD {
     const rb = Number(actor.system?.attributes?.robustness?.bonus || 0);
     const wear = {};
     const soakTooltips = {};
-    const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const LOCS = getHitLocationKeys(actor.system);
+    const EXTRA = LOCS.filter(l => !['head','torso','leftArm','rightArm','leftLeg','rightLeg'].includes(l));
     for (const loc of LOCS) {
       wear[loc] = Number(actor.system?.battleWear?.armor?.[loc]?.value || 0);
       const locData = anatomy[loc] || {};
@@ -200,8 +205,8 @@ export class HitLocationHUD {
 
     const selectorData = this.multiActors.map(a => ({ id: a.id, name: a.name }));
 
-    const data = { actor, selectors: selectorData, anatomy, trauma, conditions, soakTooltips, traumaTooltips };
-    const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
+    const data = { actor, selectors: selectorData, anatomy, trauma, conditions, soakTooltips, traumaTooltips, locations: LOCS, extraLocations: EXTRA };
+    const html = await renderTemplate("systems/witch-iron/templates/hud/hit-location-hud.hbs", data);
     this.container.innerHTML = html;
   }
 }
