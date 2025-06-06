@@ -22,6 +22,18 @@ export class WitchIronDescendantSheet extends ActorSheet {
   }
 
   /** @override */
+  async _render(force = false, options = {}) {
+    const result = await super._render(force, options);
+    const uiRight = document.getElementById("ui-right");
+    const rightWidth = uiRight ? uiRight.offsetWidth : 0;
+    const maxLeft = window.innerWidth - rightWidth - this.position.width - 10;
+    if (this.position.left > maxLeft) {
+      this.setPosition({ left: Math.max(maxLeft, 100) });
+    }
+    return result;
+  }
+
+  /** @override */
   getData() {
     console.log("WitchIronDescendantSheet | Getting sheet data");
     // Retrieve the base data from the parent method

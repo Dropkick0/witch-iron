@@ -3799,13 +3799,15 @@ button.roll-skill:hover {
 }
 
 /* Hit location wear layout on monster sheet */
-.witch-iron.sheet.monster .hit-hud {
+.witch-iron.sheet.monster .hit-hud,
+.witch-iron.sheet.descendant .hit-hud {
   width: 360px;
   max-width: 360px;
   margin: 0 auto 10px;
 }
 
-.witch-iron.sheet.monster .hit-hud .wear-controls {
+.witch-iron.sheet.monster .hit-hud .wear-controls,
+.witch-iron.sheet.descendant .hit-hud .wear-controls {
   margin-top: 2px;
   display: flex;
   justify-content: center;
@@ -3815,7 +3817,9 @@ button.roll-skill:hover {
 }
 
 .witch-iron.sheet.monster .hit-hud .battle-wear-minus,
-.witch-iron.sheet.monster .hit-hud .battle-wear-plus {
+.witch-iron.sheet.monster .hit-hud .battle-wear-plus,
+.witch-iron.sheet.descendant .hit-hud .battle-wear-minus,
+.witch-iron.sheet.descendant .hit-hud .battle-wear-plus {
   width: 16px;
   height: 16px;
   font-size: 10px;
@@ -3823,14 +3827,16 @@ button.roll-skill:hover {
   line-height: 1;
 }
 
-.witch-iron.sheet.monster .hit-hud .battle-wear-value {
+.witch-iron.sheet.monster .hit-hud .battle-wear-value,
+.witch-iron.sheet.descendant .hit-hud .battle-wear-value {
   width: 20px;
   font-size: 0.75rem;
   line-height: 1;
   padding: 0 2px;
 }
 
-.witch-iron.sheet.monster .hit-hud .wear-max {
+.witch-iron.sheet.monster .hit-hud .wear-max,
+.witch-iron.sheet.descendant .hit-hud .wear-max {
   font-size: 0.65rem;
 }
 
