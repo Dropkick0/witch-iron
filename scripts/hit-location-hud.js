@@ -78,8 +78,13 @@ export class HitLocationHUD {
     this.container.id = 'hit-location-hud';
     this.container.classList.add('hit-hud');
     const uiLeft = document.getElementById('ui-left');
-    if (uiLeft) uiLeft.appendChild(this.container);
-    else document.body.appendChild(this.container);
+    if (uiLeft) {
+      const controls = uiLeft.querySelector('#controls');
+      if (controls) controls.insertAdjacentElement('afterend', this.container);
+      else uiLeft.appendChild(this.container);
+    } else {
+      document.body.appendChild(this.container);
+    }
 
     this.currentActor = null;
 
