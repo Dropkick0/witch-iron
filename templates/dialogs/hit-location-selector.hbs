@@ -11,15 +11,6 @@
         </div>
     </div>
 
-    <div class="hit-location-phase attacker-phase" style="display: none;">
-        <div class="compact-info">
-            <div class="net-hits-display">
-                <p>Net Hits: <strong id="net-hits-remaining">{{netHits}}</strong></p>
-                <button class="undo-move-btn" disabled>Undo Last Move</button>
-            </div>
-        </div>
-    </div>
-
     <div class="hit-location-body">
         <div class="defender-info">
             <img src="{{defenderImg}}" alt="{{defenderName}}">
@@ -107,6 +98,15 @@
     
     <div class="instruction-text attacker-phase" style="display: none;">
         <p class="compact-instructions">Selected: <strong id="selected-location">None</strong> <span class="move-cost">(Moving costs 2 net hits per adjacent location)</span></p>
+    </div>
+
+        <div class="hit-location-phase attacker-phase" style="display: none;">
+        <div class="compact-info">
+            <div class="net-hits-display">
+                <p>Net Hits: <strong id="net-hits-remaining">{{netHits}}</strong></p>
+                <button class="undo-move-btn" disabled>Undo Last Move</button>
+            </div>
+        </div>
     </div>
     
     <div class="dialog-buttons defender-buttons">
