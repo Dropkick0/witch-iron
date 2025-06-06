@@ -18,6 +18,7 @@
     "descendant": {
       "templates": ["base"],
       "attributes": {
+      "hitLocations": ["head","torso","leftArm","rightArm","leftLeg","rightLeg"],
         "muscle": {
           "value": 40
         },
@@ -175,6 +176,7 @@
     },
     "monster": {
       "templates": ["base"],
+      "hitLocations": ["head","torso","leftArm","rightArm","leftLeg","rightLeg"],
       "stats": {
         "hitDice": {
           "value": 1

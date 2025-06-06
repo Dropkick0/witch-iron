@@ -2,6 +2,10 @@
 // console.log = () => {};
 
 // Import the quarrel API for non-combat condition checks
+// Default hit locations for actors
+const DEFAULT_HIT_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+function getHitLocationKeys(sysData){ const anat=sysData?.anatomy; if(anat && Object.keys(anat).length>0) return Object.keys(anat); return DEFAULT_HIT_LOCATIONS.slice();}
+
 import { manualQuarrel } from "./quarrel.js";
 import { createItem } from "./utils.js";
 import { openModifierDialog } from "./modifier-dialog.js";
@@ -325,7 +329,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const anatomy = this.actor.system.anatomy || {};
     const trauma = this.actor.system.conditions?.trauma || {};
     const rb = Number(this.actor.system.attributes?.robustness?.bonus || 0);
-    const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const LOCS = getHitLocationKeys(this.actor.system);
+    const EXTRA = LOCS.filter(l => !['head','torso','leftArm','rightArm','leftLeg','rightLeg'].includes(l));
     const soakTooltips = {};
     const traumaTooltips = {};
     for (const loc of LOCS) {
@@ -345,6 +350,8 @@ export class WitchIronMonsterSheet extends ActorSheet {
     }
     context.anatomy = anatomy;
     context.trauma = trauma;
+    context.locations = LOCS;
+    context.extraLocations = EXTRA;
     context.soakTooltips = soakTooltips;
     context.traumaTooltips = traumaTooltips;
 
@@ -1005,7 +1012,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const button = event.currentTarget;
     const type = button.dataset.type;
 
-    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const ARMOR_LOCATIONS = getHitLocationKeys(this.actor.system);
 
     let currentWear = 0;
     let maxWear = 0;
@@ -1057,7 +1064,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const button = event.currentTarget;
     const type = button.dataset.type;
 
-    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const ARMOR_LOCATIONS = getHitLocationKeys(this.actor.system);
 
     let currentWear = 0;
     let path = "";
@@ -1106,7 +1113,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     const button = event.currentTarget;
     const type = button.dataset.type;
 
-    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const ARMOR_LOCATIONS = getHitLocationKeys(this.actor.system);
 
     let currentWear = 0;
     let path = "";
@@ -1174,7 +1181,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     // Force default to 0 for both weapon and armor wear
     let weaponWear = actorData.battleWear?.weapon?.value;
     const armorWear = {};
-    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const ARMOR_LOCATIONS = getHitLocationKeys(this.actor.system);
     for (const loc of ARMOR_LOCATIONS) {
         armorWear[loc] = Number(actorData.battleWear?.armor?.[loc]?.value) || 0;
     }
@@ -1274,7 +1281,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     // Get current values
     const weaponWear = this.actor.system.battleWear?.weapon?.value || 0;
     const armorWear = {};
-    const ARMOR_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const ARMOR_LOCATIONS = getHitLocationKeys(this.actor.system);
     for (const loc of ARMOR_LOCATIONS) {
         armorWear[loc] = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
     }
