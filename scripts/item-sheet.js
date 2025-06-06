@@ -161,6 +161,10 @@ export class WitchIronItemSheet extends ItemSheet {
     if (!context.system.skill) context.system.skill = 'melee';
     if (context.system.specialization === undefined) context.system.specialization = '';
     if (!context.system.wear) context.system.wear = { value: 0 };
+    if (!context.system.ability) {
+      context.system.ability = context.system.skill === 'ranged' ? 'quickness' : 'muscle';
+    }
+    context.abilityOptions = CONFIG.WITCH_IRON.attributes;
   }
 
   /** 
@@ -285,6 +289,23 @@ export class WitchIronItemSheet extends ItemSheet {
     }
     
     // Other item type specific listeners can be added in similar blocks
+  }
+
+  /** @override */
+  async _updateObject(event, formData) {
+    await super._updateObject(event, formData);
+    if (!this.item.actor) return;
+    if (this.item.type === 'weapon' && this.item.system.equipped) {
+      const val = this.item.system.wear?.value || 0;
+      await this.item.actor.update({ 'system.battleWear.weapon.value': val });
+    } else if (this.item.type === 'armor' && this.item.system.equipped) {
+      const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+      const update = {};
+      for (const loc of locs) {
+        update[`system.battleWear.armor.${loc}.value`] = this.item.system.wear?.[loc]?.value || 0;
+      }
+      await this.item.actor.update(update);
+    }
   }
 
   /** @override */

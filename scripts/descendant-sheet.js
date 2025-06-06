@@ -185,6 +185,9 @@ export class WitchIronDescendantSheet extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
+    // Toggle equipped state
+    html.find('.item-equipped-checkbox').change(this._onItemEquippedChange.bind(this));
+
     // Roll item from name
     html.find('.item-name.item-roll').click(ev => {
       const li = $(ev.currentTarget).parents('.item');
@@ -702,6 +705,16 @@ export class WitchIronDescendantSheet extends ActorSheet {
     if (current >= max) return;
     const update = {}; update[path] = current + 1;
     await this.actor.update(update);
+    if (type === 'weapon') {
+      const weapon = this.actor.items.find(i => i.type === 'weapon' && i.system.equipped);
+      if (weapon) await weapon.update({'system.wear.value': current + 1});
+    } else if (type && type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      const armors = this.actor.items.filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
+      for (const a of armors) {
+        await a.update({[`system.wear.${loc}.value`]: current + 1});
+      }
+    }
     this._updateBattleWearDisplays();
   }
 
@@ -723,6 +736,16 @@ export class WitchIronDescendantSheet extends ActorSheet {
     if (current <= 0) return;
     const update = {}; update[path] = current - 1;
     await this.actor.update(update);
+    if (type === 'weapon') {
+      const weapon = this.actor.items.find(i => i.type === 'weapon' && i.system.equipped);
+      if (weapon) await weapon.update({'system.wear.value': current - 1});
+    } else if (type && type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      const armors = this.actor.items.filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
+      for (const a of armors) {
+        await a.update({[`system.wear.${loc}.value`]: current - 1});
+      }
+    }
     this._updateBattleWearDisplays();
   }
 
@@ -744,6 +767,37 @@ export class WitchIronDescendantSheet extends ActorSheet {
     if (current <= 0) return;
     const update = {}; update[path] = 0;
     await this.actor.update(update);
+    // Sync equipped items
+    if (type === 'weapon') {
+      const weapon = this.actor.items.find(i => i.type === 'weapon' && i.system.equipped);
+      if (weapon) await weapon.update({'system.wear.value': update[path]});
+    } else if (type && type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      const armors = this.actor.items.filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
+      for (const a of armors) {
+        await a.update({[`system.wear.${loc}.value`]: update[path]});
+      }
+    }
+    this._updateBattleWearDisplays();
+  }
+
+  async _onItemEquippedChange(event) {
+    event.preventDefault();
+    const li = $(event.currentTarget).closest('.item');
+    const item = this.actor.items.get(li.data('itemId'));
+    if (!item) return;
+    const equipped = event.currentTarget.checked;
+    await item.update({ 'system.equipped': equipped });
+    const update = {};
+    if (item.type === 'weapon') {
+      update['system.battleWear.weapon.value'] = equipped ? (item.system.wear?.value || 0) : 0;
+    } else if (item.type === 'armor') {
+      const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+      for (const loc of locs) {
+        update[`system.battleWear.armor.${loc}.value`] = equipped ? (item.system.wear?.[loc]?.value || 0) : 0;
+      }
+    }
+    if (Object.keys(update).length) await this.actor.update(update);
     this._updateBattleWearDisplays();
   }
 

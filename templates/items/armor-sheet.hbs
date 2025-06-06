@@ -1,4 +1,4 @@
-<section class="{{cssClass}} flexcol">
+<form class="{{cssClass}} flexcol" autocomplete="off">
   <header class="sheet-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
     <div class="header-fields">
@@ -8,21 +8,12 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}}
-  <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item" data-tab="description">Description</a>
-    <a class="item" data-tab="attributes">Attributes</a>
-  </nav>
+  <div class="form-group">
+    <label>Description</label>
+    <textarea name="system.description" placeholder="Description">{{system.description}}</textarea>
+  </div>
 
-  {{!-- Sheet Body --}}
-  <section class="sheet-body">
-    {{!-- Description Tab --}}
-    <div class="tab" data-group="primary" data-tab="description">
-      <textarea name="system.description" placeholder="Description">{{system.description}}</textarea>
-    </div>
-
-    {{!-- Attributes Tab --}}
-    <div class="tab" data-group="primary" data-tab="attributes">
+  <div class="grid grid-3col">
       <div class="grid grid-3col">
         <div class="resource">
           <label class="resource-label">Protection</label>
@@ -42,12 +33,38 @@
           <label class="resource-label">Encumbrance</label>
           <input type="number" name="system.encumbrance.value" value="{{system.encumbrance.value}}" data-dtype="Number"/>
         </div>
-      </div>
-      
-      <div class="form-group">
-        <label>Penalties</label>
-        <textarea name="system.penalties">{{system.penalties}}</textarea>
-      </div>
-    </div>
-  </section>
-</section> 
+  </div>
+
+  <h4>Wear</h4>
+  <div class="grid grid-3col">
+        <div class="resource">
+          <label class="resource-label">Head</label>
+          <input type="number" name="system.wear.head.value" value="{{system.wear.head.value}}" data-dtype="Number"/>
+        </div>
+        <div class="resource">
+          <label class="resource-label">Torso</label>
+          <input type="number" name="system.wear.torso.value" value="{{system.wear.torso.value}}" data-dtype="Number"/>
+        </div>
+        <div class="resource">
+          <label class="resource-label">Left Arm</label>
+          <input type="number" name="system.wear.leftArm.value" value="{{system.wear.leftArm.value}}" data-dtype="Number"/>
+        </div>
+        <div class="resource">
+          <label class="resource-label">Right Arm</label>
+          <input type="number" name="system.wear.rightArm.value" value="{{system.wear.rightArm.value}}" data-dtype="Number"/>
+        </div>
+        <div class="resource">
+          <label class="resource-label">Left Leg</label>
+          <input type="number" name="system.wear.leftLeg.value" value="{{system.wear.leftLeg.value}}" data-dtype="Number"/>
+        </div>
+        <div class="resource">
+          <label class="resource-label">Right Leg</label>
+          <input type="number" name="system.wear.rightLeg.value" value="{{system.wear.rightLeg.value}}" data-dtype="Number"/>
+        </div>
+  </div>
+
+  <div class="form-group">
+    <label>Penalties</label>
+    <textarea name="system.penalties">{{system.penalties}}</textarea>
+  </div>
+</form>

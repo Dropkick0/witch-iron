@@ -11,6 +11,7 @@ import { WitchIronMonsterSheet } from "./monster-sheet.js";
 import { WitchIronActor } from "./actor.js";
 import { WitchIronItem } from "./item.js";
 import { WitchIronInjurySheet } from "./injury-sheet.js";
+import { WitchIronItemSheet } from "./item-sheet.js";
 import { initQuarrel, manualQuarrel, quarrelTracker } from "./quarrel.js";
 import { HitLocationSelector } from "./hit-location.js";
 import { InjuryTables } from "./injury-tables.js";
@@ -193,6 +194,12 @@ Hooks.once("init", function() {
     types: ["injury"],
     makeDefault: true,
     label: "Witch Iron Injury"
+  });
+
+  Items.registerSheet("witch-iron", WitchIronItemSheet, {
+    types: ["weapon", "armor", "gear", "consumable", "artifact", "mutation", "madness"],
+    makeDefault: true,
+    label: "Witch Iron Item"
   });
   
   // Initialize the Quarrel system

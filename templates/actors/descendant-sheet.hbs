@@ -622,6 +622,7 @@
                   <div class="item-name">Name</div>
                   <div class="item-damage">Damage</div>
                   <div class="item-weight">Weight</div>
+                  <div class="item-equipped">Worn?</div>
                   <div class="item-controls"></div>
                 </div>
                 {{#each weapons as |item id|}}
@@ -629,6 +630,7 @@
                   <div class="item-name item-roll">{{item.name}}</div>
                   <div class="item-damage">{{item.system.damage}}</div>
                   <div class="item-weight">{{item.system.encumbrance.value}}</div>
+                  <div class="item-equipped"><input type="checkbox" class="item-equipped-checkbox" {{#if item.system.equipped}}checked{{/if}}></div>
                   <div class="item-controls">
                     <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                     <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
@@ -646,6 +648,7 @@
                   <div class="item-name">Name</div>
                   <div class="item-defense">Defense</div>
                   <div class="item-weight">Weight</div>
+                  <div class="item-equipped">Worn?</div>
                   <div class="item-controls"></div>
                 </div>
                 {{#each armor as |item id|}}
@@ -653,6 +656,7 @@
                   <div class="item-name">{{item.name}}</div>
                   <div class="item-defense">{{item.system.defense}}</div>
                   <div class="item-weight">{{item.system.encumbrance.value}}</div>
+                  <div class="item-equipped"><input type="checkbox" class="item-equipped-checkbox" {{#if item.system.equipped}}checked{{/if}}></div>
                   <div class="item-controls">
                     <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                     <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
