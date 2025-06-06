@@ -3830,6 +3830,30 @@ button.roll-skill:hover {
   margin-top: 6px;
 }
 
+.witch-iron.sheet.monster .monster-battlewear {
+  margin-bottom: 10px;
+}
+
+.witch-iron.sheet.monster .weapon-wear-container .section-label {
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+.witch-iron.sheet.monster .battlewear-header {
+  margin-top: 0;
+}
+
+.witch-iron.sheet.monster .hit-hud .wear-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: #f5f3e6;
+  font-size: 0.8rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
 .witch-iron.sheet.monster .weapon-wear-container .battle-wear-minus,
 .witch-iron.sheet.monster .weapon-wear-container .battle-wear-plus {
   width: 18px;
@@ -3854,7 +3878,7 @@ button.roll-skill:hover {
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-start;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .witch-iron.sheet.monster .condition {
@@ -3863,7 +3887,8 @@ button.roll-skill:hover {
   color: #fff;
   padding: 1px 4px 1px 20px;
   border-radius: 3px;
-  font-size: .65rem;
+  font-size: 1.3rem;
+  pointer-events: auto;
 }
 
 .witch-iron.sheet.monster .condition i {
