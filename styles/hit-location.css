@@ -77,37 +77,6 @@
     text-shadow: 0 0 3px rgba(0, 255, 0, 0.5);
 }
 
-/* Position each label exactly as in the example */
-.head-label {
-  top: 12px;
-  left: 118px;
-}
-
-.torso-label {
-  top: 94px;
-  left: 118px;
-}
-
-.left-arm-label {
-  top: 131px;
-  left: -19px;
-}
-
-.right-arm-label {
-  top: 131px;
-  left: 238px;
-}
-
-.left-leg-label {
-  top: 252px;
-  left: 24px;
-}
-
-.right-leg-label {
-  top: 252px;
-  left: 199px;
-}
-
 /* Compact info styling */
 .compact-info {
     text-align: center;
