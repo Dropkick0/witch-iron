@@ -64,8 +64,10 @@ export class WitchIronItem extends Item {
    * @private
    */
   _prepareWeaponData(itemData) {
-    // Any weapon-specific derivations would go here
-    // For example, calculating total damage based on properties
+    if (!itemData.damage) itemData.damage = { value: 0 };
+    if (!itemData.skill) itemData.skill = 'melee';
+    if (itemData.specialization === undefined) itemData.specialization = '';
+    if (!itemData.battleWear) itemData.battleWear = { value: 0 };
   }
 
   /**
@@ -74,8 +76,9 @@ export class WitchIronItem extends Item {
    * @private
    */
   _prepareArmorData(itemData) {
-    // Any armor-specific derivations would go here
-    // For example, calculating effective protection based on condition
+    if (!itemData.protection) itemData.protection = { value: 0 };
+    if (!Array.isArray(itemData.locations)) itemData.locations = ['torso'];
+    if (!itemData.battleWear) itemData.battleWear = { value: 0 };
   }
 
   /**

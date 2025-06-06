@@ -87,4 +87,9 @@ export function registerCommonHandlebarsHelpers() {
   Handlebars.registerHelper('floor', function(v1) {
     return Math.floor(Number(v1));
   });
+
+  Handlebars.registerHelper('includes', function(array, value) {
+    if (!Array.isArray(array)) return false;
+    return array.includes(value);
+  });
 }

@@ -616,55 +616,67 @@
           <div class="inventory-list">
             <!-- Attacks -->
             <div class="inventory-section">
-              <h2>Attacks <button type="button" class="create-item" data-type="weapon"><i class="fas fa-plus"></i></button></h2>
+              <h2>Attacks <button type="button" class="item-create" data-type="weapon"><i class="fas fa-plus"></i></button></h2>
               <div class="items-list">
-                <div class="inventory-header flexrow">
-                  <div class="item-name">Name</div>
-                  <div class="item-damage">Damage</div>
-                  <div class="item-weight">Weight</div>
-                  <div class="item-controls"></div>
-                </div>
-                {{#each weapons as |item id|}}
-                <div class="item flexrow" data-item-id="{{item._id}}">
-                  <div class="item-name item-roll">{{item.name}}</div>
-                  <div class="item-damage">{{item.system.damage}}</div>
-                  <div class="item-weight">{{item.system.encumbrance.value}}</div>
-                  <div class="item-controls">
-                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                  <div class="inventory-header flexrow">
+                    <div class="item-name">Name</div>
+                    <div class="item-damage">Dmg</div>
+                    <div class="item-weight">Wt</div>
+                    <div class="item-wear">Wear</div>
+                    <div class="item-controls"></div>
                   </div>
-                </div>
+                {{#each weapons as |item id|}}
+                  <div class="item flexrow" data-item-id="{{item._id}}">
+                    <div class="item-name item-roll">{{item.name}}</div>
+                    <div class="item-damage">{{item.system.damage.value}}</div>
+                    <div class="item-weight">{{item.system.encumbrance.value}}</div>
+                    <div class="item-wear">
+                      <button type="button" class="battle-wear-minus" data-item="{{item._id}}"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value">{{item.system.battleWear.value}}</span>
+                      <button type="button" class="battle-wear-plus" data-item="{{item._id}}"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="item-controls">
+                      <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                    </div>
+                  </div>
                 {{/each}}
               </div>
             </div>
 
             <!-- Armor -->
             <div class="inventory-section">
-              <h2>Armor <button type="button" class="create-item" data-type="armor"><i class="fas fa-plus"></i></button></h2>
+              <h2>Armor <button type="button" class="item-create" data-type="armor"><i class="fas fa-plus"></i></button></h2>
               <div class="items-list">
-                <div class="inventory-header flexrow">
-                  <div class="item-name">Name</div>
-                  <div class="item-defense">Defense</div>
-                  <div class="item-weight">Weight</div>
-                  <div class="item-controls"></div>
-                </div>
-                {{#each armor as |item id|}}
-                <div class="item flexrow" data-item-id="{{item._id}}">
-                  <div class="item-name">{{item.name}}</div>
-                  <div class="item-defense">{{item.system.defense}}</div>
-                  <div class="item-weight">{{item.system.encumbrance.value}}</div>
-                  <div class="item-controls">
-                    <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                    <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                  <div class="inventory-header flexrow">
+                    <div class="item-name">Name</div>
+                    <div class="item-defense">AV</div>
+                    <div class="item-weight">Wt</div>
+                    <div class="item-wear">Wear</div>
+                    <div class="item-controls"></div>
                   </div>
-                </div>
+                {{#each armor as |item id|}}
+                  <div class="item flexrow" data-item-id="{{item._id}}">
+                    <div class="item-name">{{item.name}}</div>
+                    <div class="item-defense">{{item.system.protection.value}}</div>
+                    <div class="item-weight">{{item.system.encumbrance.value}}</div>
+                    <div class="item-wear">
+                      <button type="button" class="battle-wear-minus" data-item="{{item._id}}"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value">{{item.system.battleWear.value}}</span>
+                      <button type="button" class="battle-wear-plus" data-item="{{item._id}}"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <div class="item-controls">
+                      <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                    </div>
+                  </div>
                 {{/each}}
               </div>
             </div>
 
             <!-- Gear -->
             <div class="inventory-section">
-              <h2>Gear <button type="button" class="create-item" data-type="gear"><i class="fas fa-plus"></i></button></h2>
+              <h2>Gear <button type="button" class="item-create" data-type="gear"><i class="fas fa-plus"></i></button></h2>
               <div class="items-list">
                 <div class="inventory-header flexrow">
                   <div class="item-name">Name</div>
@@ -688,7 +700,7 @@
 
             <!-- Consumables -->
             <div class="inventory-section">
-              <h2>Consumables <button type="button" class="create-item" data-type="consumable"><i class="fas fa-plus"></i></button></h2>
+              <h2>Consumables <button type="button" class="item-create" data-type="consumable"><i class="fas fa-plus"></i></button></h2>
               <div class="items-list">
                 <div class="inventory-header flexrow">
                   <div class="item-name">Name</div>
@@ -778,9 +790,7 @@
           <h2 class="battle-wear-heading">Battle Wear</h2>
           <div class="weapon-wear-container">
             <span class="weapon-wear-label"><strong>Weapon Wear</strong></span>
-            <button type="button" class="battle-wear-minus" data-type="weapon"><i class="fas fa-minus"></i></button>
-            <span class="battle-wear-value" data-type="weapon">{{system.battleWear.weapon.value}}</span>/<span class="wear-max">{{system.derived.weaponBonusMax}}</span>
-            <button type="button" class="battle-wear-plus" data-type="weapon"><i class="fas fa-plus"></i></button>
+            <span class="battle-wear-value" data-type="weapon">{{system.battleWear.weapon.value}}</span>
           </div>
           <div class="hit-hud monster-wear-layout">
             <span class="wear-label">Armor Wear</span>
@@ -803,9 +813,7 @@
                     <span class="trauma" title="{{traumaTooltips.head}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.head.value}}</span></span>
                     {{/if}}
                     <div class="wear-controls">
-                      <button type="button" class="battle-wear-minus" data-type="armor-head"><i class="fas fa-minus"></i></button>
-                      <span class="battle-wear-value" data-type="armor-head">{{system.battleWear.armor.head.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
-                      <button type="button" class="battle-wear-plus" data-type="armor-head"><i class="fas fa-plus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-head">{{system.battleWear.armor.head.value}}</span>
                     </div>
                   </div>
                   <div class="location-value torso" title="{{soakTooltips.torso}}">
@@ -814,9 +822,7 @@
                     <span class="trauma" title="{{traumaTooltips.torso}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.torso.value}}</span></span>
                     {{/if}}
                     <div class="wear-controls">
-                      <button type="button" class="battle-wear-minus" data-type="armor-torso"><i class="fas fa-minus"></i></button>
-                      <span class="battle-wear-value" data-type="armor-torso">{{system.battleWear.armor.torso.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
-                      <button type="button" class="battle-wear-plus" data-type="armor-torso"><i class="fas fa-plus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-torso">{{system.battleWear.armor.torso.value}}</span>
                     </div>
                   </div>
                   <div class="location-value leftArm" title="{{soakTooltips.leftArm}}">
@@ -825,9 +831,7 @@
                     <span class="trauma" title="{{traumaTooltips.leftArm}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.leftArm.value}}</span></span>
                     {{/if}}
                     <div class="wear-controls">
-                      <button type="button" class="battle-wear-minus" data-type="armor-leftArm"><i class="fas fa-minus"></i></button>
-                      <span class="battle-wear-value" data-type="armor-leftArm">{{system.battleWear.armor.leftArm.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
-                      <button type="button" class="battle-wear-plus" data-type="armor-leftArm"><i class="fas fa-plus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-leftArm">{{system.battleWear.armor.leftArm.value}}</span>
                     </div>
                   </div>
                   <div class="location-value rightArm" title="{{soakTooltips.rightArm}}">
@@ -836,9 +840,7 @@
                     <span class="trauma" title="{{traumaTooltips.rightArm}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.rightArm.value}}</span></span>
                     {{/if}}
                     <div class="wear-controls">
-                      <button type="button" class="battle-wear-minus" data-type="armor-rightArm"><i class="fas fa-minus"></i></button>
-                      <span class="battle-wear-value" data-type="armor-rightArm">{{system.battleWear.armor.rightArm.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
-                      <button type="button" class="battle-wear-plus" data-type="armor-rightArm"><i class="fas fa-plus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-rightArm">{{system.battleWear.armor.rightArm.value}}</span>
                     </div>
                   </div>
                   <div class="location-value leftLeg" title="{{soakTooltips.leftLeg}}">
@@ -847,9 +849,7 @@
                     <span class="trauma" title="{{traumaTooltips.leftLeg}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.leftLeg.value}}</span></span>
                     {{/if}}
                     <div class="wear-controls">
-                      <button type="button" class="battle-wear-minus" data-type="armor-leftLeg"><i class="fas fa-minus"></i></button>
-                      <span class="battle-wear-value" data-type="armor-leftLeg">{{system.battleWear.armor.leftLeg.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
-                      <button type="button" class="battle-wear-plus" data-type="armor-leftLeg"><i class="fas fa-plus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-leftLeg">{{system.battleWear.armor.leftLeg.value}}</span>
                     </div>
                   </div>
                   <div class="location-value rightLeg" title="{{soakTooltips.rightLeg}}">
@@ -858,9 +858,7 @@
                     <span class="trauma" title="{{traumaTooltips.rightLeg}}"><i class="fa-solid fa-bone-break"></i> <span class="trauma-value">{{trauma.rightLeg.value}}</span></span>
                     {{/if}}
                     <div class="wear-controls">
-                      <button type="button" class="battle-wear-minus" data-type="armor-rightLeg"><i class="fas fa-minus"></i></button>
-                      <span class="battle-wear-value" data-type="armor-rightLeg">{{system.battleWear.armor.rightLeg.value}}</span>/<span class="wear-max">{{system.derived.armorBonusMax}}</span>
-                      <button type="button" class="battle-wear-plus" data-type="armor-rightLeg"><i class="fas fa-plus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-rightLeg">{{system.battleWear.armor.rightLeg.value}}</span>
                     </div>
                   </div>
                 </div>

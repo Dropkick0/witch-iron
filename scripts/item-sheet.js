@@ -131,14 +131,32 @@ export class WitchIronItemSheet extends ItemSheet {
    * Prepare weapon specific data
    */
   _prepareWeaponData(context) {
-    // Add weapon specific data if needed
+    const skillOptions = {};
+    for (const [cat, skills] of Object.entries(CONFIG.WITCH_IRON.skills)) {
+      for (const [key, data] of Object.entries(skills)) {
+        skillOptions[key] = data.label;
+      }
+    }
+    context.skillOptions = skillOptions;
+    if (!context.system.skill) context.system.skill = 'melee';
+    if (context.system.specialization === undefined) context.system.specialization = '';
+    if (!context.system.battleWear) context.system.battleWear = { value: 0 };
   }
 
   /** 
    * Prepare armor specific data
    */
   _prepareArmorData(context) {
-    // Add armor specific data if needed
+    context.locationOptions = {
+      head: 'Head',
+      torso: 'Torso',
+      leftArm: 'Left Arm',
+      rightArm: 'Right Arm',
+      leftLeg: 'Left Leg',
+      rightLeg: 'Right Leg'
+    };
+    if (!Array.isArray(context.system.locations)) context.system.locations = ['torso'];
+    if (!context.system.battleWear) context.system.battleWear = { value: 0 };
   }
 
   /**
