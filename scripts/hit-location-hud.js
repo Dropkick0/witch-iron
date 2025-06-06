@@ -93,7 +93,7 @@ export class HitLocationHUD {
       const card = ev.target.closest('.actor-card');
       if (!card) return;
       const id = card.dataset.actorId;
-      const actor = this.multiActors.find(a => a.id === id);
+      const actor = this.multiActors.find(a => a.id === id) || game.actors.get(id);
       if (actor) {
         this.currentActor = actor;
         this.render(actor);
@@ -123,20 +123,19 @@ export class HitLocationHUD {
     const owned = canvas?.tokens?.controlled.filter(t => t.actor?.isOwner) || [];
     if (owned.length > 0) {
       this.multiActors = owned.map(t => t.actor);
-      if (!this.currentActor || !owned.some(t => t.actor?.id === this.currentActor.id)) {
+    } else {
+      const playerActor = game.user?.character;
+      this.multiActors = playerActor ? [playerActor] : [];
+    }
+
+    if (this.multiActors.length > 0) {
+      if (!this.currentActor || !this.multiActors.some(a => a.id === this.currentActor.id)) {
         this.currentActor = this.multiActors[this.multiActors.length - 1];
       }
       this.render(this.currentActor);
     } else {
-      this.multiActors = [];
-      const playerActor = game.user?.character;
-      if (playerActor) {
-        this.currentActor = playerActor;
-        this.render(playerActor);
-      } else {
-        this.currentActor = null;
-        this.clear();
-      }
+      this.currentActor = null;
+      this.clear();
     }
   }
 
@@ -165,7 +164,7 @@ export class HitLocationHUD {
       const av = Number(locData.armor || 0);
       const other = soak - rb - (av - wear[loc]);
       const otherVal = other > 0 ? other : 0;
-      soakTooltips[loc] = `${rb} + ${otherVal} + (${av} - ${wear[loc]}) = ${soak}`;
+      soakTooltips[loc] = `Soak/AV ${soak}/${av}: ${rb} + ${otherVal} + (${av} - ${wear[loc]}) = ${soak}`;
     }
 
     const condObj = actor.system?.conditions || {};
@@ -195,13 +194,12 @@ export class HitLocationHUD {
       const rating = Number(trauma[loc]?.value || 0);
       if (rating > 0) {
         const locLabel = loc.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
-        traumaTooltips[loc] = `Trauma (${locLabel}) ${rating}: ${rating * 20}% penalty to checks involving ${locLabel}.`;
+        const penalty = rating * 20;
+        traumaTooltips[loc] = `Trauma ${rating} (${locLabel}): ${penalty}% penalty to checks involving ${locLabel}.`;
       }
     }
 
-    const selectorData = this.multiActors.length > 1
-      ? this.multiActors.map(a => ({ id: a.id, name: a.name }))
-      : null;
+    const selectorData = this.multiActors.map(a => ({ id: a.id, name: a.name }));
 
     const data = { actor, selectors: selectorData, anatomy, trauma, conditions, soakTooltips, traumaTooltips };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
