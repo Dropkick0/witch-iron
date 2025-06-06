@@ -241,12 +241,35 @@ export class WitchIronActor extends Actor {
     const intellectValue = systemData.attributes.intellect?.value || 0;
     systemData.derivedFlags.canReadWrite = intellectValue >= 40;
 
-    // Initialize common conditions
-    const condList = ["blind", "deaf", "pain"];
+    // Initialize common conditions using the full monster list for consistency
+    const condList = [
+      "poison",
+      "corruption",
+      "stress",
+      "blind",
+      "deaf",
+      "pain",
+      "fatigue",
+      "entangle",
+      "helpless",
+      "stun",
+      "prone"
+    ];
     if (!systemData.conditions) systemData.conditions = {};
     for (const key of condList) {
       if (!systemData.conditions[key] || typeof systemData.conditions[key]?.value !== 'number') {
         systemData.conditions[key] = { value: 0 };
+      }
+    }
+
+    // Ensure trauma object matches monster structure
+    if (!systemData.conditions.trauma || typeof systemData.conditions.trauma !== 'object') {
+      systemData.conditions.trauma = {};
+    }
+    const traumaLocations = ["head", "torso", "leftArm", "rightArm", "leftLeg", "rightLeg"];
+    for (const loc of traumaLocations) {
+      if (!systemData.conditions.trauma[loc] || typeof systemData.conditions.trauma[loc].value !== 'number') {
+        systemData.conditions.trauma[loc] = { value: 0 };
       }
     }
 
