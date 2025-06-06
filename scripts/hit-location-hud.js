@@ -78,26 +78,31 @@ export class HitLocationHUD {
     this.container.id = 'hit-location-hud';
     this.container.classList.add('hit-hud');
     const uiLeft = document.getElementById('ui-left');
-    if (uiLeft) uiLeft.appendChild(this.container);
-    else document.body.appendChild(this.container);
+    if (uiLeft) {
+      const controls = uiLeft.querySelector('#controls');
+      if (controls) controls.insertAdjacentElement('afterend', this.container);
+      else uiLeft.appendChild(this.container);
+    } else {
+      document.body.appendChild(this.container);
+    }
 
     this.currentActor = null;
+    this.multiActors = [];
 
-    Hooks.on('controlToken', (token, controlled) => {
-      if (controlled && token.actor?.isOwner) {
-        this.currentActor = token.actor;
-        this.render(token.actor);
-        return;
+    // Switch actors when clicking on one of the name cards
+    this.container.addEventListener('click', ev => {
+      const card = ev.target.closest('.actor-card');
+      if (!card) return;
+      const id = card.dataset.actorId;
+      const actor = [...this.multiActors, this.currentActor].find(a => a?.id === id);
+      if (actor) {
+        this.currentActor = actor;
+        this.render(actor);
       }
+    });
 
-      const owned = canvas.tokens.controlled.filter(t => t.actor?.isOwner);
-      if (owned.length > 0) {
-        this.currentActor = owned[owned.length - 1].actor;
-        this.render(this.currentActor);
-      } else {
-        this.currentActor = null;
-        this.clear();
-      }
+    Hooks.on('controlToken', () => {
+      this.updateFromSelection();
     });
 
     Hooks.on('updateActor', (actor) => {
@@ -111,6 +116,29 @@ export class HitLocationHUD {
         this.render(this.currentActor);
       }
     });
+
+    this.updateFromSelection();
+  }
+
+  static updateFromSelection() {
+    const owned = canvas?.tokens?.controlled.filter(t => t.actor?.isOwner) || [];
+    if (owned.length > 0) {
+      this.multiActors = owned.map(t => t.actor);
+      if (!this.currentActor || !owned.some(t => t.actor?.id === this.currentActor.id)) {
+        this.currentActor = this.multiActors[this.multiActors.length - 1];
+      }
+      this.render(this.currentActor);
+    } else {
+      this.multiActors = [];
+      const playerActor = game.user?.character;
+      if (playerActor) {
+        this.currentActor = playerActor;
+        this.render(playerActor);
+      } else {
+        this.currentActor = null;
+        this.clear();
+      }
+    }
   }
 
   static clear() {
@@ -118,7 +146,10 @@ export class HitLocationHUD {
   }
 
   static async render(actor) {
-    if (!this.container || !actor) return;
+    if (!this.container || !actor) {
+      this.clear();
+      return;
+    }
 
     const anatomy = actor.system?.anatomy || {};
     const trauma = actor.system?.conditions?.trauma || {};
@@ -169,7 +200,11 @@ export class HitLocationHUD {
       }
     }
 
-    const data = { actor, anatomy, trauma, conditions, soakTooltips, traumaTooltips };
+    // Always show the active actor name; show all controlled actors if more than one
+    const actorList = this.multiActors.length > 0 ? this.multiActors : [actor];
+    const selectorData = actorList.map(a => ({ id: a.id, name: a.name }));
+
+    const data = { actor, selectors: selectorData, anatomy, trauma, conditions, soakTooltips, traumaTooltips };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
     this.container.innerHTML = html;
   }
