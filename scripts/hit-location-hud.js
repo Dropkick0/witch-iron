@@ -169,7 +169,7 @@ export class HitLocationHUD {
       const av = Number(locData.armor || 0);
       const other = soak - rb - (av - wear[loc]);
       const otherVal = other > 0 ? other : 0;
-      soakTooltips[loc] = `${rb} + ${otherVal} + (${av} - ${wear[loc]}) = ${soak}`;
+      soakTooltips[loc] = `Soak/AV ${soak}/${av}: ${rb} + ${otherVal} + (${av} - ${wear[loc]}) = ${soak}`;
     }
 
     const condObj = actor.system?.conditions || {};
@@ -199,7 +199,8 @@ export class HitLocationHUD {
       const rating = Number(trauma[loc]?.value || 0);
       if (rating > 0) {
         const locLabel = loc.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
-        traumaTooltips[loc] = `Trauma (${locLabel}) ${rating}: ${rating * 20}% penalty to checks involving ${locLabel}.`;
+        const penalty = rating * 20;
+        traumaTooltips[loc] = `Trauma ${rating} (${locLabel}): ${penalty}% penalty to checks involving ${locLabel}.`;
       }
     }
 
