@@ -8,6 +8,7 @@
   flex: 0 0 auto!important;
   color: #f5f3e6;
   font-family: var(--witchiron-font, serif);
+  pointer-events: auto;
 }
 
 

@@ -93,7 +93,7 @@ export class HitLocationHUD {
       const card = ev.target.closest('.actor-card');
       if (!card) return;
       const id = card.dataset.actorId;
-      const actor = this.multiActors.find(a => a.id === id);
+      const actor = this.multiActors.find(a => a.id === id) || game.actors.get(id);
       if (actor) {
         this.currentActor = actor;
         this.render(actor);
@@ -123,20 +123,19 @@ export class HitLocationHUD {
     const owned = canvas?.tokens?.controlled.filter(t => t.actor?.isOwner) || [];
     if (owned.length > 0) {
       this.multiActors = owned.map(t => t.actor);
-      if (!this.currentActor || !owned.some(t => t.actor?.id === this.currentActor.id)) {
+    } else {
+      const playerActor = game.user?.character;
+      this.multiActors = playerActor ? [playerActor] : [];
+    }
+
+    if (this.multiActors.length > 0) {
+      if (!this.currentActor || !this.multiActors.some(a => a.id === this.currentActor.id)) {
         this.currentActor = this.multiActors[this.multiActors.length - 1];
       }
       this.render(this.currentActor);
     } else {
-      this.multiActors = [];
-      const playerActor = game.user?.character;
-      if (playerActor) {
-        this.currentActor = playerActor;
-        this.render(playerActor);
-      } else {
-        this.currentActor = null;
-        this.clear();
-      }
+      this.currentActor = null;
+      this.clear();
     }
   }
 
@@ -199,9 +198,7 @@ export class HitLocationHUD {
       }
     }
 
-    const selectorData = this.multiActors.length > 1
-      ? this.multiActors.map(a => ({ id: a.id, name: a.name }))
-      : null;
+    const selectorData = this.multiActors.map(a => ({ id: a.id, name: a.name }));
 
     const data = { actor, selectors: selectorData, anatomy, trauma, conditions, soakTooltips, traumaTooltips };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
