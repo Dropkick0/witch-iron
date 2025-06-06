@@ -224,11 +224,13 @@
     gap: 5px;
 }
 
-.defender-mode .defender-info,
-.attacker-mode .defender-info {
-    align-self: flex-start;
-    margin: 5px 0 5px 5px;
+.hit-location-body .defender-info {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 5px;
 }
+
 
 .defender-info img {
     width: 50px;
@@ -258,7 +260,7 @@
 
 .location-value .net-dmg {
     display: block;
-    font-size: 0.75em;
+    font-size: 1em;
     font-weight: bold;
     color: #a52a2a;
 }
@@ -281,7 +283,7 @@
 }
 .hit-location-selector .location-value .net-dmg {
     display: block;
-    font-size: 0.75em;
+    font-size: 1em;
     font-weight: bold;
     color: #a52a2a;
 }
