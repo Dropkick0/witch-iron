@@ -3469,17 +3469,20 @@ button.roll-skill:hover {
 }
 
 /* Battle Wear Controls */
-.witch-iron.sheet.monster .battle-wear-controls {
+.witch-iron.sheet.monster .battle-wear-controls,
+.witch-iron.sheet.descendant .battle-wear-controls {
   margin-bottom: 10px;
 }
 
-.witch-iron.sheet.monster .battle-wear-control {
+.witch-iron.sheet.monster .battle-wear-control,
+.witch-iron.sheet.descendant .battle-wear-control {
   display: flex;
   align-items: center;
   margin-top: 5px;
 }
 
-.witch-iron.sheet.monster .battle-wear-value {
+.witch-iron.sheet.monster .battle-wear-value,
+.witch-iron.sheet.descendant .battle-wear-value {
   display: inline-block;
   font-size: 1.2em;
   font-weight: bold;
@@ -3498,7 +3501,10 @@ button.roll-skill:hover {
 
 .witch-iron.sheet.monster .battle-wear-minus,
 .witch-iron.sheet.monster .battle-wear-plus,
-.witch-iron.sheet.monster .battle-wear-reset {
+.witch-iron.sheet.monster .battle-wear-reset,
+.witch-iron.sheet.descendant .battle-wear-minus,
+.witch-iron.sheet.descendant .battle-wear-plus,
+.witch-iron.sheet.descendant .battle-wear-reset {
   width: 32px;
   height: 32px;
   padding: 0;
@@ -3511,24 +3517,30 @@ button.roll-skill:hover {
   transition: all 0.2s ease;
 }
 
-.witch-iron.sheet.monster .battle-wear-reset {
+.witch-iron.sheet.monster .battle-wear-reset,
+.witch-iron.sheet.descendant .battle-wear-reset {
   margin-left: 8px;
   background-color: var(--secondary-color);
   color: #fff;
 }
 
 .witch-iron.sheet.monster .battle-wear-minus:hover,
-.witch-iron.sheet.monster .battle-wear-plus:hover {
+.witch-iron.sheet.monster .battle-wear-plus:hover,
+.witch-iron.sheet.descendant .battle-wear-minus:hover,
+.witch-iron.sheet.descendant .battle-wear-plus:hover {
   background-color: var(--highlight-color);
   color: #fff;
 }
 
-.witch-iron.sheet.monster .battle-wear-reset:hover {
+.witch-iron.sheet.monster .battle-wear-reset:hover,
+.witch-iron.sheet.descendant .battle-wear-reset:hover {
   background-color: var(--accent-color);
 }
 
 .witch-iron.sheet.monster .battle-wear-minus:disabled,
-.witch-iron.sheet.monster .battle-wear-plus:disabled {
+.witch-iron.sheet.monster .battle-wear-plus:disabled,
+.witch-iron.sheet.descendant .battle-wear-minus:disabled,
+.witch-iron.sheet.descendant .battle-wear-plus:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   background-color: var(--color-border-light);
@@ -3822,7 +3834,8 @@ button.roll-skill:hover {
   font-size: 0.65rem;
 }
 
-.witch-iron.sheet.monster .weapon-wear-container {
+.witch-iron.sheet.monster .weapon-wear-container,
+.witch-iron.sheet.descendant .weapon-wear-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -3830,18 +3843,21 @@ button.roll-skill:hover {
   margin-top: 6px;
 }
 
-.witch-iron.sheet.monster .battle-wear-heading {
+.witch-iron.sheet.monster .battle-wear-heading,
+.witch-iron.sheet.descendant .battle-wear-heading {
   text-align: center;
   margin: 0 0 6px;
   font-size: 1.2rem;
   color: var(--color-primary);
 }
 
-.witch-iron.sheet.monster .weapon-wear-label {
+.witch-iron.sheet.monster .weapon-wear-label,
+.witch-iron.sheet.descendant .weapon-wear-label {
   font-weight: bold;
 }
 
-.witch-iron.sheet.monster .hit-hud .wear-label {
+.witch-iron.sheet.monster .hit-hud .wear-label,
+.witch-iron.sheet.descendant .hit-hud .wear-label {
   position: absolute;
   top: 0;
   left: 0;
@@ -3853,24 +3869,29 @@ button.roll-skill:hover {
 }
 
 .witch-iron.sheet.monster .weapon-wear-container .battle-wear-minus,
-.witch-iron.sheet.monster .weapon-wear-container .battle-wear-plus {
+.witch-iron.sheet.monster .weapon-wear-container .battle-wear-plus,
+.witch-iron.sheet.descendant .weapon-wear-container .battle-wear-minus,
+.witch-iron.sheet.descendant .weapon-wear-container .battle-wear-plus {
   width: 18px;
   height: 18px;
   padding: 0;
   line-height: 1;
 }
 
-.witch-iron.sheet.monster .weapon-wear-container .battle-wear-value {
+.witch-iron.sheet.monster .weapon-wear-container .battle-wear-value,
+.witch-iron.sheet.descendant .weapon-wear-container .battle-wear-value {
   width: 25px;
   text-align: center;
   font-size: 0.9rem;
 }
 
-.witch-iron.sheet.monster .weapon-wear-container .wear-max {
+.witch-iron.sheet.monster .weapon-wear-container .wear-max,
+.witch-iron.sheet.descendant .weapon-wear-container .wear-max {
   font-size: 0.8rem;
 }
 
-.witch-iron.sheet.monster .conditions-layer {
+.witch-iron.sheet.monster .conditions-layer,
+.witch-iron.sheet.descendant .conditions-layer {
   z-index: 3;
   gap: .15rem;
   flex-direction: column;
@@ -3879,7 +3900,8 @@ button.roll-skill:hover {
   pointer-events: none;
 }
 
-.witch-iron.sheet.monster .condition {
+.witch-iron.sheet.monster .condition,
+.witch-iron.sheet.descendant .condition {
   position: relative;
   background: var(--color-border-dark);
   color: #fff;
@@ -3889,7 +3911,8 @@ button.roll-skill:hover {
   pointer-events: auto;
 }
 
-.witch-iron.sheet.monster .condition i {
+.witch-iron.sheet.monster .condition i,
+.witch-iron.sheet.descendant .condition i {
   position: absolute;
   left: 4px;
   top: 50%;
