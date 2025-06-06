@@ -23,12 +23,29 @@ export class WitchIronDescendantSheet extends ActorSheet {
 
   /** @override */
   async _render(force = false, options = {}) {
+    // Calculate a safe left position when none is provided. Do this before
+    // rendering so the sheet initially appears in the correct spot.
+    if (options.left === undefined) {
+      const uiRight = document.getElementById("ui-right");
+      const rightWidth = uiRight ? uiRight.offsetWidth : 0;
+
+      // Center within the HUD area (accounting for sidebar width)
+      const hudWidth = window.innerWidth - rightWidth;
+      let left = hudWidth / 2 - this.position.width / 2;
+
+      // Clamp to avoid overlapping the sidebar or hugging the edge
+      const maxLeft = window.innerWidth - rightWidth - this.position.width - 10;
+      left = Math.min(left, maxLeft);
+      left = Math.max(left, 100);
+
+      options.left = left;
+    }
+
     const result = await super._render(force, options);
-    const uiRight = document.getElementById("ui-right");
-    const rightWidth = uiRight ? uiRight.offsetWidth : 0;
-    const maxLeft = window.innerWidth - rightWidth - this.position.width - 10;
-    if (this.position.left > maxLeft) {
-      this.setPosition({ left: Math.max(maxLeft, 100) });
+
+    // Update the stored position if it was calculated above
+    if (options.left !== undefined) {
+      this.position.left = options.left;
     }
     return result;
   }
