@@ -22,6 +22,24 @@ export class WitchIronDescendantSheet extends ActorSheet {
   }
 
   /** @override */
+  async _render(force = false, options = {}) {
+    const result = await super._render(force, options);
+
+    const uiRight = document.getElementById("ui-right");
+    const rightWidth = uiRight ? uiRight.offsetWidth : 0;
+    const maxLeft = window.innerWidth - rightWidth - this.position.width - 10;
+
+    // Determine an appropriate left position inside the main HUD area
+    if (this.position.left === 0 || this.position.left > maxLeft) {
+      const centered = (window.innerWidth - rightWidth - this.position.width) / 2;
+      const left = Math.min(Math.max(centered, 100), maxLeft);
+      this.setPosition({ left });
+    }
+
+    return result;
+  }
+
+  /** @override */
   getData() {
     console.log("WitchIronDescendantSheet | Getting sheet data");
     // Retrieve the base data from the parent method
@@ -41,6 +59,72 @@ export class WitchIronDescendantSheet extends ActorSheet {
 
     // Prepare items
     this._prepareItems(data);
+
+    // Prepare injuries list
+    data.injuries = data.actor.items.filter(it => it.type === 'injury');
+
+    // Prepare conditions
+    data.conditions = {};
+    data.currentConditions = [];
+    data.zeroConditions = [];
+    const conditionsData = data.system.conditions || {};
+    for (const condKey in conditionsData) {
+      if (condKey === 'trauma' && typeof conditionsData.trauma === 'object') {
+        for (const loc in conditionsData.trauma) {
+          const key = `trauma.${loc}`;
+          const labelLoc = loc.replace(/([A-Z])/g, ' $1');
+          const value = conditionsData.trauma[loc].value;
+          const condObj = { key, label: `Trauma (${labelLoc.charAt(0).toUpperCase() + labelLoc.slice(1)})`, value };
+          data.conditions[key] = condObj;
+          (value > 0 ? data.currentConditions : data.zeroConditions).push(condObj);
+        }
+      } else {
+        const value = conditionsData[condKey].value;
+        const label = condKey.charAt(0).toUpperCase() + condKey.slice(1);
+        const condObj = { key: condKey, label, value };
+        data.conditions[condKey] = condObj;
+        (value > 0 ? data.currentConditions : data.zeroConditions).push(condObj);
+      }
+    }
+
+    // HUD condition icons
+    const hudConditions = [];
+    for (const [key, d] of Object.entries(conditionsData)) {
+      if (key === 'trauma') continue;
+      const val = Number(d?.value || 0);
+      if (val >= 1) {
+        hudConditions.push({ key, value: val, faIcon: 'fa-exclamation-circle', tooltip: `${key} ${val}` });
+      }
+    }
+    hudConditions.sort((a,b) => a.key.localeCompare(b.key));
+    data.hudConditions = hudConditions;
+
+    // Hit location data for soak display
+    const anatomy = data.system.anatomy || {};
+    const trauma = data.system.conditions?.trauma || {};
+    const rb = Number(data.system.attributes?.robustness?.bonus || 0);
+    const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const soakTooltips = {};
+    const traumaTooltips = {};
+    for (const loc of LOCS) {
+      const wearVal = Number(data.system.battleWear?.armor?.[loc]?.value || 0);
+      const locData = anatomy[loc] || {};
+      const soak = Number(locData.soak || 0);
+      const av = Number(locData.armor || 0);
+      const other = soak - rb - (av - wearVal);
+      const otherVal = other > 0 ? other : 0;
+      soakTooltips[loc] = `${rb} + ${otherVal} + (${av} - ${wearVal}) = ${soak}`;
+
+      const rating = Number(trauma[loc]?.value || 0);
+      if (rating > 0) {
+        const locLabel = loc.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
+        traumaTooltips[loc] = `Trauma (${locLabel}) ${rating}: ${rating * 20}% penalty to checks involving ${locLabel}.`;
+      }
+    }
+    data.anatomy = anatomy;
+    data.trauma = trauma;
+    data.soakTooltips = soakTooltips;
+    data.traumaTooltips = traumaTooltips;
 
     // Return data for rendering
     return data;
@@ -119,6 +203,13 @@ export class WitchIronDescendantSheet extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
+    // Roll item from name
+    html.find('.item-name.item-roll').click(ev => {
+      const li = $(ev.currentTarget).parents('.item');
+      const item = this.actor.items.get(li.data('itemId'));
+      if (item && item.roll) item.roll();
+    });
+
     // Roll Skills by clicking on skill name
     html.find('.roll-skill').click(this._onRollSkill.bind(this));
 
@@ -127,6 +218,16 @@ export class WitchIronDescendantSheet extends ActorSheet {
 
     // Manage Specializations
     html.find('.skill-specialization-button').click(this._onManageSpecializations.bind(this));
+
+    // Battle wear buttons
+    html.find('.battle-wear-plus').click(this._onBattleWearPlus.bind(this));
+    html.find('.battle-wear-minus').click(this._onBattleWearMinus.bind(this));
+    html.find('.battle-wear-reset').click(this._onBattleWearReset.bind(this));
+
+    // Condition controls
+    html.find('.cond-plus').click(this._onConditionPlus.bind(this));
+    html.find('.cond-minus').click(this._onConditionMinus.bind(this));
+    html.find('.cond-value').change(this._onConditionInput.bind(this));
 
     // Toggle specializations visibility when clicking on skill name
     html.find('.skill-name').click(ev => {
@@ -597,5 +698,129 @@ export class WitchIronDescendantSheet extends ActorSheet {
       console.error("Error resetting skills:", error);
       ui.notifications.error("Failed to initialize skills structure. See console for details.");
     }
+  }
+
+  async _onBattleWearPlus(event) {
+    event.preventDefault();
+    const type = event.currentTarget.dataset.type;
+    const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    let current = 0; let max = 0; let path = "";
+    if (type === 'weapon') {
+      current = this.actor.system.battleWear?.weapon?.value || 0;
+      max = this.actor.system.derived?.weaponBonusMax || 0;
+      path = 'system.battleWear.weapon.value';
+    } else if (type && type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      if (locs.includes(loc)) {
+        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        max = this.actor.system.derived?.armorBonusMax || 0;
+        path = `system.battleWear.armor.${loc}.value`;
+      }
+    }
+    if (current >= max) return;
+    const update = {}; update[path] = current + 1;
+    await this.actor.update(update);
+    this._updateBattleWearDisplays();
+  }
+
+  async _onBattleWearMinus(event) {
+    event.preventDefault();
+    const type = event.currentTarget.dataset.type;
+    const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    let current = 0; let path = "";
+    if (type === 'weapon') {
+      current = this.actor.system.battleWear?.weapon?.value || 0;
+      path = 'system.battleWear.weapon.value';
+    } else if (type && type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      if (locs.includes(loc)) {
+        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        path = `system.battleWear.armor.${loc}.value`;
+      }
+    }
+    if (current <= 0) return;
+    const update = {}; update[path] = current - 1;
+    await this.actor.update(update);
+    this._updateBattleWearDisplays();
+  }
+
+  async _onBattleWearReset(event) {
+    event.preventDefault();
+    const type = event.currentTarget.dataset.type;
+    const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    let current = 0; let path = "";
+    if (type === 'weapon') {
+      current = this.actor.system.battleWear?.weapon?.value || 0;
+      path = 'system.battleWear.weapon.value';
+    } else if (type && type.startsWith('armor-')) {
+      const loc = type.split('-')[1];
+      if (locs.includes(loc)) {
+        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        path = `system.battleWear.armor.${loc}.value`;
+      }
+    }
+    if (current <= 0) return;
+    const update = {}; update[path] = 0;
+    await this.actor.update(update);
+    this._updateBattleWearDisplays();
+  }
+
+  _updateBattleWearDisplays() {
+    const html = this.element;
+    if (!html || !html.length) return;
+    const actorData = this.actor.system;
+    const armorLocs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    html.find('.battle-wear-value[data-type="weapon"]').text(actorData.battleWear?.weapon?.value || 0);
+    for (const loc of armorLocs) {
+      html.find(`.battle-wear-value[data-type="armor-${loc}"]`).text(actorData.battleWear?.armor?.[loc]?.value || 0);
+    }
+    this._updateBattleWearButtonStates();
+  }
+
+  _updateBattleWearButtonStates() {
+    const weaponMax = this.actor.system.derived?.weaponBonusMax || 0;
+    const armorMax = this.actor.system.derived?.armorBonusMax || 0;
+    const armorLocs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const weaponVal = this.actor.system.battleWear?.weapon?.value || 0;
+    this.element.find('.battle-wear-plus[data-type="weapon"]').prop('disabled', weaponVal >= weaponMax);
+    this.element.find('.battle-wear-minus[data-type="weapon"]').prop('disabled', weaponVal <= 0);
+    for (const loc of armorLocs) {
+      const val = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+      this.element.find(`.battle-wear-plus[data-type="armor-${loc}"]`).prop('disabled', val >= armorMax);
+      this.element.find(`.battle-wear-minus[data-type="armor-${loc}"]`).prop('disabled', val <= 0);
+    }
+  }
+
+  async _onConditionPlus(event) {
+    event.preventDefault();
+    const row = event.currentTarget.closest('.condition-row');
+    const cond = row.dataset.condition;
+    const input = row.querySelector('input.cond-value');
+    let value = parseInt(input?.value) || foundry.utils.getProperty(this.actor, `system.conditions.${cond}.value`) || 0;
+    value = value + 1;
+    if (input) input.value = value;
+    await this.actor.update({ [`system.conditions.${cond}.value`]: value });
+  }
+
+  async _onConditionMinus(event) {
+    event.preventDefault();
+    const row = event.currentTarget.closest('.condition-row');
+    const cond = row.dataset.condition;
+    const input = row.querySelector('input.cond-value');
+    let value = parseInt(input?.value) || foundry.utils.getProperty(this.actor, `system.conditions.${cond}.value`) || 0;
+    value = Math.max(0, value - 1);
+    if (input) input.value = value;
+    await this.actor.update({ [`system.conditions.${cond}.value`]: value });
+  }
+
+  async _onConditionInput(event) {
+    event.preventDefault();
+    const input = event.currentTarget;
+    const row = input.closest('.condition-row');
+    const cond = row.dataset.condition;
+    let value = parseInt(input.value) || 0;
+    value = Math.max(0, value);
+    input.value = value;
+    await this.actor.update({ [`system.conditions.${cond}.value`]: value });
   }
 } 
