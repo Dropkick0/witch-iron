@@ -795,6 +795,18 @@
   resize: vertical;
 }
 
+/* Resource block layout for item sheets */
+.witch-iron.sheet.item .resource {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.witch-iron.sheet.item .resource-label {
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
 /* ----------------------------------------- */
 /*  Chat Message Styles                      */
 /* ----------------------------------------- */
