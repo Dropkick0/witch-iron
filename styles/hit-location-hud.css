@@ -50,6 +50,7 @@
   text-align: center;
   line-height: 1.1;
   pointer-events: none;
+  white-space: nowrap;
 }
 
 .location-value .trauma {

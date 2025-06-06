@@ -220,8 +220,12 @@
 .defender-info {
     text-align: center;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 3px;
+    border-radius: 3px;
 }
 
 .hit-location-body .defender-info {
@@ -240,6 +244,7 @@
 
 .defender-info .defender-name {
     font-size: 0.8em;
+    white-space: nowrap;
 }
 
 
@@ -256,13 +261,16 @@
     transform: translate(-50%, -50%);
     text-align: center;
     pointer-events: none;
+    white-space: nowrap;
+    line-height: 1.1;
 }
 
 .location-value .net-dmg {
-    display: block;
+    display: inline-block;
     font-size: 1em;
     font-weight: bold;
     color: #a52a2a;
+    white-space: nowrap;
 }
 
 .location-value.head { top: 13%; left: 50%; }
@@ -280,12 +288,15 @@
     transform: translate(-50%, -50%);
     text-align: center;
     pointer-events: none;
+    white-space: nowrap;
+    line-height: 1.1;
 }
 .hit-location-selector .location-value .net-dmg {
-    display: block;
+    display: inline-block;
     font-size: 1em;
     font-weight: bold;
     color: #a52a2a;
+    white-space: nowrap;
 }
 .hit-location-selector .location-value.head { top: 12%; left: 50%; }
 .hit-location-selector .location-value.torso { top: 34%; left: 50%; }
