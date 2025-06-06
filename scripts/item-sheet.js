@@ -9,8 +9,7 @@ export class WitchIronItemSheet extends ItemSheet {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["witch-iron", "sheet", "item"],
       width: 520,
-      height: 480,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}]
+      height: 480
     });
   }
 
@@ -93,6 +92,13 @@ export class WitchIronItemSheet extends ItemSheet {
         }
       }
       context.skillOptions = skillOpts;
+
+      // Ability options based on system attributes
+      const abilityOpts = {};
+      for (const [key, label] of Object.entries(CONFIG.WITCH_IRON.attributes)) {
+        abilityOpts[key] = label;
+      }
+      context.abilityOptions = abilityOpts;
     }
 
     // Armor location options
@@ -161,6 +167,12 @@ export class WitchIronItemSheet extends ItemSheet {
     if (!context.system.skill) context.system.skill = 'melee';
     if (context.system.specialization === undefined) context.system.specialization = '';
     if (!context.system.wear) context.system.wear = { value: 0 };
+
+    // Default ability based on range if not set
+    if (!context.system.ability) {
+      const range = context.system.range?.value || 'melee';
+      context.system.ability = range === 'ranged' ? 'quickness' : 'muscle';
+    }
   }
 
   /** 
@@ -285,6 +297,27 @@ export class WitchIronItemSheet extends ItemSheet {
     }
     
     // Other item type specific listeners can be added in similar blocks
+  }
+
+  /** @override */
+  async _updateObject(event, formData) {
+    await super._updateObject(event, formData);
+
+    // Sync battle wear values with owning actor
+    if (!this.item.actor) return;
+
+    if (this.item.type === 'weapon') {
+      const wear = Number(this.item.system.wear?.value || 0);
+      await this.item.actor.update({ 'system.battleWear.weapon.value': wear });
+    } else if (this.item.type === 'armor') {
+      const locs = ['head','torso','leftArm','rightArm','leftLeg','rightLeg'];
+      const update = {};
+      for (const loc of locs) {
+        const val = Number(this.item.system.wear?.[loc]?.value || 0);
+        update[`system.battleWear.armor.${loc}.value`] = val;
+      }
+      await this.item.actor.update(update);
+    }
   }
 
   /** @override */

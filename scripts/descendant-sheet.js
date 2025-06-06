@@ -134,6 +134,7 @@ export class WitchIronDescendantSheet extends ActorSheet {
       
       // Item's encumbrance might need to be displayed
       item.system.encumbrance = item.system.encumbrance || { value: 0 };
+      if (item.system.equipped === undefined) item.system.equipped = false;
       
       // Classify items by type
       if (i.type === 'injury') injuries.push(item);
@@ -184,6 +185,9 @@ export class WitchIronDescendantSheet extends ActorSheet {
       item.delete();
       li.slideUp(200, () => this.render(false));
     });
+
+    // Equipped checkbox
+    html.find('.equipped-checkbox').change(this._onEquippedChange.bind(this));
 
     // Roll item from name
     html.find('.item-name.item-roll').click(ev => {
@@ -682,6 +686,31 @@ export class WitchIronDescendantSheet extends ActorSheet {
     }
   }
 
+  async _onEquippedChange(event) {
+    const input = event.currentTarget;
+    const itemId = input.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+    const equipped = input.checked;
+    await item.update({ 'system.equipped': equipped });
+
+    if (equipped) {
+      if (item.type === 'weapon') {
+        const wear = Number(item.system.wear?.value || 0);
+        await this.actor.update({ 'system.battleWear.weapon.value': wear });
+      } else if (item.type === 'armor') {
+        const locs = ['head','torso','leftArm','rightArm','leftLeg','rightLeg'];
+        const update = {};
+        for (const loc of locs) {
+          const val = Number(item.system.wear?.[loc]?.value || 0);
+          update[`system.battleWear.armor.${loc}.value`] = val;
+        }
+        await this.actor.update(update);
+      }
+    }
+    this._syncItemWearFromActor();
+    this.render(false);
+  }
+
   async _onBattleWearPlus(event) {
     event.preventDefault();
     const type = event.currentTarget.dataset.type;
@@ -702,6 +731,7 @@ export class WitchIronDescendantSheet extends ActorSheet {
     if (current >= max) return;
     const update = {}; update[path] = current + 1;
     await this.actor.update(update);
+    this._syncItemWearFromActor();
     this._updateBattleWearDisplays();
   }
 
@@ -723,6 +753,7 @@ export class WitchIronDescendantSheet extends ActorSheet {
     if (current <= 0) return;
     const update = {}; update[path] = current - 1;
     await this.actor.update(update);
+    this._syncItemWearFromActor();
     this._updateBattleWearDisplays();
   }
 
@@ -744,12 +775,14 @@ export class WitchIronDescendantSheet extends ActorSheet {
     if (current <= 0) return;
     const update = {}; update[path] = 0;
     await this.actor.update(update);
+    this._syncItemWearFromActor();
     this._updateBattleWearDisplays();
   }
 
   _updateBattleWearDisplays() {
     const html = this.element;
     if (!html || !html.length) return;
+    this._syncItemWearFromActor();
     const actorData = this.actor.system;
     const armorLocs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
     html.find('.battle-wear-value[data-type="weapon"]').text(actorData.battleWear?.weapon?.value || 0);
@@ -797,6 +830,31 @@ export class WitchIronDescendantSheet extends ActorSheet {
       const val = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
       this.element.find(`.battle-wear-plus[data-type="armor-${loc}"]`).prop('disabled', val >= armorMax);
       this.element.find(`.battle-wear-minus[data-type="armor-${loc}"]`).prop('disabled', val <= 0);
+    }
+  }
+
+  _syncItemWearFromActor() {
+    const weaponWear = this.actor.system.battleWear?.weapon?.value || 0;
+    const armorLocs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+
+    for (const item of this.actor.items) {
+      if (!item.system.equipped) continue;
+      if (item.type === 'weapon') {
+        if (Number(item.system.wear?.value || 0) !== weaponWear) {
+          item.update({ 'system.wear.value': weaponWear });
+        }
+      } else if (item.type === 'armor') {
+        const update = {};
+        let changed = false;
+        for (const loc of armorLocs) {
+          const val = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+          if (Number(item.system.wear?.[loc]?.value || 0) !== val) {
+            update[`system.wear.${loc}.value`] = val;
+            changed = true;
+          }
+        }
+        if (changed) item.update(update);
+      }
     }
   }
 
