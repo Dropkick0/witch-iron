@@ -684,66 +684,92 @@ export class WitchIronDescendantSheet extends ActorSheet {
 
   async _onBattleWearPlus(event) {
     event.preventDefault();
-    const type = event.currentTarget.dataset.type;
-    const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
-    let current = 0; let max = 0; let path = "";
-    if (type === 'weapon') {
-      current = this.actor.system.battleWear?.weapon?.value || 0;
-      max = this.actor.system.derived?.weaponBonusMax || 0;
-      path = 'system.battleWear.weapon.value';
-    } else if (type && type.startsWith('armor-')) {
-      const loc = type.split('-')[1];
-      if (locs.includes(loc)) {
-        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
-        max = this.actor.system.derived?.armorBonusMax || 0;
-        path = `system.battleWear.armor.${loc}.value`;
+    const itemId = event.currentTarget.dataset.item;
+    if (itemId) {
+      const item = this.actor.items.get(itemId);
+      if (!item) return;
+      const cur = Number(item.system.battleWear?.value || 0);
+      await item.update({ 'system.battleWear.value': cur + 1 });
+    } else {
+      const type = event.currentTarget.dataset.type;
+      const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+      let current = 0; let max = 0; let path = "";
+      if (type === 'weapon') {
+        current = this.actor.system.battleWear?.weapon?.value || 0;
+        max = this.actor.system.derived?.weaponBonusMax || 0;
+        path = 'system.battleWear.weapon.value';
+      } else if (type && type.startsWith('armor-')) {
+        const loc = type.split('-')[1];
+        if (locs.includes(loc)) {
+          current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+          max = this.actor.system.derived?.armorBonusMax || 0;
+          path = `system.battleWear.armor.${loc}.value`;
+        }
       }
+      if (current >= max) return;
+      const update = {}; update[path] = current + 1;
+      await this.actor.update(update);
     }
-    if (current >= max) return;
-    const update = {}; update[path] = current + 1;
-    await this.actor.update(update);
     this._updateBattleWearDisplays();
   }
 
   async _onBattleWearMinus(event) {
     event.preventDefault();
-    const type = event.currentTarget.dataset.type;
-    const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
-    let current = 0; let path = "";
-    if (type === 'weapon') {
-      current = this.actor.system.battleWear?.weapon?.value || 0;
-      path = 'system.battleWear.weapon.value';
-    } else if (type && type.startsWith('armor-')) {
-      const loc = type.split('-')[1];
-      if (locs.includes(loc)) {
-        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
-        path = `system.battleWear.armor.${loc}.value`;
+    const itemId = event.currentTarget.dataset.item;
+    if (itemId) {
+      const item = this.actor.items.get(itemId);
+      if (!item) return;
+      const cur = Number(item.system.battleWear?.value || 0);
+      if (cur <= 0) return;
+      await item.update({ 'system.battleWear.value': cur - 1 });
+    } else {
+      const type = event.currentTarget.dataset.type;
+      const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+      let current = 0; let path = "";
+      if (type === 'weapon') {
+        current = this.actor.system.battleWear?.weapon?.value || 0;
+        path = 'system.battleWear.weapon.value';
+      } else if (type && type.startsWith('armor-')) {
+        const loc = type.split('-')[1];
+        if (locs.includes(loc)) {
+          current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+          path = `system.battleWear.armor.${loc}.value`;
+        }
       }
+      if (current <= 0) return;
+      const update = {}; update[path] = current - 1;
+      await this.actor.update(update);
     }
-    if (current <= 0) return;
-    const update = {}; update[path] = current - 1;
-    await this.actor.update(update);
     this._updateBattleWearDisplays();
   }
 
   async _onBattleWearReset(event) {
     event.preventDefault();
-    const type = event.currentTarget.dataset.type;
-    const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
-    let current = 0; let path = "";
-    if (type === 'weapon') {
-      current = this.actor.system.battleWear?.weapon?.value || 0;
-      path = 'system.battleWear.weapon.value';
-    } else if (type && type.startsWith('armor-')) {
-      const loc = type.split('-')[1];
-      if (locs.includes(loc)) {
-        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
-        path = `system.battleWear.armor.${loc}.value`;
+    const itemId = event.currentTarget.dataset.item;
+    if (itemId) {
+      const item = this.actor.items.get(itemId);
+      if (!item) return;
+      const cur = Number(item.system.battleWear?.value || 0);
+      if (cur <= 0) return;
+      await item.update({ 'system.battleWear.value': 0 });
+    } else {
+      const type = event.currentTarget.dataset.type;
+      const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+      let current = 0; let path = "";
+      if (type === 'weapon') {
+        current = this.actor.system.battleWear?.weapon?.value || 0;
+        path = 'system.battleWear.weapon.value';
+      } else if (type && type.startsWith('armor-')) {
+        const loc = type.split('-')[1];
+        if (locs.includes(loc)) {
+          current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+          path = `system.battleWear.armor.${loc}.value`;
+        }
       }
+      if (current <= 0) return;
+      const update = {}; update[path] = 0;
+      await this.actor.update(update);
     }
-    if (current <= 0) return;
-    const update = {}; update[path] = 0;
-    await this.actor.update(update);
     this._updateBattleWearDisplays();
   }
 
@@ -755,6 +781,40 @@ export class WitchIronDescendantSheet extends ActorSheet {
     html.find('.battle-wear-value[data-type="weapon"]').text(actorData.battleWear?.weapon?.value || 0);
     for (const loc of armorLocs) {
       html.find(`.battle-wear-value[data-type="armor-${loc}"]`).text(actorData.battleWear?.armor?.[loc]?.value || 0);
+    }
+    html.find('.item[data-item-id]').each((i, el) => {
+      const id = el.dataset.itemId;
+      const item = this.actor.items.get(id);
+      if (item) {
+        $(el).find('.battle-wear-value').text(item.system.battleWear?.value || 0);
+      }
+    });
+
+    // Update soak and trauma displays
+    const anatomy = actorData.anatomy || {};
+    const trauma = actorData.conditions?.trauma || {};
+    const rb = Number(actorData.attributes?.robustness?.bonus || 0);
+    for (const loc of armorLocs) {
+      const locEl = html.find(`.location-value.${loc}`);
+      if (!locEl.length) continue;
+      const soak = Number(anatomy[loc]?.soak || 0);
+      const av = Number(anatomy[loc]?.armor || 0);
+      const wearVal = Number(actorData.battleWear?.armor?.[loc]?.value || 0);
+      const other = soak - rb - (av - wearVal);
+      const otherVal = other > 0 ? other : 0;
+      locEl.attr('title', `${rb} + ${otherVal} + (${av} - ${wearVal}) = ${soak}`);
+      locEl.find('.soak').text(soak);
+      locEl.find('.armor').text(av);
+      const tVal = Number(trauma[loc]?.value || 0);
+      const traumaSpan = locEl.find('.trauma');
+      if (tVal > 0) {
+        const locLabel = loc.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
+        traumaSpan.show();
+        traumaSpan.attr('title', `Trauma (${locLabel}) ${tVal}: ${tVal * 20}% penalty to checks involving ${locLabel}.`);
+        traumaSpan.find('.trauma-value').text(tVal);
+      } else {
+        traumaSpan.hide();
+      }
     }
     this._updateBattleWearButtonStates();
   }
@@ -771,6 +831,14 @@ export class WitchIronDescendantSheet extends ActorSheet {
       this.element.find(`.battle-wear-plus[data-type="armor-${loc}"]`).prop('disabled', val >= armorMax);
       this.element.find(`.battle-wear-minus[data-type="armor-${loc}"]`).prop('disabled', val <= 0);
     }
+    this.element.find('.item[data-item-id]').each((i, el) => {
+      const id = el.dataset.itemId;
+      const item = this.actor.items.get(id);
+      if (!item) return;
+      const val = item.system.battleWear?.value || 0;
+      $(el).find('.battle-wear-plus').prop('disabled', false);
+      $(el).find('.battle-wear-minus').prop('disabled', val <= 0);
+    });
   }
 
   async _onConditionPlus(event) {

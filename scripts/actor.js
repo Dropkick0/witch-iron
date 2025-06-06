@@ -241,14 +241,88 @@ export class WitchIronActor extends Actor {
     const intellectValue = systemData.attributes.intellect?.value || 0;
     systemData.derivedFlags.canReadWrite = intellectValue >= 40;
 
-    // Initialize common conditions
-    const condList = ["blind", "deaf", "pain"];
+    // Initialize common conditions including all monster conditions
+    const condList = [
+      "aflame",
+      "bleed",
+      "poison",
+      "corruption",
+      "stress",
+      "blind",
+      "deaf",
+      "pain",
+      "fatigue",
+      "entangle",
+      "helpless",
+      "stun",
+      "prone"
+    ];
     if (!systemData.conditions) systemData.conditions = {};
     for (const key of condList) {
       if (!systemData.conditions[key] || typeof systemData.conditions[key]?.value !== 'number') {
         systemData.conditions[key] = { value: 0 };
       }
     }
+
+    // --- Soak Calculation for Descendants ---
+    systemData.modifiers.soak = systemData.modifiers.soak || 0;
+
+    const rb = Number(systemData.attributes.robustness?.bonus || 0);
+    const otherMod = Number(systemData.modifiers.soak || 0);
+
+    const ARMOR_LOCATIONS = ["head", "torso", "leftArm", "rightArm", "leftLeg", "rightLeg"];
+
+    if (!systemData.battleWear) systemData.battleWear = { weapon: { value: 0 }, armor: {} };
+    if (!systemData.battleWear.weapon) systemData.battleWear.weapon = { value: 0 };
+    if (!systemData.battleWear.armor) systemData.battleWear.armor = {};
+
+    if (!systemData.anatomy) systemData.anatomy = {};
+    if (!systemData.derived) systemData.derived = {};
+
+    // Calculate armor and wear totals from equipped items
+    const armorTotals = {};
+    const wearTotals = {};
+    for (const loc of ARMOR_LOCATIONS) { armorTotals[loc] = 0; wearTotals[loc] = 0; }
+
+    let weaponWearTotal = 0;
+
+    for (const item of this.items) {
+      if (item.type === 'armor') {
+        const prot = Number(item.system.protection?.value || 0);
+        const wear = Number(item.system.battleWear?.value || 0);
+        const eff = Math.max(0, prot - wear);
+        const locations = Array.isArray(item.system.locations) ? item.system.locations : [];
+        for (const loc of locations) {
+          if (ARMOR_LOCATIONS.includes(loc)) {
+            armorTotals[loc] += eff;
+            wearTotals[loc] += wear;
+          }
+        }
+      } else if (item.type === 'weapon') {
+        weaponWearTotal += Number(item.system.battleWear?.value || 0);
+      }
+    }
+
+    systemData.battleWear.weapon.value = weaponWearTotal;
+
+    let armorMax = 0;
+    systemData.derived.locationSoak = {};
+    systemData.derived.armorBonusEffective = {};
+    for (const loc of ARMOR_LOCATIONS) {
+      if (!systemData.battleWear.armor[loc]) systemData.battleWear.armor[loc] = { value: 0 };
+      systemData.battleWear.armor[loc].value = wearTotals[loc];
+      if (!systemData.anatomy[loc]) systemData.anatomy[loc] = {};
+      const av = armorTotals[loc];
+      const soak = rb + otherMod + av;
+      systemData.anatomy[loc].armor = av;
+      systemData.anatomy[loc].soak = soak;
+      systemData.derived.locationSoak[loc] = soak;
+      systemData.derived.armorBonusEffective[loc] = av;
+      if (av > armorMax) armorMax = av;
+    }
+
+    systemData.derived.soakValue = systemData.anatomy.torso?.soak || rb + otherMod;
+    systemData.derived.armorBonusMax = armorMax;
   }
 
   /**
