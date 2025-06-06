@@ -756,6 +756,33 @@ export class WitchIronDescendantSheet extends ActorSheet {
     for (const loc of armorLocs) {
       html.find(`.battle-wear-value[data-type="armor-${loc}"]`).text(actorData.battleWear?.armor?.[loc]?.value || 0);
     }
+
+    // Update soak and trauma displays
+    const anatomy = actorData.anatomy || {};
+    const trauma = actorData.conditions?.trauma || {};
+    const rb = Number(actorData.attributes?.robustness?.bonus || 0);
+    for (const loc of armorLocs) {
+      const locEl = html.find(`.location-value.${loc}`);
+      if (!locEl.length) continue;
+      const soak = Number(anatomy[loc]?.soak || 0);
+      const av = Number(anatomy[loc]?.armor || 0);
+      const wearVal = Number(actorData.battleWear?.armor?.[loc]?.value || 0);
+      const other = soak - rb - (av - wearVal);
+      const otherVal = other > 0 ? other : 0;
+      locEl.attr('title', `${rb} + ${otherVal} + (${av} - ${wearVal}) = ${soak}`);
+      locEl.find('.soak').text(soak);
+      locEl.find('.armor').text(av);
+      const tVal = Number(trauma[loc]?.value || 0);
+      const traumaSpan = locEl.find('.trauma');
+      if (tVal > 0) {
+        const locLabel = loc.replace(/([A-Z])/g, ' $1').replace(/^./, c => c.toUpperCase());
+        traumaSpan.show();
+        traumaSpan.attr('title', `Trauma (${locLabel}) ${tVal}: ${tVal * 20}% penalty to checks involving ${locLabel}.`);
+        traumaSpan.find('.trauma-value').text(tVal);
+      } else {
+        traumaSpan.hide();
+      }
+    }
     this._updateBattleWearButtonStates();
   }
 
