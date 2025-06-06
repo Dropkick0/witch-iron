@@ -1034,8 +1034,9 @@ button.roll-skill:hover {
 }
 
 /* Actor Sheet - Descendant */
-.witch-iron.sheet.descendant {
-  position: relative; /* Create positioning context */
+.window-app.witch-iron.sheet.descendant {
+  position: absolute; /* keep default */
+  z-index: var(--z-window); /* ensure proper stacking */
 }
 
 .witch-iron.sheet.descendant .attributes-section {
@@ -1905,8 +1906,9 @@ button.roll-skill:hover {
 /* ----------------------------------------- */
 
 /* Main sheet layout - Remove conflicting sidebar styles, we're using the new ones */
-.witch-iron.sheet.descendant {
-  position: relative; /* Create positioning context */
+.window-app.witch-iron.sheet.descendant {
+  position: absolute; /* keep default */
+  z-index: var(--z-window); /* ensure proper stacking */
 }
 
 /* Tab styling */
