@@ -249,6 +249,43 @@ export class WitchIronActor extends Actor {
         systemData.conditions[key] = { value: 0 };
       }
     }
+
+    // --- Soak Calculation for Descendants ---
+    systemData.modifiers.soak = systemData.modifiers.soak || 0;
+
+    const rb = Number(systemData.attributes.robustness?.bonus || 0);
+    const otherMod = Number(systemData.modifiers.soak || 0);
+
+    const ARMOR_LOCATIONS = ["head", "torso", "leftArm", "rightArm", "leftLeg", "rightLeg"];
+
+    if (!systemData.battleWear) systemData.battleWear = { weapon: { value: 0 }, armor: {} };
+    if (!systemData.battleWear.weapon) systemData.battleWear.weapon = { value: 0 };
+    if (!systemData.battleWear.armor) systemData.battleWear.armor = {};
+    for (const loc of ARMOR_LOCATIONS) {
+      if (typeof systemData.battleWear.armor[loc]?.value !== 'number') systemData.battleWear.armor[loc] = { value: 0 };
+    }
+
+    if (!systemData.anatomy) systemData.anatomy = {};
+    if (!systemData.derived) systemData.derived = {};
+
+    let armorMax = 0;
+    systemData.derived.locationSoak = {};
+    systemData.derived.armorBonusEffective = {};
+    for (const loc of ARMOR_LOCATIONS) {
+      if (!systemData.anatomy[loc]) systemData.anatomy[loc] = {};
+      const av = Number(systemData.anatomy[loc].armor || 0);
+      const wear = Number(systemData.battleWear.armor[loc].value || 0);
+      const effectiveArmor = Math.max(0, av - wear);
+      const soak = rb + otherMod + effectiveArmor;
+      systemData.anatomy[loc].armor = av;
+      systemData.anatomy[loc].soak = soak;
+      systemData.derived.locationSoak[loc] = soak;
+      systemData.derived.armorBonusEffective[loc] = effectiveArmor;
+      if (av > armorMax) armorMax = av;
+    }
+
+    systemData.derived.soakValue = systemData.anatomy.torso?.soak || rb + otherMod;
+    systemData.derived.armorBonusMax = armorMax;
   }
 
   /**
