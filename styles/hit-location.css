@@ -109,7 +109,7 @@
     margin-bottom: 3px;
 }
 
-/* Net hits display */
+/* Net hits display (used in chat cards) */
 .net-hits-display {
     display: flex;
     align-items: center;
@@ -126,25 +126,30 @@
     color: #000;
 }
 
-.undo-move-btn {
-    padding: 2px 10px;
-    background: #323232;
-    color: var(--color-highlight);
-    border: 1px solid var(--color-text-muted);
+/* Net hits overlay */
+.net-hits-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 5px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 3px;
     border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    font-size: 0.8em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: #fff;
 }
 
-.undo-move-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.net-hits-info p {
+    margin: 0;
+    font-size: 0.75em;
 }
 
-.undo-move-btn:hover:not(:disabled) {
-    background: rgba(70, 70, 70, 0.9);
-    transform: translateY(-1px);
+.net-hits-info #net-hits-remaining {
+    font-size: 1.2em;
+    color: #fff;
 }
 
 .move-cost {

@@ -1707,24 +1707,13 @@ export class HitLocationDialog extends Application {
         // Get adjacent locations
         const adjacentLocations = this.adjacencyMap[this.selectedLocation] || [];
         
-        // Enable adjacent locations if we have enough hits
-        if (this.remainingHits >= this.moveCost) {
-            adjacentLocations.forEach(loc => {
-                // Highlight available locations on the body
+        // Highlight adjacent locations if we have enough hits or they represent an undo move
+        adjacentLocations.forEach(loc => {
+            if (this.remainingHits >= this.moveCost || loc === this.moveHistory[this.moveHistory.length - 1]) {
                 this.element.find(`.body-part[data-location="${loc}"]`).addClass('available');
-                
-                // Also highlight the labels
                 this.element.find(`.location-label[data-location="${loc}"]`).addClass('available');
-            });
-        }
-        
-        // Enable/disable undo button
-        const undoButton = this.element.find('.undo-move-btn');
-        if (this.moveHistory.length > 0) {
-            undoButton.removeAttr('disabled');
-        } else {
-            undoButton.attr('disabled', true);
-        }
+            }
+        });
     }
     
     /**
@@ -1733,24 +1722,32 @@ export class HitLocationDialog extends Application {
      */
     moveLocation(targetLocation) {
         if (!this.selectedLocation) return;
-        
-        // Check if the move is valid
+
         const adjacentLocations = this.adjacencyMap[this.selectedLocation] || [];
+        const lastLocation = this.moveHistory[this.moveHistory.length - 1];
+
+        // If clicking the previous location, treat as an undo even if no hits remain
+        if (targetLocation === lastLocation) {
+            this.moveHistory.pop();
+            this.remainingHits = Math.min(this.netHits, this.remainingHits + this.moveCost);
+            this.element.find('#net-hits-remaining').text(this.remainingHits);
+            this.selectLocationInAttackerPhase(targetLocation);
+            this.updateDamagePreview();
+            return;
+        }
+
+        // Normal move requires adjacency and available hits
         if (!adjacentLocations.includes(targetLocation) || this.remainingHits < this.moveCost) {
             console.warn(`Invalid move from ${this.selectedLocation} to ${targetLocation}`);
             return;
         }
-        
-        // Record the move in history for undo
+
+        // Record the move in history
         this.moveHistory.push(this.selectedLocation);
-        
-        // Update remaining hits
+
         this.remainingHits -= this.moveCost;
         this.element.find('#net-hits-remaining').text(this.remainingHits);
-
-        // Select the new location
         this.selectLocationInAttackerPhase(targetLocation);
-
         this.updateDamagePreview();
     }
     
@@ -1785,25 +1782,6 @@ export class HitLocationDialog extends Application {
 
         // Update available moves
         this.updateAvailableMoves();
-    }
-    
-    /**
-     * Undo the last move
-     */
-    undoMove() {
-        if (this.moveHistory.length === 0) return;
-        
-        // Get the previous location
-        const previousLocation = this.moveHistory.pop();
-        
-        // Refund the net hits
-        this.remainingHits += this.moveCost;
-        this.element.find('#net-hits-remaining').text(this.remainingHits);
-
-        // Select the previous location
-        this.selectLocationInAttackerPhase(previousLocation);
-
-        this.updateDamagePreview();
     }
     
     /**
@@ -1899,8 +1877,12 @@ export class HitLocationDialog extends Application {
             } else {
                 // In attacker phase, try to move to the location if it's available
                 const adjacentLocations = this.adjacencyMap[this.selectedLocation] || [];
-                if (adjacentLocations.includes(location) && this.remainingHits >= this.moveCost) {
-                    this.moveLocation(location);
+                if (adjacentLocations.includes(location)) {
+                    if (location === this.moveHistory[this.moveHistory.length - 1]) {
+                        this.moveLocation(location);
+                    } else if (this.remainingHits >= this.moveCost) {
+                        this.moveLocation(location);
+                    }
                 }
             }
         });
@@ -1917,17 +1899,14 @@ export class HitLocationDialog extends Application {
             } else {
                 // In attacker phase, try to move to the location if it's available
                 const adjacentLocations = this.adjacencyMap[this.selectedLocation] || [];
-                if (adjacentLocations.includes(location) && this.remainingHits >= this.moveCost) {
-                    this.moveLocation(location);
+                if (adjacentLocations.includes(location)) {
+                    if (location === this.moveHistory[this.moveHistory.length - 1]) {
+                        this.moveLocation(location);
+                    } else if (this.remainingHits >= this.moveCost) {
+                        this.moveLocation(location);
+                    }
                 }
             }
-        });
-        
-        // Undo button for attacker phase
-        const undoButton = html.find('.undo-move-btn');
-        undoButton.on('click', (event) => {
-            event.preventDefault();
-            this.undoMove();
         });
         
         // Confirm button for attacker phase
