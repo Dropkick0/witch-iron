@@ -1,4 +1,11 @@
 {{#if actor}}
+  {{#if selectors}}
+  <div class="actor-hand">
+    {{#each selectors}}
+      <div class="actor-card{{#eq ../actor.id id}} active{{/eq}}" data-actor-id="{{id}}">{{name}}</div>
+    {{/each}}
+  </div>
+  {{/if}}
 <div class="hud-inner">
   <div class="body-container">
     <div class="layer background-layer">
