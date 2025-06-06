@@ -82,3 +82,25 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+/* Actor selection hand */
+.actor-hand {
+  display: flex;
+  gap: .25rem;
+  justify-content: center;
+  margin-bottom: .25rem;
+}
+
+.actor-card {
+  background: var(--color-border-dark);
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.actor-card.active {
+  background: var(--color-accent);
+}
