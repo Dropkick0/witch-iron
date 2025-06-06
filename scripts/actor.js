@@ -1,16 +1,5 @@
 // Suppress console.log override for debugging; remove this line to restore logging
 // console.log = () => {};
-// Default hit locations for actors
-const DEFAULT_HIT_LOCATIONS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
-
-function getHitLocationKeys(sysData) {
-  const anatomy = sysData?.anatomy;
-  if (anatomy && Object.keys(anatomy).length > 0) {
-    return Object.keys(anatomy);
-  }
-  return DEFAULT_HIT_LOCATIONS.slice();
-}
-
 
 /**
  * Extends the base Actor class for Witch Iron actors.
@@ -402,7 +391,7 @@ export class WitchIronActor extends Actor {
     
     // Add weapon and armor bonuses
     // Initialize battle wear if needed
-    const ARMOR_LOCATIONS = getHitLocationKeys(systemData);
+    const ARMOR_LOCATIONS = ["head", "torso", "leftArm", "rightArm", "leftLeg", "rightLeg"];
 
     if (!systemData.battleWear) {
         systemData.battleWear = { weapon: { value: 0 }, armor: {} };
