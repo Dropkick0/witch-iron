@@ -263,12 +263,12 @@
     color: #a52a2a;
 }
 
-.location-value.head { top: 12%; left: 50%; }
-.location-value.torso { top: 34%; left: 50%; }
-.location-value.left-arm { top: 45%; left: 24%; }
-.location-value.right-arm { top: 45%; left: 75%; }
-.location-value.left-leg { top: 80%; left: 23%; }
-.location-value.right-leg { top: 80%; left: 77%; }
+.location-value.head { top: 13%; left: 50%; }
+.location-value.torso { top: 35%; left: 50%; }
+.location-value.left-arm { top: 46%; left: 24%; }
+.location-value.right-arm { top: 46%; left: 75%; }
+.location-value.left-leg { top: 81%; left: 23%; }
+.location-value.right-leg { top: 81%; left: 77%; }
 
 .values-layer {
     position: absolute;
