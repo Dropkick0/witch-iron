@@ -388,27 +388,6 @@ Hooks.on("renderActorSheet", (app, html, data) => {
   console.log(`Witch Iron | Added CSS class for ${app.actor.name}, type: ${app.actor.type}`);
 });
 
-// Hook to filter available sheets based on actor type
-Hooks.on("getActorSheetHeaderButtons", (app, buttons) => {
-  const actor = app.actor;
-  
-  // Add a helper button to set actor type
-  buttons.unshift({
-    label: actor.type === "monster" ? "Set as Descendant" : "Set as Monster",
-    class: "change-actor-type",
-    icon: "fas fa-exchange-alt",
-    onclick: () => {
-      const newType = actor.type === "monster" ? "descendant" : "monster";
-      actor.update({ "type": newType }).then(() => {
-        // Re-render the sheet with the appropriate sheet class
-        const sheetClass = newType === "monster" ? 
-          WitchIronMonsterSheet : WitchIronDescendantSheet;
-        const sheet = new sheetClass(actor);
-        sheet.render(true);
-      });
-    }
-  });
-});
 
 // Hook into actor creation dialog to add our custom types
 Hooks.on("renderDialog", (dialog, html, data) => {
