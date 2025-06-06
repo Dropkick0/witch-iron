@@ -16,6 +16,10 @@
             <img src="{{defenderImg}}" alt="{{defenderName}}">
             <span class="defender-name">{{defenderName}}</span>
         </div>
+        <div class="net-hits-info attacker-phase" style="display: none;">
+            <p>Net Hits:</p>
+            <strong id="net-hits-remaining">{{netHits}}</strong>
+        </div>
         <!-- Body Silhouette -->
         <div class="body-outline">
             <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
@@ -98,15 +102,6 @@
     
     <div class="instruction-text attacker-phase" style="display: none;">
         <p class="compact-instructions">Selected: <strong id="selected-location">None</strong> <span class="move-cost">(Moving costs 2 net hits per adjacent location)</span></p>
-    </div>
-
-        <div class="hit-location-phase attacker-phase" style="display: none;">
-        <div class="compact-info">
-            <div class="net-hits-display">
-                <p>Net Hits: <strong id="net-hits-remaining">{{netHits}}</strong></p>
-                <button class="undo-move-btn" disabled>Undo Last Move</button>
-            </div>
-        </div>
     </div>
     
     <div class="dialog-buttons defender-buttons">
