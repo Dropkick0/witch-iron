@@ -1846,8 +1846,9 @@ export class HitLocationDialog extends Application {
             const net = Math.max(0, damage - soak);
 
             const value = show ? net : '';
+            const display = value !== '' ? `Net Dmg: ${value}` : '';
 
-            this.element.find(`.location-value[data-location="${loc}"] .net-dmg`).text(value);
+            this.element.find(`.location-value[data-location="${loc}"] .net-dmg`).text(display);
             this.element.find(`.location-value[data-location="${loc}"] .soak`).text(this.soakValues[key] || 0);
             this.element.find(`.location-value[data-location="${loc}"] .armor`).text(this.armorValues[key] || 0);
         }
