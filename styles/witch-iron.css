@@ -3830,6 +3830,17 @@ button.roll-skill:hover {
   margin-top: 6px;
 }
 
+.witch-iron.sheet.monster .battle-wear-heading {
+  text-align: center;
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  color: var(--color-primary);
+}
+
+.witch-iron.sheet.monster .weapon-wear-label {
+  font-weight: bold;
+}
+
 .witch-iron.sheet.monster .hit-hud .wear-label {
   position: absolute;
   top: 0;
