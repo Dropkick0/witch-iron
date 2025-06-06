@@ -81,3 +81,29 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+/* Defender image and name overlay */
+.defender-info {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hit-hud .defender-info {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 5px;
+  pointer-events: none;
+}
+
+.defender-info img {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #000;
+}
+
+.defender-info .defender-name {
+  font-size: 0.8em;
+}

@@ -260,7 +260,7 @@
 
 .location-value .net-dmg {
     display: block;
-    font-size: 1em;
+    font-size: 1rem;
     font-weight: bold;
     color: #a52a2a;
 }
@@ -283,7 +283,7 @@
 }
 .hit-location-selector .location-value .net-dmg {
     display: block;
-    font-size: 1em;
+    font-size: 1rem;
     font-weight: bold;
     color: #a52a2a;
 }
