@@ -172,6 +172,7 @@ export class HitLocationHUD {
     const rb = Number(actor.system?.attributes?.robustness?.bonus || 0);
     const wear = {};
     const soakTooltips = {};
+    const baseAv = Number(actor.system?.derived?.armorBonus || 0);
     const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
     for (const loc of LOCS) {
       wear[loc] = Number(actor.system?.battleWear?.armor?.[loc]?.value || 0);
