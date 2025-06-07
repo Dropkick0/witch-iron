@@ -579,6 +579,28 @@
   text-align: center;
 }
 
+.witch-iron.sheet.descendant .item-wear {
+  flex: 0 0 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.witch-iron.sheet.descendant .item-wear .battle-wear-value {
+  margin: 0 3px;
+}
+
+.witch-iron.sheet.descendant .item-wear .battle-wear-minus,
+.witch-iron.sheet.descendant .item-wear .battle-wear-plus {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  line-height: 1;
+  padding: 0;
+}
+
 .witch-iron.sheet.descendant .item-controls {
   flex: 0 0 60px;
   text-align: right;
