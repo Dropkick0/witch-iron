@@ -628,7 +628,7 @@
                 {{#each weapons as |item id|}}
                 <div class="item flexrow" data-item-id="{{item._id}}">
                   <div class="item-name item-roll">{{item.name}}</div>
-                  <div class="item-damage">{{item.system.damage}}</div>
+                  <div class="item-damage">{{lookup (lookup ../system.attributes item.system.ability) 'bonus'}} ({{item.system.damage.value}})</div>
                   <div class="item-weight">{{item.system.encumbrance.value}}</div>
                   <div class="item-equipped"><input type="checkbox" class="equipped-checkbox" data-item-id="{{item._id}}" {{#if item.system.equipped}}checked{{/if}}></div>
                   <div class="item-controls">
@@ -646,7 +646,7 @@
               <div class="items-list">
                 <div class="inventory-header flexrow">
                   <div class="item-name">Name</div>
-                  <div class="item-defense">Defense</div>
+                  <div class="item-defense">AV</div>
                   <div class="item-weight">Weight</div>
                   <div class="item-equipped">Worn</div>
                   <div class="item-controls"></div>
@@ -654,7 +654,7 @@
                 {{#each armor as |item id|}}
                 <div class="item flexrow" data-item-id="{{item._id}}">
                   <div class="item-name">{{item.name}}</div>
-                  <div class="item-defense">{{item.system.defense}}</div>
+                  <div class="item-defense">{{item.system.protection.value}}</div>
                   <div class="item-weight">{{item.system.encumbrance.value}}</div>
                   <div class="item-equipped"><input type="checkbox" class="equipped-checkbox" data-item-id="{{item._id}}" {{#if item.system.equipped}}checked{{/if}}></div>
                   <div class="item-controls">
