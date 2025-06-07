@@ -160,10 +160,7 @@ export class WitchIronItemSheet extends ItemSheet {
    * Prepare weapon specific data
    */
   _prepareWeaponData(context) {
-    if (!context.system.damage) context.system.damage = { value: "", bonus: 0 };
-    if (typeof context.system.damage.bonus !== 'number') {
-      context.system.damage.bonus = Number(context.system.damage.bonus) || 0;
-    }
+    if (!context.system.damage) context.system.damage = { value: "" };
     if (!context.system.skill) context.system.skill = 'melee';
     if (context.system.specialization === undefined) context.system.specialization = '';
     if (!context.system.wear) context.system.wear = { value: 0 };

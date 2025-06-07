@@ -64,10 +64,7 @@ export class WitchIronItem extends Item {
    * @private
    */
   _prepareWeaponData(itemData) {
-    if (!itemData.damage) itemData.damage = { value: "", bonus: 0 };
-    if (typeof itemData.damage.bonus !== 'number') {
-      itemData.damage.bonus = Number(itemData.damage.bonus) || 0;
-    }
+    if (!itemData.damage) itemData.damage = { value: "" };
     if (!itemData.skill) itemData.skill = 'melee';
     if (itemData.specialization === undefined) itemData.specialization = '';
     if (!itemData.wear) itemData.wear = { value: 0 };
