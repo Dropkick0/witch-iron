@@ -1233,18 +1233,18 @@ export class WitchIronMonsterSheet extends ActorSheet {
     });
 
     // Update soak and trauma displays
-    const anatomy = actorData.anatomy || {};
     const trauma = actorData.conditions?.trauma || {};
     const rb = Number(actorData.attributes?.robustness?.bonus || 0);
+    const baseAv = Number(actorData.derived?.armorBonus || 0);
     for (const loc of ARMOR_LOCATIONS) {
         const locEl = html.find(`.location-value.${loc}`);
         if (!locEl.length) continue;
-        const soak = Number(anatomy[loc]?.soak || 0);
-        const av = Number(anatomy[loc]?.armor || 0);
         const wearVal = armorWear[loc];
-        const other = soak - rb - (av - wearVal);
+        const soak = Number(actorData.derived?.locationSoak?.[loc] || 0);
+        const av = Math.max(0, baseAv - wearVal);
+        const other = soak - rb - av;
         const otherVal = other > 0 ? other : 0;
-        locEl.attr('title', `${rb} + ${otherVal} + (${av} - ${wearVal}) = ${soak}`);
+        locEl.attr('title', `${rb} + ${otherVal} + (${baseAv} - ${wearVal}) = ${soak}`);
         locEl.find('.soak').text(soak);
         locEl.find('.armor').text(av);
         const tVal = Number(trauma[loc]?.value || 0);

@@ -165,22 +165,23 @@ export class HitLocationHUD {
       return;
     }
 
-    const anatomy = actor.system?.anatomy || {};
     const trauma = actor.system?.conditions?.trauma || {};
+    const anatomy = {};
 
     // Calculate per-location soak tooltip text
     const rb = Number(actor.system?.attributes?.robustness?.bonus || 0);
     const wear = {};
     const soakTooltips = {};
+    const baseAv = Number(actor.system?.derived?.armorBonus || 0);
     const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
     for (const loc of LOCS) {
       wear[loc] = Number(actor.system?.battleWear?.armor?.[loc]?.value || 0);
-      const locData = anatomy[loc] || {};
-      const soak = Number(locData.soak || 0);
-      const av = Number(locData.armor || 0);
-      const other = soak - rb - (av - wear[loc]);
+      const soak = Number(actor.system?.derived?.locationSoak?.[loc] || 0);
+      const av = Math.max(0, baseAv - wear[loc]);
+      const other = soak - rb - av;
       const otherVal = other > 0 ? other : 0;
-      soakTooltips[loc] = `Soak/AV ${soak}/${av}: ${rb} + ${otherVal} + (${av} - ${wear[loc]}) = ${soak}`;
+      anatomy[loc] = { soak, armor: av };
+      soakTooltips[loc] = `Soak/AV ${soak}/${av}: ${rb} + ${otherVal} + (${baseAv} - ${wear[loc]}) = ${soak}`;
     }
 
     const condObj = actor.system?.conditions || {};
