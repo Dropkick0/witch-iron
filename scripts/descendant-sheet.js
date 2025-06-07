@@ -707,6 +707,7 @@ export class WitchIronDescendantSheet extends ActorSheet {
         await this.actor.update(update);
       }
     }
+    await this._updateActorArmor();
     this._syncItemWearFromActor();
     this.render(false);
   }
@@ -856,6 +857,21 @@ export class WitchIronDescendantSheet extends ActorSheet {
         if (changed) item.update(update);
       }
     }
+  }
+
+  async _updateActorArmor() {
+    const armorLocs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const updates = {};
+    for (const loc of armorLocs) {
+      let total = 0;
+      for (const item of this.actor.items) {
+        if (item.type === 'armor' && item.system.equipped && item.system.locations?.[loc]) {
+          total += Number(item.system.protection?.value || 0);
+        }
+      }
+      updates[`system.anatomy.${loc}.armor`] = total;
+    }
+    await this.actor.update(updates);
   }
 
   async _onConditionPlus(event) {

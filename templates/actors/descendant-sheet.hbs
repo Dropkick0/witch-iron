@@ -621,6 +621,7 @@
                 <div class="inventory-header flexrow">
                   <div class="item-name">Name</div>
                   <div class="item-damage">Damage</div>
+                  <div class="item-wear">Wear</div>
                   <div class="item-weight">Weight</div>
                   <div class="item-equipped">Worn</div>
                   <div class="item-controls"></div>
@@ -628,7 +629,12 @@
                 {{#each weapons as |item id|}}
                 <div class="item flexrow" data-item-id="{{item._id}}">
                   <div class="item-name item-roll">{{item.name}}</div>
-                  <div class="item-damage">{{item.system.damage}}</div>
+                  <div class="item-damage">{{add (lookup (lookup ../system.attributes item.system.ability) 'bonus') item.system.damage.value}} ({{item.system.damage.value}})</div>
+                  <div class="item-wear">
+                    <button type="button" class="battle-wear-minus" data-type="weapon"><i class="fas fa-minus"></i></button>
+                    <span class="battle-wear-value" data-type="weapon">{{../system.battleWear.weapon.value}}</span>/<span class="wear-max">{{../system.derived.weaponBonusMax}}</span>
+                    <button type="button" class="battle-wear-plus" data-type="weapon"><i class="fas fa-plus"></i></button>
+                  </div>
                   <div class="item-weight">{{item.system.encumbrance.value}}</div>
                   <div class="item-equipped"><input type="checkbox" class="equipped-checkbox" data-item-id="{{item._id}}" {{#if item.system.equipped}}checked{{/if}}></div>
                   <div class="item-controls">
@@ -646,7 +652,8 @@
               <div class="items-list">
                 <div class="inventory-header flexrow">
                   <div class="item-name">Name</div>
-                  <div class="item-defense">Defense</div>
+                  <div class="item-defense">AV</div>
+                  <div class="item-wear">Wear</div>
                   <div class="item-weight">Weight</div>
                   <div class="item-equipped">Worn</div>
                   <div class="item-controls"></div>
@@ -654,7 +661,57 @@
                 {{#each armor as |item id|}}
                 <div class="item flexrow" data-item-id="{{item._id}}">
                   <div class="item-name">{{item.name}}</div>
-                  <div class="item-defense">{{item.system.defense}}</div>
+                  <div class="item-defense">{{item.system.protection.value}}</div>
+                  <div class="item-wear">
+                    {{#if item.system.locations.head}}
+                    <div class="wear-control">
+                      <span class="loc-label">Head</span>
+                      <button type="button" class="battle-wear-minus" data-type="armor-head"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-head">{{../system.battleWear.armor.head.value}}</span>/<span class="wear-max">{{../system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-head"><i class="fas fa-plus"></i></button>
+                    </div>
+                    {{/if}}
+                    {{#if item.system.locations.torso}}
+                    <div class="wear-control">
+                      <span class="loc-label">Torso</span>
+                      <button type="button" class="battle-wear-minus" data-type="armor-torso"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-torso">{{../system.battleWear.armor.torso.value}}</span>/<span class="wear-max">{{../system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-torso"><i class="fas fa-plus"></i></button>
+                    </div>
+                    {{/if}}
+                    {{#if item.system.locations.leftArm}}
+                    <div class="wear-control">
+                      <span class="loc-label">L Arm</span>
+                      <button type="button" class="battle-wear-minus" data-type="armor-leftArm"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-leftArm">{{../system.battleWear.armor.leftArm.value}}</span>/<span class="wear-max">{{../system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-leftArm"><i class="fas fa-plus"></i></button>
+                    </div>
+                    {{/if}}
+                    {{#if item.system.locations.rightArm}}
+                    <div class="wear-control">
+                      <span class="loc-label">R Arm</span>
+                      <button type="button" class="battle-wear-minus" data-type="armor-rightArm"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-rightArm">{{../system.battleWear.armor.rightArm.value}}</span>/<span class="wear-max">{{../system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-rightArm"><i class="fas fa-plus"></i></button>
+                    </div>
+                    {{/if}}
+                    {{#if item.system.locations.leftLeg}}
+                    <div class="wear-control">
+                      <span class="loc-label">L Leg</span>
+                      <button type="button" class="battle-wear-minus" data-type="armor-leftLeg"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-leftLeg">{{../system.battleWear.armor.leftLeg.value}}</span>/<span class="wear-max">{{../system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-leftLeg"><i class="fas fa-plus"></i></button>
+                    </div>
+                    {{/if}}
+                    {{#if item.system.locations.rightLeg}}
+                    <div class="wear-control">
+                      <span class="loc-label">R Leg</span>
+                      <button type="button" class="battle-wear-minus" data-type="armor-rightLeg"><i class="fas fa-minus"></i></button>
+                      <span class="battle-wear-value" data-type="armor-rightLeg">{{../system.battleWear.armor.rightLeg.value}}</span>/<span class="wear-max">{{../system.derived.armorBonusMax}}</span>
+                      <button type="button" class="battle-wear-plus" data-type="armor-rightLeg"><i class="fas fa-plus"></i></button>
+                    </div>
+                    {{/if}}
+                  </div>
                   <div class="item-weight">{{item.system.encumbrance.value}}</div>
                   <div class="item-equipped"><input type="checkbox" class="equipped-checkbox" data-item-id="{{item._id}}" {{#if item.system.equipped}}checked{{/if}}></div>
                   <div class="item-controls">
