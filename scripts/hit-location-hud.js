@@ -177,6 +177,9 @@ export class HitLocationHUD {
     for (const loc of LOCS) {
       wear[loc] = Number(actor.system?.battleWear?.armor?.[loc]?.value || 0);
       const soak = Number(actor.system?.derived?.locationSoak?.[loc] || 0);
+      const baseAv = actor.type === 'monster'
+        ? Number(actor.system?.derived?.armorBonus || 0)
+        : Number(actor.system?.anatomy?.[loc]?.armor || 0);
       const av = Math.max(0, baseAv - wear[loc]);
       const other = soak - rb - av;
       const otherVal = other > 0 ? other : 0;
@@ -239,6 +242,12 @@ export class HitLocationHUD {
           const w = actor.system?.battleWear?.weapon?.value || 0;
           el.querySelectorAll('.attacker-wear .battle-wear-value').forEach(e => e.textContent = w);
           el.querySelectorAll('.attacker-wear .battle-wear-bonus').forEach(e => e.textContent = w);
+
+          const dmgVal = inj.abilityDmg ?? 3;
+          const eff = actor.system?.derived?.weaponBonusEffective || 0;
+          const grid = el.querySelector('.combat-details .grid-two');
+          const vals = grid?.querySelectorAll('span.value');
+          if (vals && vals[0]) vals[0].textContent = `${dmgVal}(${eff})`;
         }
         if (inj.defender === actor.name) {
           const locMap = { head:'head', torso:'torso', 'left-arm':'leftArm', 'right-arm':'rightArm', 'left-leg':'leftLeg', 'right-leg':'rightLeg' };
@@ -246,6 +255,12 @@ export class HitLocationHUD {
           const aWear = actor.system?.battleWear?.armor?.[locKey]?.value || 0;
           el.querySelectorAll('.defender-wear .battle-wear-value').forEach(e => e.textContent = aWear);
           el.querySelectorAll('.defender-wear .battle-wear-bonus').forEach(e => e.textContent = aWear);
+
+          const soakVal = inj.abilitySoak ?? 3;
+          const eff = actor.system?.derived?.armorBonusEffective?.[locKey] || 0;
+          const grid = el.querySelector('.combat-details .grid-two');
+          const vals = grid?.querySelectorAll('span.value');
+          if (vals && vals[1]) vals[1].textContent = `${soakVal}(${eff})`;
         }
       }
     }
