@@ -693,20 +693,13 @@ export class WitchIronDescendantSheet extends ActorSheet {
     const equipped = input.checked;
     await item.update({ 'system.equipped': equipped });
 
-    if (equipped) {
-      if (item.type === 'weapon') {
-        const wear = Number(item.system.wear?.value || 0);
-        await this.actor.update({ 'system.battleWear.weapon.value': wear });
-      } else if (item.type === 'armor') {
-        const locs = ['head','torso','leftArm','rightArm','leftLeg','rightLeg'];
-        const update = {};
-        for (const loc of locs) {
-          const val = Number(item.system.wear?.[loc]?.value || 0);
-          update[`system.battleWear.armor.${loc}.value`] = val;
-        }
-        await this.actor.update(update);
-      }
+    if (item.type === 'weapon') {
+      const wear = equipped ? Number(item.system.wear?.value || 0) : 0;
+      await this.actor.update({ 'system.battleWear.weapon.value': wear });
+    } else if (item.type === 'armor') {
+      await this._updateArmorTotals();
     }
+
     this._syncItemWearFromActor();
     this.render(false);
   }
@@ -856,6 +849,29 @@ export class WitchIronDescendantSheet extends ActorSheet {
         if (changed) item.update(update);
       }
     }
+  }
+
+  async _updateArmorTotals() {
+    const locs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
+    const totals = {};
+    for (const loc of locs) totals[loc] = 0;
+
+    for (const item of this.actor.items) {
+      if (item.type !== 'armor' || !item.system.equipped) continue;
+      const av = Number(item.system.protection?.value || 0);
+      for (const loc of locs) {
+        if (item.system.locations?.[loc]) totals[loc] += av;
+      }
+    }
+
+    const update = {};
+    for (const loc of locs) {
+      update[`system.anatomy.${loc}.armor`] = totals[loc];
+      const currentWear = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+      if (currentWear > totals[loc]) update[`system.battleWear.armor.${loc}.value`] = totals[loc];
+    }
+
+    await this.actor.update(update);
   }
 
   async _onConditionPlus(event) {
