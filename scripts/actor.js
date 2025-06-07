@@ -832,7 +832,8 @@ export class WitchIronActor extends Actor {
       situationalMod: situationalMod,
       additionalHits: additionalHits,
       specialization: specialization,
-      luckSpent: options.luckSpent || false
+      luckSpent: options.luckSpent || false,
+      isCombatCheck: options.isCombatCheck === true
     };
 
     // Perform the roll

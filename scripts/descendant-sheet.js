@@ -793,11 +793,12 @@ export class WitchIronDescendantSheet extends ActorSheet {
       const soak = Number(anatomy[loc]?.soak || 0);
       const av = Number(anatomy[loc]?.armor || 0);
       const wearVal = Number(actorData.battleWear?.armor?.[loc]?.value || 0);
-      const other = soak - rb - (av - wearVal);
+      const effectiveAv = Math.max(0, av - wearVal);
+      const other = soak - rb - effectiveAv;
       const otherVal = other > 0 ? other : 0;
       locEl.attr('title', `${rb} + ${otherVal} + (${av} - ${wearVal}) = ${soak}`);
       locEl.find('.soak').text(soak);
-      locEl.find('.armor').text(av);
+      locEl.find('.armor').text(effectiveAv);
       const tVal = Number(trauma[loc]?.value || 0);
       const traumaSpan = locEl.find('.trauma');
       if (tVal > 0) {

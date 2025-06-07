@@ -218,24 +218,25 @@ export class WitchIronItem extends Item {
    */
   async _rollWeapon() {
     if (!this.actor) return;
-    
-    // This would implement weapon attack logic
-    // For now just display weapon details
-    const chatData = {
-      user: game.user.id,
-      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-      content: `
-        <div class="witch-iron weapon-card">
-          <h2>${this.name}</h2>
-          <div class="weapon-details">
-            <div><strong>Damage:</strong> ${this.system.damage.value || "None"}</div>
-            <div><strong>Properties:</strong> ${this.system.properties || "None"}</div>
-          </div>
-        </div>
-      `
-    };
 
-    return ChatMessage.create(chatData);
+    const skillName = this.system.skill || "melee";
+    const specName = (this.system.specialization || "").toLowerCase();
+    let additionalHits = 0;
+
+    const skillCats = this.actor.system.skills || {};
+    for (const cat of Object.values(skillCats)) {
+      if (!cat[skillName]) continue;
+      const specs = cat[skillName].specializations || [];
+      const spec = specs.find(s => s.name?.toLowerCase() === specName);
+      if (spec) additionalHits = spec.rating;
+      break;
+    }
+
+    await this.actor.update({ "system.flags.isCombatCheck": true });
+    return this.actor.rollSkill(skillName, {
+      additionalHits,
+      isCombatCheck: true
+    });
   }
 
   /**
