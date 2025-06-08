@@ -188,7 +188,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 4px;
 }
 
 .witch-iron.chat-card.injury-card .battle-wear-value,
@@ -202,12 +202,6 @@
     margin-left: 5px;
 }
 
-.witch-iron.chat-card.injury-card .battle-wear-buttons {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    margin-top: 0.5em;
-}
 
 .witch-iron.chat-card.injury-card .battle-wear-minus, 
 .witch-iron.chat-card.injury-card .battle-wear-plus {

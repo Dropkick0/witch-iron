@@ -444,7 +444,21 @@ export class WitchIronDescendantSheet extends ActorSheet {
     event.preventDefault();
     const header = event.currentTarget;
     const type = header.dataset.type || "gear";
-    await createItem(this.actor, type);
+
+    if (type === "injury") {
+      const savedDefaults = game.settings.get("witch-iron", "injurySheetDefaults") || {};
+      const system = {
+        description: "",
+        effect: "",
+        location: "",
+        severity: { value: 1 }
+      };
+      foundry.utils.mergeObject(system, savedDefaults, { inplace: true });
+      const name = savedDefaults.name !== undefined ? savedDefaults.name : "New Injury";
+      await createItem(this.actor, type, { name, img: "icons/svg/blood.svg", system });
+    } else {
+      await createItem(this.actor, type);
+    }
   }
 
   /**
