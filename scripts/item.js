@@ -80,6 +80,7 @@ export class WitchIronItem extends Item {
     if (!itemData.protection) itemData.protection = { value: 0 };
     if (!itemData.locations) itemData.locations = {};
     if (!itemData.wear) itemData.wear = {};
+    if (!itemData.layer) itemData.layer = 'normal';
     for (const loc of LOCS) {
       if (itemData.locations[loc] === undefined) itemData.locations[loc] = false;
       if (!itemData.wear[loc]) itemData.wear[loc] = { value: 0 };
@@ -233,10 +234,28 @@ export class WitchIronItem extends Item {
     }
 
     await this.actor.update({ "system.flags.isCombatCheck": true });
-    return this.actor.rollSkill(skillName, {
+    const msg = await this.actor.rollSkill(skillName, {
       additionalHits,
       isCombatCheck: true
     });
+
+    // Extract hits from the chat card so we can initiate a quarrel
+    const match = msg?.content?.match(/data-hits="(-?\d+)"/);
+    const hits = match ? parseInt(match[1]) : 0;
+
+    const targets = Array.from(game.user.targets || []);
+    if (game.witchIron?.manualQuarrel && targets.length) {
+      for (const t of targets) {
+        await game.witchIron.manualQuarrel({
+          actorId: this.actor.id,
+          hits,
+          skill: skillName,
+          isCombatCheck: true
+        }, t);
+      }
+    }
+
+    return msg;
   }
 
   /**

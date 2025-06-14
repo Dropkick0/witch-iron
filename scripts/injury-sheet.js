@@ -183,5 +183,15 @@ export class WitchIronInjurySheet extends ItemSheet {
     }
     // Call original update to persist all form fields
     await super._updateObject(event, formData);
+
+    // Save values as defaults for the next injury
+    const defaults = {
+      name: this.item.name,
+      description: this.item.system.description,
+      effect: this.item.system.effect,
+      location: this.item.system.location,
+      severity: { value: this.item.system.severity?.value || 1 }
+    };
+    await game.settings.set("witch-iron", "injurySheetDefaults", defaults);
   }
-} 
+}

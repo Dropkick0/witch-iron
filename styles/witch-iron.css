@@ -3852,6 +3852,14 @@ button.roll-skill:hover {
   pointer-events: auto;
 }
 
+/* Ensure battle-wear controls in equipment list are horizontal */
+.witch-iron.sheet.monster .item-wear .wear-controls,
+.witch-iron.sheet.descendant .item-wear .wear-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
 .witch-iron.sheet.monster .hit-hud .battle-wear-minus,
 .witch-iron.sheet.monster .hit-hud .battle-wear-plus,
 .witch-iron.sheet.descendant .hit-hud .battle-wear-minus,

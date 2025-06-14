@@ -307,13 +307,25 @@ export class WitchIronItemSheet extends ItemSheet {
       const wear = Number(this.item.system.wear?.value || 0);
       await this.item.actor.update({ 'system.battleWear.weapon.value': wear });
     } else if (this.item.type === 'armor') {
-      const locs = ['head','torso','leftArm','rightArm','leftLeg','rightLeg'];
-      const update = {};
-      for (const loc of locs) {
-        const val = Number(this.item.system.wear?.[loc]?.value || 0);
-        update[`system.battleWear.armor.${loc}.value`] = val;
+      const sheet = this.item.actor.sheet;
+      if (sheet && typeof sheet._syncActorWearFromItems === 'function') {
+        sheet._syncActorWearFromItems();
+      } else {
+        const locs = ['head','torso','leftArm','rightArm','leftLeg','rightLeg'];
+        const totals = {};
+        for (const loc of locs) totals[loc] = 0;
+        for (const item of this.item.actor.items) {
+          if (item.type !== 'armor' || !item.system.equipped) continue;
+          for (const loc of locs) {
+            if (item.system.locations?.[loc]) {
+              totals[loc] += Number(item.system.wear?.[loc]?.value || 0);
+            }
+          }
+        }
+        const update = {};
+        for (const loc of locs) update[`system.battleWear.armor.${loc}.value`] = totals[loc];
+        await this.item.actor.update(update);
       }
-      await this.item.actor.update(update);
     }
   }
 
