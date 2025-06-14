@@ -285,3 +285,22 @@
     inset: 0;
     pointer-events: none;
 }
+
+/* Limb loss overlay styles */
+.limb-base {
+    stroke: #888;
+    stroke-linecap: round;
+}
+.limb-overlay {
+    stroke: #693731;
+    stroke-linecap: round;
+}
+.limb-overlay.missing-25 {
+    stroke-dasharray: 75 25;
+}
+.limb-overlay.missing-50 {
+    stroke-dasharray: 50 50;
+}
+.limb-overlay.missing-100 {
+    stroke-dasharray: 0 100;
+}

@@ -1611,6 +1611,38 @@ export class HitLocationDialog extends Application {
             const net = Math.max(0, damage - soak);
             locationData[loc] = { soak, armor, net };
         }
+
+        const limbLoss = { leftArm: 0, rightArm: 0, leftLeg: 0, rightLeg: 0 };
+        const defender = game.actors?.getName?.(this.data.defenderName) || null;
+        if (defender) {
+            for (const item of defender.items) {
+                if (item.type !== 'injury') continue;
+                const effect = (item.system?.effect || '').toLowerCase();
+                const desc = (item.system?.description || '').toLowerCase();
+                const side = desc.includes('left') ? 'left' : desc.includes('right') ? 'right' : null;
+                let amt = 0;
+                let limb = null;
+                if (effect.includes('lost hand') || effect.includes('lost foot')) amt = 0.25;
+                else if (effect.includes('lost forearm') || effect.includes('lost shin')) amt = 0.5;
+                else if (effect.includes('lost arm') || effect.includes('lost leg')) amt = 1;
+                if (amt === 0) continue;
+                if (effect.includes('hand') || effect.includes('forearm') || effect.includes('arm')) limb = 'arm';
+                else if (effect.includes('foot') || effect.includes('shin') || effect.includes('leg')) limb = 'leg';
+                if (!limb) continue;
+                if (side === 'left') {
+                    limbLoss[limb === 'arm' ? 'leftArm' : 'leftLeg'] = Math.max(limbLoss[limb === 'arm' ? 'leftArm' : 'leftLeg'], amt);
+                } else if (side === 'right') {
+                    limbLoss[limb === 'arm' ? 'rightArm' : 'rightLeg'] = Math.max(limbLoss[limb === 'arm' ? 'rightArm' : 'rightLeg'], amt);
+                } else {
+                    const armKey = limb === 'arm' ? ['leftArm','rightArm'] : ['leftLeg','rightLeg'];
+                    for (const k of armKey) limbLoss[k] = Math.max(limbLoss[k], amt);
+                }
+            }
+        }
+        const limbLossClass = {};
+        for (const [k,v] of Object.entries(limbLoss)) {
+            limbLossClass[k] = v >= 1 ? 'missing-100' : v >= 0.5 ? 'missing-50' : v >= 0.25 ? 'missing-25' : '';
+        }
         return {
             defenderName: this.data.defenderName || "Target",
             defenderImg: this.defenderImg,
@@ -1618,7 +1650,8 @@ export class HitLocationDialog extends Application {
             netHits: this.netHits,
             damagePreview: damage,
             phase: this.phase,
-            locations: locationData
+            locations: locationData,
+            limbLossClass
         };
     }
 
