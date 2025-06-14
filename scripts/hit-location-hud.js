@@ -256,7 +256,7 @@ export class HitLocationHUD {
           el.querySelectorAll('.defender-wear .battle-wear-value').forEach(e => e.textContent = aWear);
           el.querySelectorAll('.defender-wear .battle-wear-bonus').forEach(e => e.textContent = aWear);
 
-          const soakVal = inj.abilitySoak ?? 3;
+          const soakVal = actor.system?.derived?.locationSoak?.[locKey] || (inj.abilitySoak ?? 3);
           const eff = actor.system?.derived?.armorBonusEffective?.[locKey] || 0;
           const grid = el.querySelector('.combat-details .grid-two');
           const vals = grid?.querySelectorAll('span.value');

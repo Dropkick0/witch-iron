@@ -744,7 +744,10 @@ export class WitchIronDescendantSheet extends ActorSheet {
               return w + (l===loc ? 1 : 0) >= prot;
             });
             if (allGone) {
-              await item.delete();
+              const name = item.name.startsWith('(Destroyed) ')
+                ? item.name
+                : `(Destroyed) ${item.name}`;
+              await item.update({ name });
               await this._updateArmorTotals();
             }
             break;
@@ -927,7 +930,9 @@ export class WitchIronDescendantSheet extends ActorSheet {
       if (item.type !== 'armor' || !item.system.equipped) continue;
       const av = Number(item.system.protection?.value || 0);
       for (const loc of locs) {
-        if (item.system.locations?.[loc]) totals[loc] += av;
+        if (!item.system.locations?.[loc]) continue;
+        const wear = Number(item.system.wear?.[loc]?.value || 0);
+        if (wear < av) totals[loc] += av;
       }
     }
 
