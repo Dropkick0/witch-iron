@@ -14,7 +14,7 @@
       <textarea name="system.description" placeholder="Description">{{system.description}}</textarea>
     </div>
 
-    <div class="grid grid-3col">
+    <div class="grid grid-4col">
         <div class="resource">
           <label class="resource-label">Armor Value</label>
           <input type="number" name="system.protection.value" value="{{system.protection.value}}" data-dtype="Number"/>
@@ -32,6 +32,15 @@
         <div class="resource">
           <label class="resource-label">Encumbrance</label>
           <input type="number" name="system.encumbrance.value" value="{{system.encumbrance.value}}" data-dtype="Number"/>
+        </div>
+
+        <div class="resource">
+          <label class="resource-label">Layer</label>
+          <select name="system.layer">
+            <option value="cloak" {{#if (eq system.layer 'cloak')}}selected{{/if}}>Cloak</option>
+            <option value="normal" {{#if (eq system.layer 'normal')}}selected{{/if}}>Default</option>
+            <option value="under" {{#if (eq system.layer 'under')}}selected{{/if}}>Under</option>
+          </select>
         </div>
       </div>
 
