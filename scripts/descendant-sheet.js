@@ -730,16 +730,9 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
-        let item = null;
         const row = event.currentTarget.closest('.item');
         const itemId = row?.dataset.itemId;
-        if (itemId) item = this.actor.items.get(itemId);
-        if (!item) {
-          const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
-          const order = { cloak: 0, normal: 1, under: 2 };
-          items.sort((a,b) => (order[a.system.layer || 'normal'] ?? 1) - (order[b.system.layer || 'normal'] ?? 1));
-          item = items[0];
-        }
+        const item = this.actor.items.get(itemId);
         if (item) {
           const wear = Number(item.system.wear?.[loc]?.value || 0);
           const prot = Number(item.system.protection?.value || 0);
@@ -782,16 +775,9 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
-        let item = null;
         const row = event.currentTarget.closest('.item');
         const itemId = row?.dataset.itemId;
-        if (itemId) item = this.actor.items.get(itemId);
-        if (!item) {
-          const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
-          const order = { cloak: 0, normal: 1, under: 2 };
-          items.sort((a,b) => (order[b.system.layer || 'normal'] ?? 1) - (order[a.system.layer || 'normal'] ?? 1));
-          item = items.find(it => Number(it.system.wear?.[loc]?.value || 0) > 0);
-        }
+        const item = this.actor.items.get(itemId);
         if (item) {
           const wear = Number(item.system.wear?.[loc]?.value || 0);
           if (wear > 0) {
@@ -832,14 +818,9 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
-        let item = null;
         const row = event.currentTarget.closest('.item');
         const itemId = row?.dataset.itemId;
-        if (itemId) item = this.actor.items.get(itemId);
-        if (!item) {
-          const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
-          item = items[0];
-        }
+        const item = this.actor.items.get(itemId);
         if (item) {
           await item.update({ [`system.wear.${loc}.value`]: 0 });
           const prot = Number(item.system.protection?.value || 0);
