@@ -108,12 +108,28 @@ export class HitLocationHUD {
       if (this.currentActor && this.currentActor.id === actor.id) {
         this.render(actor);
       }
+      this.refreshInjuryMessages(actor);
     });
 
     Hooks.on('updateItem', (item) => {
       if (this.currentActor && item.actor?.id === this.currentActor.id) {
         this.render(this.currentActor);
       }
+      if (item.actor) this.refreshInjuryMessages(item.actor);
+    });
+
+    Hooks.on('createItem', (item) => {
+      if (this.currentActor && item.actor?.id === this.currentActor.id) {
+        this.render(this.currentActor);
+      }
+      if (item.actor) this.refreshInjuryMessages(item.actor);
+    });
+
+    Hooks.on('deleteItem', (item) => {
+      if (this.currentActor && item.actor?.id === this.currentActor.id) {
+        this.render(this.currentActor);
+      }
+      if (item.actor) this.refreshInjuryMessages(item.actor);
     });
 
     this.updateFromSelection();
@@ -149,8 +165,8 @@ export class HitLocationHUD {
       return;
     }
 
-    const anatomy = actor.system?.anatomy || {};
     const trauma = actor.system?.conditions?.trauma || {};
+    const anatomy = {};
 
     // Calculate per-location soak tooltip text
     const rb = Number(actor.system?.attributes?.robustness?.bonus || 0);
@@ -159,12 +175,15 @@ export class HitLocationHUD {
     const LOCS = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
     for (const loc of LOCS) {
       wear[loc] = Number(actor.system?.battleWear?.armor?.[loc]?.value || 0);
-      const locData = anatomy[loc] || {};
-      const soak = Number(locData.soak || 0);
-      const av = Number(locData.armor || 0);
-      const other = soak - rb - (av - wear[loc]);
+      const soak = Number(actor.system?.derived?.locationSoak?.[loc] || 0);
+      const baseAv = actor.type === 'monster'
+        ? Number(actor.system?.derived?.armorBonus || 0)
+        : Number(actor.system?.anatomy?.[loc]?.armor || 0);
+      const av = Math.max(0, baseAv - wear[loc]);
+      const other = soak - rb - av;
       const otherVal = other > 0 ? other : 0;
-      soakTooltips[loc] = `Soak/AV ${soak}/${av}: ${rb} + ${otherVal} + (${av} - ${wear[loc]}) = ${soak}`;
+      anatomy[loc] = { soak, armor: av };
+      soakTooltips[loc] = `Soak/AV ${soak}/${av}: ${rb} + ${otherVal} + (${baseAv} - ${wear[loc]}) = ${soak}`;
     }
 
     const condObj = actor.system?.conditions || {};
@@ -204,5 +223,45 @@ export class HitLocationHUD {
     const data = { actor, selectors: selectorData, anatomy, trauma, conditions, soakTooltips, traumaTooltips };
     const html = await renderTemplate('systems/witch-iron/templates/hud/hit-location-hud.hbs', data);
     this.container.innerHTML = html;
+  }
+
+  /**
+   * Update any injury chat cards that reference this actor
+   * @param {Actor} actor
+   */
+  static refreshInjuryMessages(actor) {
+    const messages = game.messages?.contents || [];
+    for (const msg of messages) {
+      const inj = msg.getFlag('witch-iron', 'injuryData');
+      if (!inj) continue;
+      if (inj.attacker === actor.name || inj.defender === actor.name) {
+        const el = document.querySelector(`.message[data-message-id="${msg.id}"]`);
+        if (!el) continue;
+        if (inj.attacker === actor.name) {
+          const w = actor.system?.battleWear?.weapon?.value || 0;
+          el.querySelectorAll('.attacker-wear .battle-wear-value').forEach(e => e.textContent = w);
+          el.querySelectorAll('.attacker-wear .battle-wear-bonus').forEach(e => e.textContent = w);
+
+          const dmgVal = inj.abilityDmg ?? 3;
+          const eff = actor.system?.derived?.weaponBonusEffective || 0;
+          const grid = el.querySelector('.combat-details .grid-two');
+          const vals = grid?.querySelectorAll('span.value');
+          if (vals && vals[0]) vals[0].textContent = `${dmgVal}(${eff})`;
+        }
+        if (inj.defender === actor.name) {
+          const locMap = { head:'head', torso:'torso', 'left-arm':'leftArm', 'right-arm':'rightArm', 'left-leg':'leftLeg', 'right-leg':'rightLeg' };
+          const locKey = locMap[(inj.location || '').toLowerCase().replace(/\s+/g,'-')] || (inj.location || '').toLowerCase();
+          const aWear = actor.system?.battleWear?.armor?.[locKey]?.value || 0;
+          el.querySelectorAll('.defender-wear .battle-wear-value').forEach(e => e.textContent = aWear);
+          el.querySelectorAll('.defender-wear .battle-wear-bonus').forEach(e => e.textContent = aWear);
+
+          const soakVal = actor.system?.derived?.locationSoak?.[locKey] || (inj.abilitySoak ?? 3);
+          const eff = actor.system?.derived?.armorBonusEffective?.[locKey] || 0;
+          const grid = el.querySelector('.combat-details .grid-two');
+          const vals = grid?.querySelectorAll('span.value');
+          if (vals && vals[1]) vals[1].textContent = `${soakVal}(${eff})`;
+        }
+      }
+    }
   }
 }
