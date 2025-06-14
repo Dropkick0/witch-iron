@@ -1421,9 +1421,12 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, lo
             newTotalAttackerWear = Math.min(currentAttackerWear + attackerWearToAdd, attackerMaxWear);
 
             console.log(`Updating ${attackerName}'s weapon wear: ${currentAttackerWear} + ${attackerWearToAdd} -> ${newTotalAttackerWear} (Max: ${attackerMaxWear})`);
-            await attackerActor.update({
-                "system.battleWear.weapon.value": newTotalAttackerWear
-            });
+            await attackerActor.update({ "system.battleWear.weapon.value": newTotalAttackerWear });
+
+            const weaponItem = attackerActor.items.find(i => i.type === 'weapon' && i.system.equipped);
+            if (weaponItem) {
+                await weaponItem.update({ "system.wear.value": newTotalAttackerWear });
+            }
         }
 
         if (defenderActor) {
@@ -1435,6 +1438,29 @@ async function applyBattleWear(message, attackerWearToAdd, defenderWearToAdd, lo
             const updateObj = {};
             updateObj[`system.battleWear.armor.${locKey}.value`] = newTotalDefenderWear;
             await defenderActor.update(updateObj);
+
+            const armorItem = defenderActor.items.find(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[locKey]);
+            if (armorItem) {
+                const prot = Number(armorItem.system.protection?.value || 0);
+                const wearVal = Math.min(newTotalDefenderWear, prot);
+                const upd = {}; upd[`system.wear.${locKey}.value`] = wearVal;
+                let name = armorItem.name;
+                const destroyed = Object.entries(armorItem.system.locations || {}).every(([l,en]) => {
+                    if (!en) return true;
+                    const w = l===locKey ? wearVal : Number(armorItem.system.wear?.[l]?.value || 0);
+                    return w >= prot;
+                });
+                if (destroyed && !name.startsWith('(Destroyed) ')) name = `(Destroyed) ${name}`;
+                if (!destroyed && name.startsWith('(Destroyed) ')) name = name.replace(/^\(Destroyed\)\s*/, '');
+                upd.name = name;
+                await armorItem.update(upd);
+            }
+
+            if (defenderActor.sheet && typeof defenderActor.sheet._syncActorWearFromItems === 'function') {
+                defenderActor.sheet._syncActorWearFromItems();
+                if (defenderActor.sheet._updateArmorTotals)
+                    await defenderActor.sheet._updateArmorTotals();
+            }
         }
 
         // Broadcast a custom socket message to notify all clients about the battle wear change *in this interaction*
@@ -3142,8 +3168,7 @@ async function updateActorBattleWear(message, attackerWear, defenderWear, locati
     // Update attacker
     if (attackerActor) {
         console.log(`Updating ${attackerName}'s weapon battle wear to ${attackerWear}`);
-        
-        // Ensure the system is initialized
+
         if (!attackerActor.system.battleWear) {
             updatePromises.push(
                 attackerActor.update({
@@ -3154,13 +3179,13 @@ async function updateActorBattleWear(message, attackerWear, defenderWear, locati
                 })
             );
         }
-        
-        // Update the weapon battle wear
-        updatePromises.push(
-            attackerActor.update({
-                "system.battleWear.weapon.value": attackerWear
-            })
-        );
+
+        updatePromises.push(attackerActor.update({ "system.battleWear.weapon.value": attackerWear }));
+
+        const weaponItem = attackerActor.items.find(i => i.type === 'weapon' && i.system.equipped);
+        if (weaponItem) {
+            updatePromises.push(weaponItem.update({ "system.wear.value": attackerWear }));
+        }
     } else {
         console.warn(`Could not find attacker actor: ${attackerName}`);
     }
@@ -3184,10 +3209,32 @@ async function updateActorBattleWear(message, attackerWear, defenderWear, locati
             );
         }
         
-        // Update the armor battle wear
         const updateObj = {};
         updateObj[`system.battleWear.armor.${locKey}.value`] = defenderWear;
         updatePromises.push(defenderActor.update(updateObj));
+
+        const armorItem = defenderActor.items.find(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[locKey]);
+        if (armorItem) {
+            const prot = Number(armorItem.system.protection?.value || 0);
+            const wearVal = Math.min(defenderWear, prot);
+            const upd = {}; upd[`system.wear.${locKey}.value`] = wearVal;
+            let name = armorItem.name;
+            const destroyed = Object.entries(armorItem.system.locations || {}).every(([l,en]) => {
+                if (!en) return true;
+                const w = l===locKey ? wearVal : Number(armorItem.system.wear?.[l]?.value || 0);
+                return w >= prot;
+            });
+            if (destroyed && !name.startsWith('(Destroyed) ')) name = `(Destroyed) ${name}`;
+            if (!destroyed && name.startsWith('(Destroyed) ')) name = name.replace(/^\(Destroyed\)\s*/, '');
+            upd.name = name;
+            updatePromises.push(armorItem.update(upd));
+        }
+
+        if (defenderActor.sheet && typeof defenderActor.sheet._syncActorWearFromItems === 'function') {
+            defenderActor.sheet._syncActorWearFromItems();
+            if (defenderActor.sheet._updateArmorTotals)
+                await defenderActor.sheet._updateArmorTotals();
+        }
     } else {
         console.warn(`Could not find defender actor: ${defenderName}`);
     }

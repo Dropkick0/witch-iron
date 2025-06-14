@@ -730,31 +730,38 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
-        const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
+        const row = event.currentTarget.closest('.item');
+        const itemId = row?.dataset.itemId;
+        let item = itemId ? this.actor.items.get(itemId) : null;
         const order = { cloak: 0, normal: 1, under: 2 };
-        items.sort((a,b) => (order[a.system.layer || 'normal'] ?? 1) - (order[b.system.layer || 'normal'] ?? 1));
-        for (const item of items) {
+
+        if (!item) {
+          const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
+          items.sort((a,b) => (order[a.system.layer || 'normal'] ?? 1) - (order[b.system.layer || 'normal'] ?? 1));
+          item = items.find(i => Number(i.system.wear?.[loc]?.value || 0) < Number(i.system.protection?.value || 0));
+        }
+
+        if (item) {
           const wear = Number(item.system.wear?.[loc]?.value || 0);
           const prot = Number(item.system.protection?.value || 0);
           if (wear < prot) {
-            await item.update({ [`system.wear.${loc}.value`]: wear + 1 });
-            const allGone = Object.entries(item.system.locations || {}).every(([l,enabled]) => {
-              if (!enabled) return true;
+            const newWear = wear + 1;
+            const upd = {};
+            upd[`system.wear.${loc}.value`] = newWear;
+            const destroyed = Object.entries(item.system.locations || {}).every(([l,en]) => {
+              if (!en) return true;
               const w = Number(item.system.wear?.[l]?.value || 0);
-              return w + (l===loc ? 1 : 0) >= prot;
+              return (l===loc ? newWear : w) >= prot;
             });
-            if (allGone) {
-              const name = item.name.startsWith('(Destroyed) ')
-                ? item.name
-                : `(Destroyed) ${item.name}`;
-              await item.update({ name });
-              await this._updateArmorTotals();
+            if (destroyed) {
+              upd.name = item.name.startsWith('(Destroyed) ') ? item.name : `(Destroyed) ${item.name}`;
             }
-            break;
+            await item.update(upd);
+            await this._updateArmorTotals();
+            await this._syncActorWearFromItems();
+            this._updateBattleWearDisplays();
           }
         }
-        await this._syncActorWearFromItems();
-        this._updateBattleWearDisplays();
         return;
       }
     }
@@ -776,16 +783,36 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
-        const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
+        const row = event.currentTarget.closest('.item');
+        const itemId = row?.dataset.itemId;
+        let item = itemId ? this.actor.items.get(itemId) : null;
         const order = { cloak: 0, normal: 1, under: 2 };
-        items.sort((a,b) => (order[b.system.layer || 'normal'] ?? 1) - (order[a.system.layer || 'normal'] ?? 1));
-        for (const item of items) {
+
+        if (!item) {
+          const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
+          items.sort((a,b) => (order[b.system.layer || 'normal'] ?? 1) - (order[a.system.layer || 'normal'] ?? 1));
+          item = items.find(i => Number(i.system.wear?.[loc]?.value || 0) > 0);
+        }
+
+        if (item) {
           const wear = Number(item.system.wear?.[loc]?.value || 0);
           if (wear > 0) {
-            await item.update({ [`system.wear.${loc}.value`]: wear - 1 });
+            const newWear = wear - 1;
+            const upd = {};
+            upd[`system.wear.${loc}.value`] = newWear;
+            const prot = Number(item.system.protection?.value || 0);
+            const fullyRepaired = Object.entries(item.system.locations || {}).every(([l,en]) => {
+              if (!en) return true;
+              const w = Number(item.system.wear?.[l]?.value || 0);
+              return (l===loc ? newWear : w) < prot;
+            });
+            if (fullyRepaired && item.name.startsWith('(Destroyed) ')) {
+              upd.name = item.name.replace(/^\(Destroyed\)\s*/, '');
+            }
+            await item.update(upd);
+            await this._updateArmorTotals();
             await this._syncActorWearFromItems();
             this._updateBattleWearDisplays();
-            return;
           }
         }
         return;
@@ -809,12 +836,34 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
-        const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
-        for (const item of items) {
-          await item.update({ [`system.wear.${loc}.value`]: 0 });
+        const row = event.currentTarget.closest('.item');
+        const itemId = row?.dataset.itemId;
+        let item = itemId ? this.actor.items.get(itemId) : null;
+        const order = { cloak: 0, normal: 1, under: 2 };
+
+        if (!item) {
+          const items = Array.from(this.actor.items).filter(i => i.type === 'armor' && i.system.equipped && i.system.locations?.[loc]);
+          items.sort((a,b) => (order[b.system.layer || 'normal'] ?? 1) - (order[a.system.layer || 'normal'] ?? 1));
+          item = items.find(i => Number(i.system.wear?.[loc]?.value || 0) > 0);
         }
-        await this._syncActorWearFromItems();
-        this._updateBattleWearDisplays();
+
+        if (item) {
+          const upd = {};
+          upd[`system.wear.${loc}.value`] = 0;
+          const prot = Number(item.system.protection?.value || 0);
+          const fullyRepaired = Object.entries(item.system.locations || {}).every(([l,en]) => {
+            if (!en) return true;
+            const w = Number(item.system.wear?.[l]?.value || 0);
+            return (l===loc ? 0 : w) < prot;
+          });
+          if (fullyRepaired && item.name.startsWith('(Destroyed) ')) {
+            upd.name = item.name.replace(/^\(Destroyed\)\s*/, '');
+          }
+          await item.update(upd);
+          await this._updateArmorTotals();
+          await this._syncActorWearFromItems();
+          this._updateBattleWearDisplays();
+        }
         return;
       }
     }
