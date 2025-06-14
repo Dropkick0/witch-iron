@@ -730,6 +730,9 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
+        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        max = this.actor.system.derived?.armorBonusMax || 0;
+        path = `system.battleWear.armor.${loc}.value`;
         let item = null;
         const row = event.currentTarget.closest('.item');
         const itemId = row?.dataset.itemId;
@@ -760,8 +763,8 @@ export class WitchIronDescendantSheet extends ActorSheet {
             await this._syncActorWearFromItems();
             this._updateBattleWearDisplays();
           }
+          return;
         }
-        return;
       }
     }
     if (current >= max) return;
@@ -782,6 +785,8 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
+        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        path = `system.battleWear.armor.${loc}.value`;
         let item = null;
         const row = event.currentTarget.closest('.item');
         const itemId = row?.dataset.itemId;
@@ -810,8 +815,8 @@ export class WitchIronDescendantSheet extends ActorSheet {
             await this._syncActorWearFromItems();
             this._updateBattleWearDisplays();
           }
+          return;
         }
-        return;
       }
     }
     if (current <= 0) return;
@@ -832,6 +837,8 @@ export class WitchIronDescendantSheet extends ActorSheet {
     } else if (type && type.startsWith('armor-')) {
       const loc = type.split('-')[1];
       if (locs.includes(loc)) {
+        current = this.actor.system.battleWear?.armor?.[loc]?.value || 0;
+        path = `system.battleWear.armor.${loc}.value`;
         let item = null;
         const row = event.currentTarget.closest('.item');
         const itemId = row?.dataset.itemId;
@@ -854,8 +861,8 @@ export class WitchIronDescendantSheet extends ActorSheet {
           await this._updateArmorTotals();
           await this._syncActorWearFromItems();
           this._updateBattleWearDisplays();
+          return;
         }
-        return;
       }
     }
     if (current <= 0) return;
