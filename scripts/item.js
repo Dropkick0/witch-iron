@@ -80,6 +80,7 @@ export class WitchIronItem extends Item {
     if (!itemData.protection) itemData.protection = { value: 0 };
     if (!itemData.locations) itemData.locations = {};
     if (!itemData.wear) itemData.wear = {};
+    if (!itemData.layer) itemData.layer = 'normal';
     for (const loc of LOCS) {
       if (itemData.locations[loc] === undefined) itemData.locations[loc] = false;
       if (!itemData.wear[loc]) itemData.wear[loc] = { value: 0 };
