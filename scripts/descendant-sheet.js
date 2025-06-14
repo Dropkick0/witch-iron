@@ -829,8 +829,15 @@ export class WitchIronDescendantSheet extends ActorSheet {
     const actorData = this.actor.system;
     const armorLocs = ["head","torso","leftArm","rightArm","leftLeg","rightLeg"];
     html.find('.battle-wear-value[data-type="weapon"]').text(actorData.battleWear?.weapon?.value || 0);
-    for (const loc of armorLocs) {
-      html.find(`.battle-wear-value[data-type="armor-${loc}"]`).text(actorData.battleWear?.armor?.[loc]?.value || 0);
+
+    for (const item of this.actor.items) {
+      if (item.type !== 'armor') continue;
+      const row = html.find(`.item[data-item-id="${item.id}"]`);
+      if (!row.length) continue;
+      for (const loc of armorLocs) {
+        if (!item.system.locations?.[loc]) continue;
+        row.find(`.battle-wear-value[data-type="armor-${loc}"]`).text(item.system.wear?.[loc]?.value || 0);
+      }
     }
 
     // Update soak and trauma displays
