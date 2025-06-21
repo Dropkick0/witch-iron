@@ -325,16 +325,33 @@ export class WitchIronMonsterSheet extends ActorSheet {
     for (const item of context.injuries) {
       const effect = (item.system?.effect || '').toLowerCase();
       const desc = (item.system?.description || '').toLowerCase();
-      const side = desc.includes('left') ? 'left' : desc.includes('right') ? 'right' : null;
+      const name = (item.name || '').toLowerCase();
+      const loc = (item.system?.location || '').toLowerCase();
+      const side =
+        loc.includes('left') || name.includes('left') || desc.includes('left') ? 'left' :
+        loc.includes('right') || name.includes('right') || desc.includes('right') ? 'right' : null;
+
       let amt = 0;
       let limb = null;
-      if (effect.includes('lost hand') || effect.includes('lost foot')) amt = 0.25;
-      else if (effect.includes('lost forearm') || effect.includes('lost shin')) amt = 0.5;
-      else if (effect.includes('lost arm') || effect.includes('lost leg')) amt = 1;
-      if (amt === 0) continue;
-      if (effect.includes('hand') || effect.includes('forearm') || effect.includes('arm')) limb = 'arm';
-      else if (effect.includes('foot') || effect.includes('shin') || effect.includes('leg')) limb = 'leg';
-      if (!limb) continue;
+      if (effect.includes('hand') || name.includes('hand') || desc.includes('hand')) {
+        amt = 0.25; limb = 'arm';
+      }
+      if (effect.includes('foot') || name.includes('foot') || desc.includes('foot')) {
+        amt = 0.25; limb = 'leg';
+      }
+      if (effect.includes('forearm') || name.includes('forearm') || desc.includes('forearm')) {
+        amt = Math.max(amt, 0.5); limb = 'arm';
+      }
+      if (effect.includes('shin') || name.includes('shin') || desc.includes('shin')) {
+        amt = Math.max(amt, 0.5); limb = 'leg';
+      }
+      if (effect.includes('arm') || name.includes('arm') || desc.includes('arm')) {
+        amt = Math.max(amt, 1); limb = 'arm';
+      }
+      if (effect.includes('leg') || name.includes('leg') || desc.includes('leg')) {
+        amt = Math.max(amt, 1); limb = 'leg';
+      }
+      if (amt === 0 || !limb) continue;
       if (side === 'left') {
         limbLoss[limb === 'arm' ? 'leftArm' : 'leftLeg'] = Math.max(limbLoss[limb === 'arm' ? 'leftArm' : 'leftLeg'], amt);
       } else if (side === 'right') {
