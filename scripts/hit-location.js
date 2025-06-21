@@ -1619,11 +1619,7 @@ export class HitLocationDialog extends Application {
                 if (item.type !== 'injury') continue;
                 const effect = (item.system?.effect || '').toLowerCase();
                 const desc = (item.system?.description || '').toLowerCase();
-                const name = (item.name || '').toLowerCase();
-                const loc = (item.system?.location || '').toLowerCase();
-                const hasLeft = [loc, name, desc].some(t => t.includes('left'));
-                const hasRight = [loc, name, desc].some(t => t.includes('right'));
-                const side = hasLeft ? 'left' : hasRight ? 'right' : null;
+                const side = desc.includes('left') ? 'left' : desc.includes('right') ? 'right' : null;
                 let amt = 0;
                 let limb = null;
                 if (effect.includes('lost hand') || effect.includes('lost foot')) amt = 0.25;
