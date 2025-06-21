@@ -113,7 +113,7 @@
 }
 .limb-overlay {
   stroke: #693731;
-  stroke-linecap: round;
+  stroke-linecap: butt;
 }
 .limb-overlay.missing-25 {
   stroke-dasharray: 75 25;

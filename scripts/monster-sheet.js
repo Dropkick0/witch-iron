@@ -325,16 +325,25 @@ export class WitchIronMonsterSheet extends ActorSheet {
     for (const item of context.injuries) {
       const effect = (item.system?.effect || '').toLowerCase();
       const desc = (item.system?.description || '').toLowerCase();
-      const side = desc.includes('left') ? 'left' : desc.includes('right') ? 'right' : null;
+      const name = (item.name || '').toLowerCase();
+      const loc = (item.system?.location || '').toLowerCase();
+      const tokens = [name, desc, loc, effect];
+      const lr = tokens.map(t => t.match(/\((l|r)\)/)).find(m => m);
+      const hasLeft = tokens.some(t => /\bleft\b/.test(t)) || lr?.[1] === 'l';
+      const hasRight = tokens.some(t => /\bright\b/.test(t)) || lr?.[1] === 'r';
+      const side = hasLeft && !hasRight ? 'left' : hasRight && !hasLeft ? 'right' : null;
       let amt = 0;
       let limb = null;
-      if (effect.includes('lost hand') || effect.includes('lost foot')) amt = 0.25;
-      else if (effect.includes('lost forearm') || effect.includes('lost shin')) amt = 0.5;
-      else if (effect.includes('lost arm') || effect.includes('lost leg')) amt = 1;
+      if (effect.includes('lost hand') || name.includes('severed hand')) {
+        amt = 0.25; limb = 'arm';
+      } else if (effect.includes('lost foot') || name.includes('severed foot')) {
+        amt = 0.25; limb = 'leg';
+      } else if (effect.includes('lost forearm') || name.includes('severed forearm') || effect.includes('lost shin') || name.includes('severed shin')) {
+        amt = 0.5; limb = effect.includes('shin') || name.includes('shin') ? 'leg' : 'arm';
+      } else if (effect.includes('lost arm') || name.includes('severed arm') || effect.includes('lost leg') || name.includes('severed leg')) {
+        amt = 1; limb = effect.includes('leg') || name.includes('leg') ? 'leg' : 'arm';
+      }
       if (amt === 0) continue;
-      if (effect.includes('hand') || effect.includes('forearm') || effect.includes('arm')) limb = 'arm';
-      else if (effect.includes('foot') || effect.includes('shin') || effect.includes('leg')) limb = 'leg';
-      if (!limb) continue;
       if (side === 'left') {
         limbLoss[limb === 'arm' ? 'leftArm' : 'leftLeg'] = Math.max(limbLoss[limb === 'arm' ? 'leftArm' : 'leftLeg'], amt);
       } else if (side === 'right') {
