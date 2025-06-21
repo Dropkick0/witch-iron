@@ -49,7 +49,12 @@ export class WitchIronDescendantSheet extends ActorSheet {
     for (const item of data.injuries) {
       const effect = (item.system?.effect || '').toLowerCase();
       const desc = (item.system?.description || '').toLowerCase();
-      const side = desc.includes('left') ? 'left' : desc.includes('right') ? 'right' : null;
+      const name = (item.name || '').toLowerCase();
+      const loc = (item.system?.location || '').toLowerCase();
+      const hasLeft = [loc, name, desc].some(t => t.includes('left'));
+      const hasRight = [loc, name, desc].some(t => t.includes('right'));
+      const side = hasLeft ? 'left' : hasRight ? 'right' : null;
+
       let amt = 0;
       let limb = null;
       if (effect.includes('lost hand') || effect.includes('lost foot')) amt = 0.25;
@@ -59,6 +64,7 @@ export class WitchIronDescendantSheet extends ActorSheet {
       if (effect.includes('hand') || effect.includes('forearm') || effect.includes('arm')) limb = 'arm';
       else if (effect.includes('foot') || effect.includes('shin') || effect.includes('leg')) limb = 'leg';
       if (!limb) continue;
+
       if (side === 'left') {
         limbLoss[limb === 'arm' ? 'leftArm' : 'leftLeg'] = Math.max(limbLoss[limb === 'arm' ? 'leftArm' : 'leftLeg'], amt);
       } else if (side === 'right') {
