@@ -325,13 +325,7 @@ export class WitchIronMonsterSheet extends ActorSheet {
     for (const item of context.injuries) {
       const effect = (item.system?.effect || '').toLowerCase();
       const desc = (item.system?.description || '').toLowerCase();
-      const loc = (item.system?.location || '').toLowerCase();
-      const name = (item.name || '').toLowerCase();
-      const side = loc.includes('left') || name.includes('left') || desc.includes('left')
-        ? 'left'
-        : loc.includes('right') || name.includes('right') || desc.includes('right')
-        ? 'right'
-        : null;
+      const side = desc.includes('left') ? 'left' : desc.includes('right') ? 'right' : null;
       let amt = 0;
       let limb = null;
       if (effect.includes('lost hand') || effect.includes('lost foot')) amt = 0.25;
